@@ -1,7 +1,0 @@
-#### Base rootfolder ####
-media.rootfolder=/
-media.base.path=/home/ngms/media
-sup.doc.folder=booking_supp_doc
-gh_doc.folder=ghImage
-home_doc.folder=homeDocument
-office_doc.folder=officeOrderDocument

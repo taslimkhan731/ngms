@@ -1,9 +1,0 @@
-@CHARSET "ISO-8859-1";
-.active-tab {
-    color: #495057;
-    background-color: #2cc185;
-    border-color: #dee2e6 #dee2e6 #fff;
-}
-.btnR {
-	background: #aaaaaa;
-}
