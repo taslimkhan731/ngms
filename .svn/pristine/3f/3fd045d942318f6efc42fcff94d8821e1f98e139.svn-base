@@ -1,0 +1,333 @@
+  <ion-toolbar>
+    <ion-buttons slot="start" routerLink="/after-login/pages/orgadmin/GH-menu/feedback" class="toolbarr">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title class="logo-text">Report On Guest Feebacks</ion-title>
+    <ion-button slot="end" id="filtermodal-modal" (click)="openFilterModal()">
+      <ion-icon name="filter-outline"></ion-icon>&nbsp;Filter
+    </ion-button>
+  </ion-toolbar>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="filterHandleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="content">
+    <ion-card *ngFor="let data of totalFeedback">
+      <ion-card-content *ngIf=" data.list !=''">
+        <ion-accordion-group >
+          <ion-accordion class="mt-3">
+            <ion-item slot="header" color="light">
+              <ion-label>{{data.guestHouse}},{{data.cityName}}</ion-label>
+            </ion-item>
+            <div slot="content" class="insideAccordian">
+              <ion-row>
+                <ion-col size="12" class="ion-align-self-start" class="label-value">No.of persons accommodation:</ion-col>
+                <ion-col size="12" class="ion-align-self-start"> {{data.totalRow}}</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12" class="ion-align-self-start" class="label-value">No of feedback obtained:</ion-col>
+                <ion-col size="12" class="ion-align-self-start"> {{data.totalNumFeedback}}</ion-col>
+              </ion-row>
+              <!-- emoji card starts -->
+              <ion-card class="m-0">
+                <ion-card-content>
+                  <!-- div -1 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Easy of check-in and check-out :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.checkInExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.checkInGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.checkInAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.checkInPoor}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.checkInVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  <!-- div-2 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Upkeep of the Room :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.upKeepExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.upkeepGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.upKeepAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.upKeepPoor}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.upKeepVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  <!-- div-3 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Cleanliness and hygiene :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.cleanExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.cleanGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.cleanAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.cleanPoor}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.cleanVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  <!-- 4 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Quality of Food :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.qualityExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.qualityGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.qualityAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.qualityPoor}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.qualityVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  <!-- 5 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Conduct of staff :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.conductExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.conductGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.conductAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.conductPoor }}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.conductVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  <!-- 6 -->
+                  <div style="margin-top: 13px;">
+                    <ion-label class="label-value">Overall Feedback :</ion-label>
+                    <ion-row style="border: 1px solid green;border-radius: 8px" class="mt-2">
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile.png" height="42px" />
+                        <div class="emoji-label mt-2">Excellent</div>
+                        <div class="emoji-label mt-2">{{data?.overallExc}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/smile (1).png" height="42px" />
+                        <div class="emoji-label mt-2">Good</div>
+                        <div class="emoji-label mt-2">{{data?.overallGood}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/scared.png" height="42px" />
+                        <div class="emoji-label mt-2">Average</div>
+                        <div class="emoji-label mt-2">{{data?.overallAvg}}</div>
+                      </ion-col>
+            
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/sad (1).png" height="42px" />
+                        <div class="emoji-label mt-2"> Poor</div>
+                        <div class="emoji-label mt-2">{{data?.overallPoor}}</div>
+                      </ion-col>
+                      <ion-col size="2">
+                        <img src="../../../assets/afterlogin/angry.png" height="42px" />
+                        <div class="emoji-label mt-2">Very Poor</div>
+                        <div class="emoji-label mt-2">{{data?.overallVpoor}}</div>
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                  
+                </ion-card-content>
+              </ion-card>
+              <!-- emoji card ends -->
+             
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <ion-modal #filtermodal trigger="filtermodal-modal">
+    <ng-template>
+        <ion-header>
+            <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-button (click)="cancel()">
+                        <ion-icon name="arrow-back"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+                <ion-title>Search</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+            <div style="margin-top: 5px;">
+                
+                <ion-item class="mt-1" style=" margin: 0px 9px 0 10px; border-radius: 6px;">
+                  <ion-radio-group [(ngModel)]="selectedOption" (ionChange)="onOptionChange()">
+                    <ion-item>
+                        
+                        <ion-radio labelPlacement="end" value="A"></ion-radio>
+                        <ion-label style=" margin: 0px 0px 0 10px; border-radius: 6px;">Search By Date</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        
+                        <ion-radio  labelPlacement="end" value="B" ></ion-radio>
+                        <ion-label style=" margin: 0px 0px 0 10px; border-radius: 6px;" >Search By Year and Month</ion-label>
+                    </ion-item>
+                </ion-radio-group>
+                </ion-item>
+            </div>
+
+            <!-- Input fields for option A -->
+            <div >
+                <form [formGroup]="filterForm"  (ngSubmit)="submitFilterForm(filterForm.value)">
+                  <ng-container *ngIf="selectedOption === 'A'" >
+                    <div style="margin-top: 5px;">
+                        <div style="position: relative; left: 13px; font-size: 18px;">From Date</div>
+                        <ion-item class="mt-1" style="border: 2px solid green; margin: 0px 9px 0 10px; border-radius: 6px;">
+                            <ion-input type="date" placeholder="Input A" formControlName="fromDate"></ion-input>
+                        </ion-item>
+                    </div>
+                    
+                    <div style="margin-top: 5px;">
+                      <div style="position: relative; left: 13px; font-size: 18px;">To Date</div>
+                      <ion-item class="mt-1" style="border: 2px solid green; margin: 0px 9px 0 10px; border-radius: 6px;">
+                          <ion-input type="date" placeholder="Input A" formControlName="toDate"></ion-input>
+                      </ion-item>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="selectedOption === 'B'" >
+                  <div style="margin-top: 5px;">
+                    <div style="position: relative; left: 13px; font-size: 18px;">Year</div>
+                    <ion-item class="mt-1" style="border: 2px solid green; margin: 0px 9px 0 10px; border-radius: 6px;">
+                      <ion-select interface="action-sheet" placeholder="Select Category"
+                      [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" formControlName="year">
+                        <ion-select-option *ngFor="let year of yearsArray" [value]="year">{{ year }}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                </div>
+                <div style="margin-top: 5px;">
+                  <div style="position: relative; left: 13px; font-size: 18px;">Month</div>
+                  <ion-item class="mt-1" style="border: 2px solid green; margin: 0px 9px 0 10px; border-radius: 6px;">
+                    <ion-select interface="action-sheet" placeholder="Select Category"
+                    [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" formControlName="month">
+                      <ion-select-option *ngFor="let month of monthsArray" [value]="monthMapping[month]">{{ month }}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+              </div>
+                </ng-container>
+              
+
+            <!-- Input fields for option B -->
+            <!-- <div *ngIf="selectedOption === 'B'">
+                <form [formGroup]="filterForm">
+                    <div style="margin-top: 5px;">
+                        <div style="position: relative; left: 13px; font-size: 18px;">Input B</div>
+                        <ion-item class="mt-1" style="border: 2px solid green; margin: 0px 9px 0 10px; border-radius: 6px;">
+                            <ion-input type="text" placeholder="Input B" formControlName="inputB"></ion-input>
+                        </ion-item>
+                    </div>
+                </form>
+            </div> -->
+
+            <ion-button type="submit" expand="block" style="margin: 20px 0px 0px 6px !important; width: 96% !important; --background: green !important;">Submit</ion-button>
+          </form>
+        </div>
+        </ion-content>
+    </ng-template>
+</ion-modal>
+
+</ion-content>

@@ -1,0 +1,170 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Selected Bill Details</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;">Selected Bill Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="containerr">
+    <ion-card>
+      <ion-card-header>
+        <ion-label>Calculate Amount</ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card *ngFor="let data of billDetails?.guestDetails"
+          style="margin:5px 0px !important; border: 0.957234px solid #A0E6A4;">
+          <ion-card-content>
+            <ion-row style="padding-left: 6px;">
+              <ion-col size="6">
+                <ion-label class="label-key">Booking ID/Guest ID </ion-label><br>
+                <ion-label class="label-value">{{data.bookingId}} / {{data.guestId}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Register No</ion-label><br>
+                <ion-label class="label-value">{{data.rowNo}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Guest Details</ion-label><br>
+                <ion-label class="label-value">{{data.name}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Visitor Category</ion-label><br>
+                <ion-label class="label-value">{{data.desg}}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row style="padding-left: 6px;">
+              <ion-col size="6">
+                <ion-label class="label-key">From Date</ion-label><br>
+                <ion-label class="label-value">{{data.fromDate}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">To Date</ion-label><br>
+                <ion-label class="label-value">{{data.toDate}}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row style="padding-left: 6px;">
+              <ion-col size="6">
+                <ion-label class="label-key">Arrival Date</ion-label><br>
+                <ion-label class="label-value">{{data.arrivalDate}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Departure Date</ion-label><br>
+                <ion-label class="label-value">{{data.departureDate}}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row style="padding-left: 6px;">
+              <ion-col size="6">
+                <ion-label class="label-key">NOC Date</ion-label><br>
+                <ion-label class="label-value">{{billDetails?.nocdate ? billDetails?.nocdate : '-'}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Purpose</ion-label><br>
+                <ion-label class="label-value">{{data.purpose}}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row style="padding-left: 6px;">
+
+              <ion-col size="6">
+                <ion-label class="label-key">Room No</ion-label><br>
+                <ion-label class="label-value">{{data.noRooms}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key">Advance Amount</ion-label><br>
+                <ion-label class="label-value">{{data.advanceAmount}}</ion-label>
+              </ion-col>
+            </ion-row>
+
+          </ion-card-content>
+        </ion-card>
+
+        <br>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Particulars</th>
+                <th>Rupees</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td>Room Rent </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="roomRent" [value]="billDetails?.roomRent"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>Food </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="foodCharge" [value]="billDetails?.foodCharge"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>News paper </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="newspaper" value="0"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>Vehicle </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="vehicle" value="0"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>Telephone </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="telephone" value="0"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>Additional </td>
+                <td>
+                  <ion-input type="number" inputmode="numeric" [(ngModel)]="additional" value="0"></ion-input>
+                </td>
+              </tr>
+              <tr>
+                <td>NOC </td>
+                <td>
+                  <ion-input [value]="billDetails?.nocCharge" [(ngModel)]="noc" readonly></ion-input>
+                </td>
+              </tr>
+              <!-- <tr>
+                <td style="font-weight: 600;font-size: 15px;color: #000;">Total</td>
+                <td><b style="color:#000">{{billDetails?.total}}</b></td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <!-- <ion-label>NOC Date: {{billDetails?.nocDate}}</ion-label><br>
+              <ion-label>Deduct Advance Collected: {{billDetails?.advanceAmount}}</ion-label><br>
+              <ion-label>Balance to be paid : {{balToBePaid}}</ion-label><br>
+              <ion-label>Rupees : <b style="color:#000">{{convertNumberToWords(balToBePaid)}} only</b></ion-label><br>
+              <ion-label>Date : {{currDate | date:'dd-MM-YYYY'}}</ion-label> -->
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <div class="d-flex justify-content-end" style="margin-right: 10px;">
+      <ion-button class="submit-btn" (click)="createBill(billDetails,'billing')"> Create Bill</ion-button>
+      <ion-button class="close-btn" (click)="goBack()"> Back</ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,8 @@
+{
+  "name": "e-Bhawan",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

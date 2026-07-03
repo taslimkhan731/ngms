@@ -1,0 +1,102 @@
+ion-toolbar {
+    --background: darkgreen;
+    color: white;
+    letter-spacing: 2px;
+    font-size: 16px;
+
+
+    ion-icon {
+        font-size: xx-large;
+        color: #FFFFFF;
+        padding: 3px;
+        border-radius: 32px;
+    }
+}
+
+ion-content {
+
+    // --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+    ion-card {
+        background: #FFFFFF;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        border: 1px solid #d6d6d6;
+        // margin: 13px 16px;
+
+        ion-card-header {
+            padding-left: 11px;
+            padding-right: 11px;
+
+            ion-label {
+                font-family: 'Exo 2';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 100%;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #0F8D4B;
+        
+              }
+
+            ion-card-title {
+                // font-family: 'Helvetica';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 22px;
+                text-transform: capitalize;
+                color: #000000;
+            }
+        }
+
+        ion-card-content {
+            padding: 2px;
+
+            .label-value {
+                // font-family: "Helvetica";
+                font-weight: 600 !important;
+                color: black;
+            }
+            ion-textarea {
+                background: #FFFFFF;
+                border: 0.892779px solid #A2E6A7;
+                box-shadow: inset 1.78556px 1.78556px 2.67834px rgba(86, 103, 113, 0.29);
+                border-radius: 4.46389px;
+                --padding-top: 10px;
+                --padding-end: 9px;
+                --padding-bottom: 24px;
+                --padding-start: 9px;
+                height: auto;
+              }
+        }
+
+        .btn {
+            box-shadow: 1px 2px 2px 2px rgb(0 0 0 / 25%);
+            text-transform: capitalize;
+            font-size: 12px;
+            margin: 2px;
+            padding: 2px;
+
+            ion-icon {
+                padding-right: 5px;
+            }
+        }
+    }
+
+    ion-item {
+        --background: linear-gradient(180deg, #ebf5ea, );
+        ion-label {
+            font-size:14px;
+        }
+
+        .textCss {
+            text-align: center;
+            font-size: larger;
+            // margin-top: 39vh;
+
+        }
+    }
+
+}

@@ -1,0 +1,140 @@
+ion-toolbar {
+    --background: darkgreen;
+    color: white;
+    letter-spacing: 2px;
+    font-size: 16px;
+
+    ion-icon {
+        font-size: xx-large;
+        // background: white;
+        // color: green;
+        padding: 3px;
+        // border-radius: 32px;
+    }
+}
+
+ion-content {
+    --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+
+    .containerr {
+        // padding: 2% 2%;
+
+        ion-card {
+            background: #FFFFFF;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            
+            ion-card-header {
+                padding-top: 8px;
+                padding-bottom: 2px;
+                margin-bottom: 15px;
+
+                ion-label {
+                    font-family: 'Exo 2';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 100%;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    color: #0F8D4B;
+
+                    ion-icon {
+                        margin-right: 10px;
+                        color: #0F8D4B;
+                        font-weight: 600;
+                        font-size: 20px;
+                        // position: relative;
+                    }
+                }
+
+                ion-label::before {
+                    content: "";
+                    position: absolute;
+                    bottom: -6px;
+                    height: 3px;
+                    width: 87px;
+                    background: #0FA958;
+                    display: block;
+                    z-index: 2;
+                }
+            }
+
+            ion-card-content {
+                // padding: 2px;
+                padding-left: 0px !important;
+                padding-right: 0px !important;
+        
+                .label-value {
+                //   font-family: "Helvetica";
+                  font-weight: 600 !important;
+                  color: black;
+                }
+                input {
+                  background: #FFFFFF;
+                  border: 0.892779px solid #A2E6A7;
+                  box-shadow: inset 1.78556px 1.78556px 2.67834px rgb(86 103 113 / 29%);
+                  border-radius: 4.46389px;
+                  padding-top: 5px;
+                  padding-right: 9px;
+                  padding-bottom: 5px;
+                  padding-left: 9px;
+                }
+      
+
+                .view-btn {
+                    background: linear-gradient(180deg, #549f08 0%, #0f8d4b 100%);
+                    border: 1px solid #549f08;
+                    color: #ffffff;
+                    padding: 0.25rem 1rem;
+                    font-size: .875rem;
+                    line-height: 1.5;
+                    border-radius: 0.2rem;
+                }
+
+                table {
+                    .thead th {
+                        border: none !important;
+                        border-left: 1px solid white !important;
+                        background: linear-gradient(156.81deg, #50CB89 -22.76%, #109851 108.33%) ! important;
+                        color: white;
+                        padding: 4px 12px;
+                    }
+
+                    .tbody {
+                        border: 1px solid #bebebe;
+
+                        td {
+                            padding: 7px;
+                        }
+                    }
+                }
+
+                input:focus {
+                    outline: none;
+                }
+            }
+
+
+        }
+
+        .submit-btn {
+            --background: linear-gradient(180deg, #549f08 0%, #0f8d4b 100%);
+            --background-activated: linear-gradient(180deg, #549f08 0%, #0f8d4b 100%);
+            text-transform: capitalize;
+        }
+
+        .cancel-btn {
+            --background: linear-gradient(180deg, #deb224 0%, #da9417 100%);
+            --background-activated: linear-gradient(180deg, #deb224 0%, #da9417 100%);
+        }
+        .close-btn {
+            --background: linear-gradient(180deg, #dc3545 0%, #c73644 100%);
+            --background-activated: linear-gradient(180deg, #dc3545 0%, #c73644 100%);
+        }
+    }
+}

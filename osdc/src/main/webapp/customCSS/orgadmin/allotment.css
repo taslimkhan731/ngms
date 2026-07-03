@@ -1,0 +1,65 @@
+@CHARSET "ISO-8859-1";
+.active-tab {
+    color: #495057;
+    background-color: #2cc185;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+.btnR {
+	background: #aaaaaa;
+}
+.submit-btn {
+    width: auto;
+    height: 40.66px;
+    background: linear-gradient(180deg, #549F08 0%, #0F8D4B 100%);
+    box-shadow: 3px 2px 5px rgb(0 0 0 / 25%);
+    border-radius: 6px;
+    border: 1px solid transparent;
+    /* font-family: 'Roboto'; */
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 23px;
+    /* display: flex; */
+    text-align: center;
+    text-transform: capitalize;
+    color: #FFFFFF;
+}
+.submit-btn:focus {
+	outline:none;
+}
+.the-fieldset {
+	background: linear-gradient(180deg, #FFFFFF 0%, #F7F8F7 80.21%);
+	border: 0.892779px solid #A2A2A2;
+	border-radius: 6px;
+	padding: 2px 9px;
+	/* position: relative; */
+	/* width: 224.93px; */
+	width: auto;
+	margin-bottom: 15px;
+}
+
+ .the-fieldset-sm {
+	background: linear-gradient(180deg, #FFFFFF 0%, #F7F8F7 80.21%);
+	border: 0.892779px solid #A2A2A2;
+	border-radius: 6px;
+	padding: 5px 9px;
+	/* position: relative; */
+	width: auto;
+	margin-bottom: 15px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.the-legend {
+	/* font-family: 'Roboto'; */
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 18px;
+	display: flex;
+	align-items: center;
+	color: #414042;
+	margin-bottom: -6px;
+	width: auto;
+	padding: 2px 4px;
+}

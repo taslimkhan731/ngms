@@ -1,0 +1,32 @@
+<div class="header">
+  <h5 style="float:left">Accept</h5>
+  <ion-icon style="float: right;" name="close-outline" (click)="dismiss()"></ion-icon>
+</div>
+
+<section>
+  <div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="5">Process ID</ion-col>
+        <ion-col size="1">:</ion-col>
+        <ion-col size="6"><b>{{processDetails?.processId}}</b></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5">Create By</ion-col>
+        <ion-col size="1">:</ion-col>
+        <ion-col size="6"><b>{{processDetails?.createdBy}}</b></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5">Created Date</ion-col>
+        <ion-col size="1">:</ion-col>
+        <ion-col size="6"><b>{{processDetails?.createdDate}}</b></ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="d-flex justify-content-end" style="margin-right: 10px;margin-bottom: 5%;">
+      <ion-button style="color: white;--background: rgb(7 192 96);--background-activated: rgb(7 192 96);text-transform: initial;" (click)="onClickApproveBtn()">
+     Confirm
+      </ion-button>
+    </div>
+  </div>
+</section>

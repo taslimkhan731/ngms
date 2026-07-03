@@ -1,0 +1,254 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">{{type == 'makeReceipt' ? 'Make Receipt' : 'Print Receipt'}}</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;">{{type == 'makeReceipt' ? 'Make Receipt' : 'Print Receipt'}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="containerr">
+    <div *ngIf="type =='makeReceipt'">
+      <ion-card>
+        <ion-card-content id="PaymentReceipt">
+          <p
+            style="padding: 5px;vertical-align: top;text-align: center;font-weight:bolder;font-size:16px; color: #000;">
+            Cash Receipt</p>
+          <br>
+          <div>
+            <div style="float: left;">
+              <b>Receipt No</b> -
+            </div>
+            <div style="float: right;">
+              <b>Date</b>-{{dateTime}}
+            </div>
+          </div>
+          <br><br>
+          <span>Received from Shri/Smt <span class="bottom" style="width: auto;"> {{guestNames}} </span>a sum of INR
+            <span class="bottom"> {{receiptData.total}} </span></span>
+          <div style="padding-top: 10px;padding-bottom:10px">
+            <table style="width: 100%;">
+              <tr>
+                <td><input type="checkbox" name="pay" #cash id="cash" (change)="getCheckboxId(cash,$event)"></td>
+                <td><b> By Cash</b></td>
+                <td><input type="number" inputmode="decimal" min="0" [disabled]="disableCash" [(ngModel)]="cashAmount"
+                    placeholder="Enter Amount" (keyup)="check($event,'cash')"></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" name="pay" #pos id="pos" (change)="getCheckboxId(pos,$event)"></td>
+                <td><b> By POS</b></td>
+                <td><input type="number" inputmode="decimal" min="0" [disabled]="disablePos" [(ngModel)]="posAmount"
+                    placeholder="Enter Amount" (keyup)="check($event,'pos')"><br>
+                  <input type="text" *ngIf="showPosTransation" [(ngModel)]="transactionNo"
+                    placeholder="Enter transaction number">
+                </td>
+              </tr>
+              <!-- <tr>
+                <td><input type="checkbox" name="pay" id="online" #online (change)="getCheckboxId(online,$event)"></td>
+                <td><b> By Online</b></td>
+                <td><input type="number" min="0" [disabled]="disableOnline" [(ngModel)]="onlineAmount"
+                    placeholder="Enter Amount" (keyup)="check($event,'online')"></td>
+              </tr>
+              <tr *ngIf="!disableOnline">
+                <td></td>
+                <td></td>
+                <td><button class="view-btn" style="float: right;
+                  margin-top: 2%;
+                  right: 13% !important;
+                  position: relative;" type="button">Pay</button></td>
+              </tr> -->
+            </table>
+          </div>
+          <span>Bill No: {{receiptData?.billNo}}</span>; Dated: {{receiptData?.date}}<br>
+          <span>Rs: {{receiptData.total}}</span>
+          <br><br><br>
+          <div>
+            <div style="float: left;">
+              <b>Date:</b>
+            </div>
+            <div style="float: right;">
+              <b>For Controller</b>
+            </div>
+          </div>
+
+
+          <br><br>
+
+        </ion-card-content>
+      </ion-card>
+
+      <div class="d-flex justify-content-center" style="margin-right: 10px;margin-bottom:10%">
+        <!-- <ion-button class="close-btn" (click)="goBack()"> Back</ion-button> -->
+        <ion-button class="submit-btn" (click)="submitReceipt(cash.checked,pos.checked)"> Submit
+          Receipt</ion-button>
+      </div>
+    </div>
+    <div *ngIf="type == 'viewReceipt'">
+      <ion-card style=" border: 0.957234px solid #A0E6A4;">
+        <ion-card-content id="PaymentReceipt" style="padding: 10px;">
+          <p
+            style="padding: 5px;vertical-align: top;text-align: center;font-weight:bolder; color: #000;font-size:20px;">
+            {{receiptData?.guestHouseName}},{{receiptData?.cityName}}</p>
+          <!-- <p
+              style="padding: 5px;vertical-align: top;text-align: center;font-weight:bolder;font-size:16px; color: #000;">
+              Cash Receipt</p> -->
+          <br>
+          <div>
+            <div style="float: left;">
+              <b>Receipt No</b> - {{receiptData?.recId}}
+            </div>
+            <div style="float: right;">
+              <b>Date</b>-{{receiptData?.rectDate}}
+            </div>
+          </div>
+          <br><br>
+          <span>Received from Shri/Smt <span class="bottom" style="width: auto;"> {{guestNames}} </span>a sum of INR
+            <span class="bottom"> {{receiptData?.paidAmount}} </span></span>
+          <div style="padding-top: 10px;padding-bottom:10px">
+            <ng-container *ngFor="let pd of receiptData?.paymentModes">
+              <table style="width: 50%;">
+                <tr>
+                  <td>By <b>{{pd.mode_of_payment| uppercase}}</b></td>
+                  <td> {{pd.amount}}</td>
+                </tr>
+              </table>
+            </ng-container>
+          </div>
+          <span>Bill No: {{receiptData?.billNo}}</span>; Dated: {{receiptData?.date}}<br>
+          <span>Rs: {{receiptData.total}}</span>
+          <br><br><br>
+          <div>
+            <div style="float: left;">
+              <b>Date: </b>{{currDate | date:'dd-MM-YYYY'}}
+            </div>
+            <div style="float: right;">
+              <b>For Controller</b>
+            </div>
+          </div>
+          <br><br>
+
+        </ion-card-content>
+      </ion-card>
+      <div id="printReceipt" class="printReceipt" style="font-family: Helvetica !important;">
+        <p
+          style="padding: 0px;margin: 0px !important;vertical-align: top;text-align: center;font-weight:bolder; color: #000;font-size:20px;">
+          {{receiptPDFData?.guestHouseName}},{{receiptPDFData?.cityName}}</p>
+        <p
+          style="padding: 0px;margin: 0px !important;vertical-align: top;text-align: center;font-weight:bold; color: #6a6969; font-size:14px;">
+          {{receiptPDFData?.guestHouseAddress}}</p>
+        <p
+          style="padding: 0px;margin: 0px !important;vertical-align: top;text-align: center;font-weight:bold; color: #6a6969; font-size:14px;">
+          {{receiptPDFData?.guestHouseContactNum}},{{receiptPDFData?.guestHouseMail}}</p>
+        <p
+          style="padding: 3px;vertical-align: top;text-align: center;font-weight:bold; color: #6a6969; font-size:14px;">
+          Money
+          Receipt</p>
+        <br>
+        <div>
+          <div style="float: left;">
+            <b>Receipt No</b> - {{receiptPDFData?.recId}}
+          </div>
+          <div style="float: right;">
+            <b>Receipt printing date and time</b>-{{currDate | date:'dd-MM-YYYY HH:mm'}}
+          </div>
+        </div>
+        <br><br><br>
+        <div>
+          <table style="width:100%;border-collapse: collapse;">
+            <tr style="border: 1px solid black !important; text-align: center">
+              <td rowspan="2" style="text-align:left !important; padding-left: 3px;border: 1px solid black;">
+                <b>Guest name:</b> {{extractName(receiptPDFData?.name)}}<br>
+                <b>Guest Contact:</b> {{receiptPDFData?.mobileNo}}<br>
+                <b>Guest Email:</b> {{receiptPDFData?.guestEmail}}<br>
+              </td>
+              <td style="border: 1px solid black;"><b>Booking ID</b></td>
+              <td style="border: 1px solid black;"><b>Category</b></td>
+              <td style="border: 1px solid black;"><b>Purpose</b></td>
+              <td style="border: 1px solid black;"><b>Address</b></td>
+
+            </tr>
+            <tr style=" border: 1px solid black; text-align: center;">
+              <td style="border: 1px solid black;"> {{receiptPDFData?.bookingId}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.category}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.purpose}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.guestAddress}}</td>
+
+            </tr>
+          </table>
+          <br><br>
+          <table style="width:100%;border-collapse: collapse;">
+            <tr style="border: 1px solid black !important; text-align: center">
+              <td style="border: 1px solid black;"><b>Arrival Time</b></td>
+              <td style="border: 1px solid black;"><b>Departure Time</b></td>
+              <td style="border: 1px solid black;"><b>Room/Bed no</b></td>
+              <td style="border: 1px solid black;"><b>No of Guest</b></td>
+              <td rowspan="2" style="text-align:center !important; padding-left: 3px;border: 1px solid black;">
+                <b>Billing Details</b>
+              </td>
+
+            </tr>
+            <tr style=" border: 1px solid black; text-align: center;">
+              <td style="border: 1px solid black;"> {{receiptPDFData?.fromDate}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.toDate}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.roomNo}}</td>
+              <td style="border: 1px solid black;">{{receiptPDFData?.noOfGuest}}</td>
+            </tr>
+            <tr style="border: 1px solid black !important; text-align: center">
+              <td style="border: 1px solid black;text-align:right !important;padding-right:3px !important" colspan="4">
+                <b>Advance Amount Paid</b>
+              </td>
+              <td style="border: 1px solid black;"> {{receiptPDFData?.advancedAmount}}</td>
+            </tr>
+            <tr style="border: 1px solid black !important; text-align: center">
+              <td style="border: 1px solid black;text-align:right !important;padding-right:3px !important" colspan="4">
+                <b>Bill
+                  Amount Paid</b></td>
+              <td style="border: 1px solid black;"> {{receiptPDFData?.amountPaid}}</td>
+            </tr>
+            <tr style="border: 1px solid black !important; text-align: center"
+              *ngFor="let pd of receiptPDFData?.paymentModes ">
+              <td
+                style="border: 1px solid black;text-align:right !important;padding-right:3px !important;text-transform:capitalize; "
+                colspan="4"><b>By {{pd.mode_of_payment}}</b></td>
+              <td style="border: 1px solid black;"> {{pd.amount}}</td>
+            </tr>
+            <tr style="border: 1px solid black !important; text-align: center">
+              <td style="border: 1px solid black;text-align:right !important;padding-right:3px !important" colspan="4">
+                <b>Total Amount Paid</b>
+              </td>
+              <td style="border: 1px solid black;"> {{totalAmount}}</td>
+            </tr>
+            <tr style="border: 1px solid black !important; text-align: center" *ngIf='receiptPDFData?.dueAmount != "0"'>
+              <td style="border: 1px solid black;text-align:right !important;padding-right:3px !important" colspan="4">
+                <b>Dues
+                  Amount</b></td>
+              <td style="border: 1px solid black;"> {{receiptPDFData?.dueAmount}}</td>
+            </tr>
+          </table>
+        </div>
+        <br><br><br>
+        <div>
+          <div style="float: left;">
+            <b>Receptionist Signature </b>
+          </div>
+          <div style="float: right;">
+            <b>Guest Signature</b>
+          </div>
+        </div>
+        <br><br>
+      </div>
+      <div class="d-flex justify-content-center" style="margin-right: 10px;margin-bottom:10%">
+        <!-- <ion-button class="close-btn" (click)="goBack()"> Back</ion-button> -->
+        <ion-button class="submit-btn" (click)="printReceipt()"> Print
+          Receipt</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

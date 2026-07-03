@@ -1,0 +1,164 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;" *ngIf="type=='EditCIN'">Details for edit chekin</ion-title>
+  <ion-title style="text-transform: capitalize;" *ngIf="type=='CANCIN'">Details for cancel chekin</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;" *ngIf="type=='EditCIN'">Details for edit chekin</ion-title>
+    <ion-title style="text-transform: capitalize;" *ngIf="type=='CANCIN'">Details for cancel chekin</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="containerr">
+    <ion-card>
+      <ion-card-header>
+        <ion-label *ngIf="type=='EditCIN'">Edit Check-in</ion-label>
+        <ion-label *ngIf="type=='CANCIN'">Cancel Check-in</ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ng-container *ngIf="type=='EditCIN'">
+          <ion-card *ngFor="let data of responseData"
+            style="margin-top:0px !important; border: 0.957234px solid #A0E6A4;">
+            <ion-card-content>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"> <ion-label class="label-key">Booking ID</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">{{data.reqId}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Guest No</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">{{data.guestId}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Guest Details</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">
+                    <ng-container *ngIf="data.designation != '' && data.department != '';else onlyName">
+                      {{data.name}},{{data.designation}},{{data.department}}
+                    </ng-container>
+                    <ng-template #onlyName>{{data.name}}</ng-template>
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Register No</ion-label></ion-col>
+                <ion-col size="7"><input type="text" #rollNo style="width: 100%;padding: 6px;" [id]="data.guestId"
+                    [value]="data.rollNo"></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Time </ion-label></ion-col>
+                <ion-col size="7"><input type="datetime-local" #coutTime style="width: 100%;padding: 6px;"
+                    [id]="data.guestId" [min]="minDate" [max]="maxDate"
+                    value={{convertToValidaDate(data.arrivalTime)}}></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Advance Amount</ion-label></ion-col>
+                <ion-col size="7"><ng-container *ngIf="data.advncAmount == '' || data.advncAmount == null;else amount">
+                    <input type="number" inputmode="decimal" style="width: 100%;padding: 6px;" [id]="data.guestId" #advAmount>
+                  </ng-container>
+                  <ng-template #amount><input type="number" inputmode="decimal" style="width: 100%;padding: 6px;" #advAmount
+                      [id]="data.guestId" [value]="data.advncAmount"></ng-template>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Designation</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">{{data.desgCategory}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Purpose</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">{{data.purposes}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="5"><ion-label class="label-key">Room</ion-label></ion-col>
+                <ion-col size="7"><ion-label class="label-value">{{data.roomDetails.blockName}} -
+                    {{data.roomDetails.roomNo}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="5"><ion-label class="label-key">Total Amount</ion-label></ion-col>
+              <ion-col size="7"><ion-input type="text"
+                  [value]="responseData[0]?.totalAmount" readonly></ion-input></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="5"><ion-label class="label-key">Extra Guest</ion-label></ion-col>
+              <ion-col size="7"><ion-input type="text" [(ngModel)]="extraGuest"
+                  [value]="responseData[0]?.extraGuest"></ion-input></ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-container>
+        <ng-container *ngIf="type=='CANCIN'">
+          <ion-card *ngFor="let data of responseData"
+            style="margin-top:0px !important; border: 0.957234px solid #A0E6A4;">
+            <ion-card-content>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"> <ion-label class="label-key">Booking ID</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.reqId}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Guest No</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.guestId}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Guest Details</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">
+                    <ng-container *ngIf="data.designation != '' && data.department != '';else onlyName">
+                      {{data.name}},{{data.designation}},{{data.department}}
+                    </ng-container>
+                    <ng-template #onlyName>{{data.name}}</ng-template>
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Register No</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.rollNo}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Time </ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.arrivalTime}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Advance Amount</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.advncAmount}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Designation</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.desgCategory}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Purpose</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.purposes}}</ion-label></ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6"><ion-label class="label-key">Room</ion-label></ion-col>
+                <ion-col size="6"><ion-label class="label-value">{{data.roomDetails.blockName}} -
+                    {{data.roomDetails.roomNo}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6"><ion-label class="label-key">Extra Guest</ion-label></ion-col>
+              <ion-col size="6"><ion-label class="label-value">{{responseData[0]?.extraGuest}}</ion-label></ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-container>
+      </ion-card-content>
+
+    </ion-card>
+
+    <div class="d-flex justify-content-end" style="margin-right: 10px;">
+      <ion-button class="submit-btn" *ngIf="type == 'EditCIN'" (click)="editCheckIn()"> Edit Check-in</ion-button>
+      <ion-button class="submit-btn" *ngIf="type == 'CANCIN'" (click)="cancelCheckin()"> Cancel Check-in</ion-button>
+      <ion-button class="close-btn" (click)="goBack()"> Back</ion-button>
+    </div>
+  </div>
+</ion-content>

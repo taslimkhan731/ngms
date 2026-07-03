@@ -1,0 +1,45 @@
+<ion-content style="--background: linear-gradient(180deg, #ebf5ea, #c1e9d3);" >
+  <!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar> -->
+  <ion-header>
+    <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+      <ion-buttons slot="start">
+          <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+        </ion-buttons>
+        </ion-toolbar>
+        </ion-header>
+  <ng-container *ngIf="status == 'success'">
+  <div class="paymentSuceesContnr">
+      <div class="sucess-icon">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </div>
+      <p class="sucess-text">Payment Sucesesfull</p>
+      
+      <ion-button class="button" routerLink="/after-login/pages/guest/view-booking/conference" >View Details</ion-button>
+  </div>
+</ng-container>
+<ng-container *ngIf="status == 'error'">
+  <div class="paymentFailContnr">
+      <div class="fail-icon">
+        <ion-icon name="alert-outline"></ion-icon>
+      </div> 
+      <p class="fail-text">Payment Failed</p>
+      <ion-button class="button" routerLink="/after-login/pages/guest/view-booking/conference">View Details</ion-button>
+  </div>
+  </ng-container>
+  <ng-container *ngIf="status == 'pending'">
+  <div class="paymentPendingContnr">
+    <div>
+      <div class="pending-icon">
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+      </div>
+      <p class="pending-text">Payment Pending.....</p>
+    </div>
+      <ion-button class="button" routerLink="/after-login/pages/guest/view-booking/conference">View Details</ion-button>
+    
+  </div>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,152 @@
+.main-container {
+    background-image: url("../../img/login_bg.jpg");
+    background-repeat: no-repeat; 
+	background-size: 100% 100%;
+    height: 720px;
+}
+
+.right-content {
+    padding: 17% 17% 4% 17% !important;
+}
+
+.od-logo {
+    height: 85px;
+    width: 85px;
+    margin-top: -8%;
+    margin-left: 36%;
+}
+
+.main-head {
+    color: white;
+    font-size: 24px;
+    /* padding-left: 40px; */
+    font-weight: 600;
+    margin-top: -19px;
+    font-family: poppins;
+    text-align: center;
+}
+
+.small-head {
+    color: white;
+    font-size: 19px;
+    /* padding-left: 35%; */
+    font-family: auto;
+    text-align: center;
+}
+
+.form-group .form-controll {
+    width: 100%;
+    height: 30px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-bottom: 0.7px solid white;
+    box-shadow: none;
+    outline: none;
+    padding: 24px;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+.form-group .form-controll::placeholder {
+    color: white;
+    font-family: monospace;
+    font-size: 15px;
+    letter-spacing: 6;
+}
+
+.icon-style {
+    color: white;
+    font-size: 30px;
+    padding-top: 9px;
+}
+
+.btn-container {
+    text-align: center;
+}
+
+.btn-submit {
+    height: 44px;
+    width: 145px;
+    margin-top: 34px;
+    background-color: #f5ce52;
+    border-radius: 6px;
+    border: none;
+    font-family: none;
+    font-size: 20px;
+    outline: none;
+    cursor: pointer;
+}
+
+.password-label {
+    color: white;
+    font-size: 16px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.signup-label {
+    color: rgb(15, 175, 202);
+    font-size: 21px;
+    margin-top: 17px;
+    cursor: pointer;
+}
+
+.left-card-container {
+    height: 373px;
+    width: 700px;
+    margin-left: 10.2%;
+    margin-top: 18.4%;
+}
+
+.left-card {
+    max-height: 210px;
+}
+
+.img1 {
+    background-image: url(./../images/Odisha_bhawan_Delhi.jpeg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}
+
+.img2 {
+    background-image: url(./../images/Utkal_bhawan_Kolkatta4.jpg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}
+
+.img3 {
+    background-image: url(./../images/3.jpg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}
+
+.img4 {
+    background-image: url(./../images/4.jpeg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}
+
+.img5 {
+    background-image: url(./../images/orissa-sadan-dwarka.jpg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}
+
+.img6 {
+    background-image: url(./../images/7137708141537892366135730255-4.jpg);
+    height: 182px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0rem !important;
+}

@@ -1,0 +1,77 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+        <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;">Bill Details</ion-title>
+</ion-toolbar> -->
+<ion-header>
+    <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+        <ion-buttons slot="start">
+            <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+        </ion-buttons>
+        <ion-title style="text-transform: capitalize;">Bill Details</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div class="containerr">
+        <ion-card>
+            <ion-card-header>
+                <ion-label>Check Out Details</ion-label>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-card
+                    style="margin-top:0px !important; margin-left: 0px !important; margin-right: 0px !important; border: 0.957234px solid #A0E6A4;"
+                    *ngFor="let data of billDetails?.guestDetails">
+
+                    <ion-card-content>
+                        <ion-row style="padding-left: 6px;">
+                            <ion-col size="6">
+                                <ion-label class="label-key">Booking ID </ion-label><br>
+                                <ion-label class="label-value">{{data.bookingId}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Register No</ion-label><br>
+                                <ion-label class="label-value">{{data.rowNo}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Guest Details</ion-label><br>
+                                <ion-label class="label-value">{{data.name}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Checkin Date </ion-label><br>
+                                <ion-label class="label-value">{{data.arrivalDate}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Checkout Date</ion-label><br>
+                                <ion-label class="label-value">{{data.departureDate}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Advance Amount </ion-label><br>
+                                <ion-label class="label-value">{{data.advanceAmount}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">No. of Adults</ion-label><br>
+                                <ion-label class="label-value">{{data.noOfAdults ? data.noOfAdults : '-'}}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">No. of Children</ion-label><br>
+                                <ion-label class="label-value">{{data.noOfChildren ? data.noOfChildren : '-' }}</ion-label>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label-key">Room No</ion-label><br>
+                                <ion-label class="label-value">{{data.noRooms}}</ion-label>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-content>
+                </ion-card>
+
+            </ion-card-content>
+            <div class="d-flex justify-content-end" style="margin-right: 10px;">
+                <ion-button class="close-btn" (click)="cancelCheckOut()"> Cancel Check Out</ion-button>
+                <!-- <ion-button class="close-btn" (click)="goBack()"> Back</ion-button> -->
+            </div>
+        </ion-card>
+
+
+    </div>
+</ion-content>

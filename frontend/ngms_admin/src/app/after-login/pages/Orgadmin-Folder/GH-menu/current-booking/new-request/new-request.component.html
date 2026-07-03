@@ -1,0 +1,738 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start" style="padding: 7px;" (click)="goBack()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>{{title}} Booking Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="bookingForm" (ngSubmit)="submitBookingDetails(bookingForm.value)">
+    <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+      <ion-select interface="action-sheet"  (ionChange)="changeCategory($event.target.value)" formControlName="catg"
+        placeholder="Select Category of occupant" [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+        <ng-container *ngFor="let item of categoryList">
+          <ion-select-option [value]="item.purposeId">{{item.purposeName}}</ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+    <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+      <ion-select interface="action-sheet" [attr.disabled]="isDisable"  placeholder="Select Booking Type"
+        (ionChange)="changerequestType($event)" [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}"
+        formControlName="reqType">
+        <ng-container *ngFor="let item of reqType">
+          <ion-select-option *ngIf="item.isAllowed" [value]="item.value">{{item.title}}
+          </ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+
+    <ng-container *ngIf="!isAllowConference">
+      <ion-card *ngIf="requestType=='R'|| requestType=='RC'|| requestType=='C'">
+        <ion-card-header>
+          <ion-label>
+            <ion-icon name="bed-outline"></ion-icon>Bed/Room Details
+          </ion-label>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" *ngIf="requestType!=='C'">
+                <ion-label class="lbl">Check One of the following :</ion-label>
+                <ion-radio-group formControlName="bookingType"
+                  (ionChange)="onChangeBookingType($any($event.target).value)" [attr.disabled]="isDisable">
+                  <ion-radio value="room" [disabled]="isDisable ? false : true"></ion-radio>
+                  <ion-label>Book Room</ion-label>
+                  <ion-radio value="dormitory"[disabled]="isDisable ? false : true"></ion-radio>
+                  <ion-label>Book Bed</ion-label>
+                </ion-radio-group>
+              </ion-col>
+              <ng-container *ngIf="requestType!=='C'">
+                <ion-col size="12" *ngIf="bookingForm.get('bookingType').value == 'room'">
+                  <ion-label class="lbl required">No of Rooms</ion-label>
+                  <ion-input type="number" placeholder="No of Room" formControlName="noOfRooms"></ion-input>
+                </ion-col>
+                <ion-col size="12" *ngIf="bookingForm.get('bookingType').value == 'dormitory'">
+                  <ion-label class="lbl required">No of Beds</ion-label>
+                  <ion-input type="number" placeholder="No of Beds" formControlName="noOfBedsDormitory"></ion-input>
+                </ion-col>
+              </ng-container>
+
+              <ion-col size="12">
+                <ion-label class="lbl">Booking For</ion-label>
+                <ion-select interface="action-sheet" formControlName="bookingFor" [attr.disabled]="true">
+                  <ion-select-option value="others" selected>Others</ion-select-option>
+                  <ion-select-option value="self">Self</ion-select-option>
+                </ion-select>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.bookingFor.touched || bookingForm.controls.bookingFor.dirty) && bookingForm.controls.bookingFor.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.bookingFor.errors?.required">*This field is
+                  mandatory</span>
+              </div>
+              <ion-col size="12">
+                <ion-label class="lbl required">Purpose of visit</ion-label>
+                <ion-select interface="action-sheet" formControlName="purp" (ionChange)="onChangePurposeVisit($event)">
+                  <ion-select-option value="">select</ion-select-option>
+                  <ng-container *ngFor="let item of visitPurpose">
+                    <ion-select-option [value]="item.id">{{item.name}}</ion-select-option>
+
+                  </ng-container>
+                </ion-select>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.purp.touched || bookingForm.controls.purp.dirty) && bookingForm.controls.purp.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.purp.errors?.required">*This field is
+                  mandatory</span>
+              </div>
+              <ion-col size="12">
+                <ion-label class="lbl required">Designation of occupant</ion-label>
+                <ion-select formControlName="desg">
+                  <ion-select-option value="">select</ion-select-option>
+                  <ion-select-option *ngFor="let list of DesignationList" [value]="list.id" >{{list.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.desg.touched || bookingForm.controls.desg.dirty) && bookingForm.controls.desg.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.desg.errors?.required">*This field is
+                  mandatory</span>
+              </div>
+              <ng-container *ngIf="bookingForm.get('reqType').value !== 'C'">
+                <ion-col size="12" *ngIf="enableNeedConveyance">
+                  <ion-label class="lbl required">During stay need conveyance</ion-label>
+                  <ion-radio-group formControlName="duringstay">
+                    <ion-radio [disabled]="bookingForm.get('catg').value == 'C1' && isDisable ? false : true"
+                      value='1'></ion-radio>
+                    <ion-label>Yes</ion-label>
+                    <ion-radio [disabled]="bookingForm.get('catg').value == 'C1' && isDisable ? false : true"
+                      value='0'></ion-radio>
+                    <ion-label>No</ion-label>
+                  </ion-radio-group>
+                </ion-col>
+              </ng-container>
+              <ion-col size="12" *ngIf="requestType!=='C'">
+                <ion-label class="lbl">Check-in Date</ion-label>
+                <ion-input type="text" formControlName="frmDt" readonly="true"></ion-input>
+              </ion-col>
+              <ion-col size="12" *ngIf="requestType!=='C'">
+                <ion-label class="lbl">Check-Out Date</ion-label>
+                <ion-input type="text" formControlName="toDt" readonly="true"></ion-input>
+              </ion-col>
+              <ion-col size="12" *ngIf="requestType!=='C'">
+                <ion-label class="lbl">No. of Days</ion-label>
+                <ion-input type="number" placeholder="No. of Days" formControlName="noOfDays" readonly></ion-input>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">No. of Adults</ion-label>
+                <ion-input type="number" placeholder="No. of Adult" formControlName="noOfAdults"
+                  (ionBlur)="getAdultRowCount()"></ion-input>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.noOfAdults.touched || bookingForm.controls.noOfAdults.dirty) && bookingForm.controls.noOfAdults.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.noOfAdults.errors?.required">*This field is
+                  mandatory</span>
+              </div>
+              <ion-col size="12">
+                <ion-label class="lbl">No. of Children(below 12 yr)</ion-label>
+                <ion-input type="number" placeholder="No. of Children" formControlName="noOfChildren"
+                  (ionBlur)="getAdultRowCount()"></ion-input>
+              </ion-col>
+              <!-- <ion-col size="12">
+              <ion-label class="lbl required">Mobile Number</ion-label>
+              <ion-input type="number" placeholder="+91 XXXXXXXXXX" formControlName="mob"></ion-input>
+            </ion-col> -->
+              <ion-col size="12">
+                <ion-label class="lbl">Email ID</ion-label>
+                <ion-input type="email" placeholder="youremail@gmail.com" formControlName="emailId"></ion-input>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.emailId.touched || bookingForm.controls.emailId.dirty) && bookingForm.controls.emailId.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.emailId.errors?.required">*This field is
+                  mandatory</span>
+                <div *ngIf="bookingForm.controls.emailId.errors?.invalidEmail">Please Enter a valid mail id.
+                </div>
+              </div>
+              <ng-container *ngIf="bookingForm.get('catg').value !== 'C4' && bookingForm.get('catg').value !== ''">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Category Document Type</ion-label>
+                  <ion-select interface="action-sheet" formControlName="catgType">
+                    <ion-select-option value="">select</ion-select-option>
+                    <ion-select-option value="Servicebook">Service Book</ion-select-option>
+                    <ion-select-option value="Office ID Card">Office Id Card</ion-select-option>
+                    <ion-select-option value="Govt. letter">Govt. Letter</ion-select-option>
+                    <ion-select-option value="Retirement order">Retirement Order</ion-select-option>
+                    <ion-select-option value="First page of Pension Book">First Page of Pension Book</ion-select-option>
+                    <ion-select-option value="First page of Pension Book">First Page of Service Book</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <div class="text-error text-danger"
+                  *ngIf="((bookingForm.controls.catgType.touched || bookingForm.controls.catgType.dirty) && bookingForm.controls.catgType.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="bookingForm.controls.catgType.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Upload Category Document </ion-label>
+                  <!-- <ion-input type="file" (change)="OnselectNewFile($event, 'catgDocName', 'catgDocFile')"></ion-input> -->
+                  <ion-row class="ion-align-items-center cs-input">
+                    <!-- <ion-col [size]="pathName != 'view' ? 8 : 12"> -->
+                    <ion-col size="8">
+                      <ion-input type="text" placeholder="No File Chosen" [value]="bookingForm.get('catgDocName').value"
+                        readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="4">
+                      <button class="file-upload-button" *ngIf="pathName != 'View'"> Choose File
+                        <input type="file" #fileInput
+                          (change)="OnselectNewFile($event, 'catgDocName', 'catgDocFile')" />
+                      </button>
+                      <button type="button" class="file-upload-button" *ngIf="pathName == 'View'"
+                        (click)="viewFile(bookingForm.get('catgDocFile').value,bookingForm.get('catgDocName').value)">
+                        View File
+                      </button>
+                    </ion-col>
+
+                  </ion-row>
+                </ion-col>
+                <div class="text-error text-danger"
+                  *ngIf="((bookingForm.controls.catgDocName.touched || bookingForm.controls.catgDocName.dirty) && bookingForm.controls.catgDocName.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="bookingForm.controls.catgDocName.errors?.required">*This
+                    field
+                    is
+                    mandatory</span>
+                </div>
+              </ng-container>
+              <ion-col size="12">
+                <ion-label class="lbl required">Address</ion-label>
+                <ion-textarea type="text" placeholder="Office/Residence Address" rows="3"
+                  formControlName="offAddr"></ion-textarea>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.offAddr.touched || bookingForm.controls.offAddr.dirty) && bookingForm.controls.offAddr.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.offAddr.errors?.required">*This field is
+                  mandatory</span>
+              </div>
+              <ion-col size="12" *ngIf="purposeVisit">
+                <ion-label class="lbl required">Upload {{purpType}} Document (jpg/png/pdf)</ion-label>
+                <!-- <ion-input type="file" (change)="OnselectNewFile($event, 'suppDocName', 'suppDocFile')"></ion-input> -->
+                <ion-row class="ion-align-items-center cs-input">
+                  <!-- <ion-col [size]="pathName != 'view' ? 8 : 12"> -->
+                  <ion-col size="8">
+                    <ion-input type="text" placeholder="No File Chosen" [value]="bookingForm.get('suppDocName').value"
+                      readonly></ion-input>
+                  </ion-col>
+                  <ion-col size="4">
+                    <button class="file-upload-button" *ngIf="pathName != 'View'"> Choose File
+                      <input type="file" #fileInput (change)="OnselectNewFile($event, 'suppDocName', 'suppDocFile')" />
+                    </button>
+                    <button type="button" class="file-upload-button" *ngIf="pathName == 'View'"
+                      (click)="viewFile(bookingForm.get('suppDocFile').value,bookingForm.get('suppDocName').value)">
+                      View File
+                    </button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <div class="text-error text-danger"
+                *ngIf="((bookingForm.controls.suppDocName.touched || bookingForm.controls.suppDocName.dirty) && bookingForm.controls.suppDocName.invalid) || isSubmitBtnClicked == true">
+                <span class="text-danger" *ngIf="bookingForm.controls.suppDocName.errors?.required">*This field
+                  is
+                  mandatory</span>
+              </div>
+              <ng-container *ngIf="bookingForm.get('bookingFor').value == 'others'">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Guest Mobile Number</ion-label>
+                  <ion-input type="text" maxlength="10" placeholder="Mobile No." formControlName="gMobile"></ion-input>
+                </ion-col>
+                <div class="text-error text-danger"
+                  *ngIf="((bookingForm.controls.gMobile.touched || bookingForm.controls.gMobile.dirty) && bookingForm.controls.gMobile.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="bookingForm.controls.gMobile.errors?.required">*This field is
+                    mandatory</span>
+                  <div *ngIf="bookingForm.controls.gMobile.errors?.invalidMobileNumber">Please Enter a Valid Mobile
+                    Number.</div>
+                </div>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Guest Document Type</ion-label>
+                  <ion-select interface="action-sheet" formControlName="gDocType">
+                    <ion-select-option value="">select</ion-select-option>
+                    <ion-select-option value="aadhaar">Aadhar Card</ion-select-option>
+                    <ion-select-option value="pan">Pan Card</ion-select-option>
+                    <ion-select-option value="dl">Driving License</ion-select-option>
+                    <ion-select-option value="voter">Voter ID</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <div class="text-error text-danger"
+                  *ngIf="((bookingForm.controls.gDocType.touched || bookingForm.controls.gDocType.dirty) && bookingForm.controls.gDocType.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="bookingForm.controls.gDocType.errors?.required">*This field is
+                    mandatory</span>
+                </div>
+                <ion-col size="12">
+                  <ion-label class="lbl required"> Upload Guest Document</ion-label>
+                  <!-- <ion-input type="file" (change)="OnselectNewFile($event, 'gDocName', 'gDocFile')"></ion-input> -->
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="8">
+                      <ion-input type="text" placeholder="No File Chosen" [value]="bookingForm.get('gDocName').value"
+                        readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="4">
+                      <button class="file-upload-button" *ngIf="pathName != 'View'"> Choose File
+                        <input type="file" #fileInput (change)="OnselectNewFile($event, 'gDocName', 'gDocFile')" />
+                      </button>
+                      <button type="button" class="file-upload-button" *ngIf="pathName == 'View'"
+                      (click)="viewFile(bookingForm.get('gDocFile').value,bookingForm.get('gDocName').value)">
+                      View File
+                    </button>
+                    </ion-col>
+                  </ion-row>
+                  <div class="text-error text-danger"
+                    *ngIf="((bookingForm.controls.gDocName.touched || bookingForm.controls.gDocName.dirty) && bookingForm.controls.gDocName.invalid) || isSubmitBtnClicked == true">
+                    <span class="text-danger" *ngIf="bookingForm.controls.gDocName.errors?.required">*This field
+                      is mandatory</span>
+                  </div>
+                </ion-col>
+              </ng-container>
+            </ion-row>
+          </ion-grid>
+
+          <!-- Arrival & Departure Details -->
+          <ng-container *ngIf="requestType =='C'|| requestType== 'RC'">
+
+            <!-- <ion-card-content> -->
+            <ion-grid>
+              <ion-row [ngStyle]="{'display': (pathName == 'view' && !showArr) ? 'none' : 'block' }">
+                <ion-col size="12" style="display: flex; padding-top: 7px;">
+                  <ion-checkbox style="margin-right:5px" [attr.disabled]="!isDisable" [checked]="showArr"
+                    value="arrTravel" (ionChange)="conveyanceCheck($event)" labelPlacement="end"></ion-checkbox> Need
+                  Conveyance for
+                  Arrival
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="showArr == true">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Mode of travel</ion-label>
+                  <ion-select interface="action-sheet" placeholder="Mode of travel" formControlName="travelModeFr"
+                    (ionChange)="onChangeModeOfArrTravel($event.target.value)">
+                    <ion-select-option value="">Select</ion-select-option>
+                    <ion-select-option value="t">Train</ion-select-option>
+                    <ion-select-option value="f">Flight</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Flight/Train Number</ion-label>
+                  <ion-input type="text" placeholder="Flight/Train Number" formControlName="flNoFr"></ion-input>
+                </ion-col>
+                <input type="date" formControlName="arrDt"
+                  (change)="changeToDDMMYYYY($any($event.target).value,'arrDt','bookingForm')" [min]="currentDate"
+                  #arrDt style="position:absolute;top:200%">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Arrival Date</ion-label>
+                  <!-- <ion-input type="date" formControlName="arrDt" (ionChange)="changeDateFormat($event)"
+                    [min]="currentDate"></ion-input> -->
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('arrDt')">
+                      <ion-input type="text" placeholder="Select Arrival Date" [value]="bookingForm.get('arrDt').value"
+                        readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button" (click)="openDatepicker('arrDt')"><ion-icon
+                          style="font-size: 21px !important;" name="calendar" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+                <input type="time" formControlName="arrTm" style="position:absolute;top:200%" #arrTm
+                  (change)="setTo($any($event.target).value,'arrTm','bookingForm')">
+                <ion-col size="12">
+                  <ion-label class="lbl">Arrival Time</ion-label>
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('arrTm')">
+                      <ion-input type="text" placeholder="Select Arrival Time" [value]="bookingForm.get('arrTm').value"
+                        readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button" (click)="openDatepicker('arrTm')"><ion-icon
+                          style="font-size: 21px !important;" name="time" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                  <!-- <ion-input type="time" placeholder="HH:MM AM/PM" formControlName="arrTm"></ion-input> -->
+                  <!-- (ionChange)="onTimeChange($event.target.value, 'arrTime')" -->
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Arrival Place</ion-label>
+                  <ion-select interface="action-sheet" formControlName="arrPla"
+                    [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+                    <ion-select-option value="">Select</ion-select-option>
+                    <ng-container *ngFor="let list of arrivalPlaceList">
+                      <ion-select-option [value]="list.name">{{list.name}}
+                      </ion-select-option>
+                    </ng-container>
+                  </ion-select>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <!-- </ion-card-content> -->
+
+            <!-- <ion-card-content  *ngIf="bookingForm.get('deptTravel').value == 1"> -->
+            <ion-grid>
+              <ion-row [ngStyle]="{'display': (pathName == 'view' && !showDeparture) ? 'none' : 'block' }">
+                <ion-col size="12" style="display: flex; padding-top: 7px;">
+                  <ion-checkbox style="margin-right: 5px;" [attr.disabled]="!isDisable" [checked]="showDeparture"
+                    value="deptTravel" (ionChange)="conveyanceCheck($event)" labelPlacement="end"></ion-checkbox>Need
+                  Conveyance for Departure
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="showDeparture">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Mode of travel</ion-label>
+                  <ion-select interface="action-sheet" placeholder="Mode of travel" formControlName="travelModeTo"
+                    (ionChange)="onChangeModeOfDepTravel($event.target.value)">
+                    <ion-select-option value="">Select</ion-select-option>
+                    <ion-select-option value="t">Train</ion-select-option>
+                    <ion-select-option value="f">Flight</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Flight/Train Number</ion-label>
+                  <ion-input type="text" placeholder="Flight/Train Number" formControlName="flNoTo"></ion-input>
+                </ion-col>
+                <input type="date" formControlName="depDt"
+                  (change)="changeToDDMMYYYY($any($event.target).value,'depDt','bookingForm')" [min]="currentDate"
+                  #depDt style="position:absolute;top:200%">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Departure Date</ion-label>
+                  <!-- <ion-input type="date" formControlName="depDt"></ion-input> -->
+                  <!-- <ion-input type="date" formControlName="depDt" (ionChange)="changeDateFormat($event)"
+                    [min]="currentDate"></ion-input> -->
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('depDt')">
+                      <ion-input type="text" placeholder="Select Departure Date"
+                        [value]="bookingForm.get('depDt').value" readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button" (click)="openDatepicker('depDt')"><ion-icon
+                          style="font-size: 21px !important;" name="calendar" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+
+                </ion-col>
+                <input type="time" formControlName="depTm" style="position:absolute;top:200%" #depTm
+                  (change)="setTo($any($event.target).value,'depTm','bookingForm')">
+                <ion-col size="12">
+                  <ion-label class="lbl">Departure Time</ion-label>
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('depTm')">
+                      <ion-input type="text" placeholder="Select Departure Time"
+                        [value]="bookingForm.get('depTm').value" readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button" (click)="openDatepicker('depTm')"><ion-icon
+                          style="font-size: 21px !important;" name="time" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                  <!-- <ion-input type="time" formControlName="depTm"></ion-input> -->
+                  <!-- (ionChange)="onTimeChange($event, 'depTime')" -->
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Departure Place</ion-label>
+                  <ion-select interface="action-sheet" formControlName="depPla"
+                    [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+                    <ion-select-option value="">Select</ion-select-option>
+                    <ng-container *ngFor="let list of depPlaceList">
+                      <ion-select-option [value]="list.name">{{list.name}}
+                      </ion-select-option>
+                    </ng-container>
+                  </ion-select>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <!-- </ion-card-content> -->
+          </ng-container>
+        </ion-card-content>
+      </ion-card>
+
+      <div class="cardHeight" *ngIf="getGuestDetails.length != 0">
+        <ion-card>
+          <ion-label class="hehadinglbl">Guest Details</ion-label>
+          <div formArrayName="list">
+            <ion-grid *ngFor="let data of getGuestDetails.controls;let i = index " [formGroupName]="i"
+              style="border: 1px solid green;margin: 9px;border-radius: 2px;">
+              <h6 class="guestLbl">Guest - {{i+1}} Details</h6>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="lbl">Name:</ion-label>
+                  <ion-input (keyup)="transformText($event, i)" type="text" placeholder="Name"
+                    formControlName="guestName" [attr.disabled]="!isDisable"></ion-input>
+                  <div class="text-error text-danger"
+                    *ngIf="((getGuestDetails.controls[i].get('guestName').touched || getGuestDetails.controls[i].get('guestName').dirty) && getGuestDetails.controls[i].get('guestName').invalid) || isSubmitBtnClicked == true">
+                    <span class="text-danger"
+                      *ngIf="getGuestDetails.controls[i].get('guestName').errors?.required">*Required</span>
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="lbl">Age in years:</ion-label>
+                  <ion-input type="number" placeholder="Age" formControlName="guestAge"
+                    [attr.disabled]="!isDisable"></ion-input>
+                  <div class="text-error text-danger"
+                    *ngIf="((getGuestDetails.controls[i].get('guestAge').touched || getGuestDetails.controls[i].get('guestAge').dirty) && getGuestDetails.controls[i].get('guestAge').invalid) || isSubmitBtnClicked == true">
+                    <span class="text-danger"
+                      *ngIf="getGuestDetails.controls[i].get('guestAge').errors?.required">*Required</span>
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="lbl">Gender:</ion-label>
+                  <ion-select interface="action-sheet" formControlName="guestGender" class="ion-select"
+                    [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" [attr.disabled]="!isDisable">
+                    <ion-select-option value="">select</ion-select-option>
+                    <ion-select-option value="M">Male</ion-select-option>
+                    <ion-select-option value="F">Female</ion-select-option>
+                    <ion-select-option value="O">Others</ion-select-option>
+                  </ion-select>
+                  <div class="text-error text-danger"
+                    *ngIf="((getGuestDetails.controls[i].get('guestGender').touched || getGuestDetails.controls[i].get('guestGender').dirty) && getGuestDetails.controls[i].get('guestGender').invalid) || isSubmitBtnClicked == true">
+                    <span class="text-danger"
+                      *ngIf="getGuestDetails.controls[i].get('guestGender').errors?.required">*Required</span>
+                  </div>
+                </ion-col>
+                <ng-container *ngIf="bookingForm.get('catg').value != 'C4'">
+                  <ion-col size="12">
+                    <ion-label class="lbl">Designation:</ion-label>
+                    <ion-input type="text" placeholder="Designation" [attr.disabled]="!isDisable"
+                      formControlName="guestDesignation"></ion-input>
+                    <div class="text-error text-danger"
+                      *ngIf="((getGuestDetails.controls[i].get('guestDesignation').touched || getGuestDetails.controls[i].get('guestDesignation').dirty) && getGuestDetails.controls[i].get('guestDesignation').invalid) || isSubmitBtnClicked == true">
+                      <span class="text-danger"
+                        *ngIf="getGuestDetails.controls[i].get('guestDesignation').errors?.required">*Required</span>
+                    </div>
+                  </ion-col>
+                  <ion-col size="12">
+                    <ion-label class="lbl">Department:</ion-label>
+                    <ion-input type="text" placeholder="Department" [attr.disabled]="!isDisable"
+                      formControlName="guestDepartment"></ion-input>
+                    <div class="text-error text-danger"
+                      *ngIf="((getGuestDetails.controls[i].get('guestDepartment').touched || getGuestDetails.controls[i].get('guestDepartment').dirty) && getGuestDetails.controls[i].get('guestDepartment').invalid) || isSubmitBtnClicked == true">
+                      <span class="text-danger"
+                        *ngIf="getGuestDetails.controls[i].get('guestDepartment').errors?.required">*Required</span>
+                    </div>
+                  </ion-col>
+                </ng-container>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card>
+      </div>
+    </ng-container>
+    <ion-row class="ion-justify-content-center" *ngIf="pathName !== 'View' && isAllowConference == false">
+      <ion-button type="submit" class="submitBtn mb-5" color="green">
+        {{buttonName}}</ion-button>
+    </ion-row>
+  </form>
+  <form [formGroup]="createConferenceForm" (ngSubmit)="submitConferenceData(createConferenceForm.value)">
+    <ng-container *ngIf="isAllowConference">
+      <ion-card>
+        <ion-card-header>
+          <ion-label>
+            Conference Hall Booking
+          </ion-label>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <!-- <ion-input type="text" formControlName="categoryType" [value]="createBookingForm.get('catg').value" hidden></ion-input>
+            <ion-input type="text" formControlName="blockId" [value]="bhawanId" hidden></ion-input> -->
+              <ion-col size="12">
+                <ion-label class="lbl required">Name</ion-label>
+                <ion-input type="text" (keyup)="transformTextForConf($event)" placeholder="Enter Occupant Name"
+                  formControlName="name"></ion-input>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.name.touched || createConferenceForm.controls.name.dirty) && createConferenceForm.controls.name.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.name.errors?.required">*This field is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Address</ion-label>
+                <ion-textarea type="text" placeholder="Address" rows="3" formControlName="address"></ion-textarea>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.address.touched || createConferenceForm.controls.address.dirty) && createConferenceForm.controls.address.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.address.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Mobile No.</ion-label>
+                <ion-input type="text" maxlength="10" formControlName="mobileNo" placeholder="+91 XXXXXXXXXXX"
+                  class="my-input-class"></ion-input>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.mobileNo.touched || createConferenceForm.controls.mobileNo.dirty) && createConferenceForm.controls.mobileNo.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.mobileNo.errors?.required">*This field
+                    is mandatory</span>
+                  <span class="text-danger"
+                    *ngIf="createConferenceForm.controls.mobileNo.errors?.invalidMobileNumber">*Please Enter a valid
+                    number</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Select Hall Type</ion-label>
+                <ion-select interface="action-sheet" placeholder="Select Hall Type" formControlName="confCatId"
+                  (ionChange)="getConfrenceTimePeriodDetailsForMobile($event)">
+                  <ion-select-option *ngFor="let d of confType"
+                    [value]="d.confCatId">{{d.confCatName}}</ion-select-option>
+                </ion-select>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.confCatId.touched || createConferenceForm.controls.confCatId.dirty) && createConferenceForm.controls.confCatId.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.confCatId.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Select Time Period</ion-label>
+                <ion-select interface="action-sheet" placeholder="Select Time Period" formControlName="confUseId"
+                  (ionChange)="getConfrenceAmountForMobile($event)">
+                  <ng-container *ngFor="let tp of timePeriodData">
+                    <ion-select-option [value]="tp.confUseId">{{tp.confUseName}}
+                    </ion-select-option>
+                  </ng-container>
+                </ion-select>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.confUseId.touched || createConferenceForm.controls.confUseId.dirty) && createConferenceForm.controls.confUseId.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.confUseId.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Amount</ion-label>
+                <ion-input type="number" formControlName="amount" placeholder="Amount" readonly="true"></ion-input>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.amount.touched || createConferenceForm.controls.amount.dirty) && createConferenceForm.controls.amount.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.amount.errors?.required">*This field is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="lbl required">Capacity</ion-label>
+                <ion-input type="number" formControlName="capacity" placeholder="Capacity" readonly="true"></ion-input>
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.capacity.touched || createConferenceForm.controls.capacity.dirty) && createConferenceForm.controls.capacity.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.capacity.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+                <!-- (ionChange)="onTimeChange($event.target.value, 'arrTime')" -->
+              </ion-col>
+              <input type="date" [min]="nextDayDt" formControlName="fromDate"
+                (change)="changeToDDMMYYYY($any($event.target).value,'fromDate','createConferenceForm');changeDateFormatForConference($event)"
+                #dateInput style="position:absolute;top:200%">
+              <ion-col size="12">
+                <ion-label class="lbl required">From Date</ion-label>
+                <ion-row class="ion-align-items-center cs-input">
+                  <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('dateInput')">
+                    <ion-input type="text" placeholder="DD-MM-YYYY HH:MM"
+                      value="{{ createConferenceForm.get('fromDate').value }}" readonly></ion-input>
+                  </ion-col>
+                  <ion-col size="2" style="padding: 0px !important;">
+                    <button type="button" class="datetime-button" (click)="openDatepicker('dateInput')"><ion-icon
+                        style="font-size: 21px !important;" name="calendar" slot="end"></ion-icon>
+                    </button>
+                  </ion-col>
+                </ion-row>
+                <!-- <ion-input type="date" formControlName="fromDate" (ionChange)="changeDateFormatForConference($event)"
+                  [min]="nextDayDt"></ion-input> -->
+                <div class="text-error text-danger"
+                  *ngIf="((createConferenceForm.controls.fromDate.touched || createConferenceForm.controls.fromDate.dirty) && createConferenceForm.controls.fromDate.invalid) || isSubmitBtnClicked == true">
+                  <span class="text-danger" *ngIf="createConferenceForm.controls.fromDate.errors?.required">*This field
+                    is
+                    mandatory</span>
+                </div>
+              </ion-col>
+              <ng-container *ngIf="showStartEndTime">
+                <input type="time" formControlName="strtTime" style="position:absolute;top:200%" #startTime
+                  (change)="setTo($any($event.target).value,'strtTime','createConferenceForm');">
+                <ion-col size="12">
+                  <ion-label class="lbl required">Start Time</ion-label>
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('startTime')">
+                      <ion-input type="text" placeholder="Select Arrival Time"
+                        [value]="createConferenceForm.get('strtTime').value" readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button" (click)="openDatepicker('startTime')"><ion-icon
+                          style="font-size: 21px !important;" name="time" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                  <!-- <ion-input type="time" formControlName="strtTime" placeholder="HH:MM AM/PM"
+                    (ionChange)="addTwoHour2EndTime($event)"></ion-input> -->
+
+                  <!-- (ionChange)="onTimeChange($event.target.value, 'arrTime')" -->
+                </ion-col>
+                <input type="time" formControlName="endTime" style="position:absolute;top:200%" #endTime readonly
+                  (change)="setTo($any($event.target).value,'endTime','createConferenceForm');">
+                <ion-col size="12">
+                  <ion-label class="lbl required">End Time</ion-label>
+                  <ion-row class="ion-align-items-center cs-input">
+                    <ion-col size="10" style="padding:0px !important">
+                      <ion-input type="text" placeholder="Select Arrival Time"
+                        [value]="createConferenceForm.get('endTime').value" readonly></ion-input>
+                    </ion-col>
+                    <ion-col size="2" style="padding: 0px !important;">
+                      <button type="button" class="datetime-button"><ion-icon style="font-size: 21px !important;"
+                          name="time" slot="end"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                  <!-- <ion-input type="time" formControlName="endTime" placeholder="HH:MM AM/PM"
+                    readonly="true"></ion-input> -->
+
+                  <!-- (ionChange)="onTimeChange($event.target.value, 'arrTime')" -->
+                </ion-col>
+              </ng-container>
+              <!-- <ion-col size="12">
+                <ion-label class="lbl required"> Advance Amount</ion-label>
+                <ion-input type="number" formControlName="advanceAmount" placeholder="Amount"></ion-input>
+              </ion-col> -->
+              <ion-col size="12">
+                <ion-label class="lbl required">Check Availability</ion-label>
+                <ng-container *ngIf="isAvail == -1">
+                  <ion-checkbox formControlName="chkAvail" [attr.disabled]="isDisable1"
+                    (ionChange)="checkAvail($event)"></ion-checkbox><span
+                    style="bottom: 4px;padding-left: 5px;position: absolute;"> Check Conference Hall
+                    Available</span>
+                </ng-container>
+                <ng-container *ngIf="isAvail == 0">
+                  <ion-icon name="checkmark-circle-outline" class="hall-avail"></ion-icon><span
+                    style="bottom: 4px;padding-left: 5px;position: absolute;color:darkgreen;"> Conference Hall Available
+                    this
+                    time</span>
+                </ng-container>
+                <ng-container *ngIf="isAvail !== -1 && isAvail !== 0">
+                  <ion-icon class="hall-not-avail" name="close-circle-outline"></ion-icon><span
+                    style="bottom: 4px;padding-left: 5px;position: absolute;color: red;"> Conference Hall Not
+                    Available this
+                    timee</span>
+                </ng-container>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+      <ion-row class="ion-align-items-center">
+        <ion-col style="text-align: center;">
+          <ion-checkbox (ionChange)="onChangeTnC($event)"></ion-checkbox> I agree to the <span style="color: #0d6efd;"
+            (click)="openTermsAndConditions()">terms and conditions.</span>
+
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
+    <ion-row class="ion-justify-content-center mb-2" *ngIf="pathName !== 'view' && isAllowConference == true">
+      <ion-button type="submit" *ngIf="isAvail == 0" class="submitBtn" color="green">
+        Submit </ion-button>
+    </ion-row>
+  </form>
+</ion-content>

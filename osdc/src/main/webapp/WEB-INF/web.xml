@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	metadata-complete="true" version="3.0">
+	<display-name>ngms</display-name>
+	<welcome-file-list>
+		<welcome-file>home.html</welcome-file>
+	</welcome-file-list>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/application-config.xml
+		/WEB-INF/config/spring-security.xml</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>ngms</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/dispatcher-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ngms</servlet-name>
+		<url-pattern>*.do</url-pattern>
+		<url-pattern>*.html</url-pattern>
+		<url-pattern>/ws/*</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>restricted methods</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>DELETE</http-method>
+			<!-- <http-method>TRACE</http-method>
+			<http-method>OPTIONS</http-method> -->
+			<http-method>PUT</http-method>
+			<http-method>PATCH</http-method>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
+	<session-config>
+		<session-timeout>30</session-timeout>
+		<cookie-config>
+			<!-- <path>ngms</path> -->
+			<http-only>true</http-only>
+			<!-- <secure>true</secure> -->
+		</cookie-config>
+		<tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+	<listener>
+		<listener-class>
+			org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter>
+		<filter-name>httpHeaderSecurity</filter-name>
+		<filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    <filter>
+        <filter-name>XSSFilter</filter-name>
+        <filter-class>com.stl.ngms.common.XSSFilter</filter-class>
+    </filter>
+    <!-- <filter>
+        <filter-name>domainFilter</filter-name>
+        <filter-class>com.stl.ngms.config.DomainFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>domainFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>  -->
+    <filter-mapping>
+        <filter-name>XSSFilter</filter-name>
+        <url-pattern>/*</url-pattern> <!-- Adjust URL pattern as needed -->
+    </filter-mapping>
+	
+	<error-page>
+		<error-code>400</error-code>
+		<location>/400.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/403.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/405.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.jsp</location>
+	</error-page>
+	<error-page>
+		<location>/errors.html</location>
+	</error-page>
+</web-app>

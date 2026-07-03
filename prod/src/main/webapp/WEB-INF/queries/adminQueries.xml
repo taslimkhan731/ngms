@@ -1,0 +1,3007 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- Query Are Witten For****************************** Setting/Createuser 
+		Module******************************************* -->
+	<entry key="getgroupUserListSQL">
+	<![CDATA[
+	select user_id, first_name, last_name, email_id, contact_no, user_type, first_login, is_admin, a.is_active,
+	created_by, created_date, menu_visible,upload_doc from adminr.user a  join adminr.group b on a.user_type=b.group_name 
+	where (a.user_id,group_id) not in (select user_id,group_id from adminr.user_group)	
+	]]>
+	</entry>
+
+	<entry key="getUserListSQL">
+	<![CDATA[
+	select user_id, first_name, last_name, email_id, contact_no, user_type, first_login, is_admin, is_active,
+	created_by, created_date, menu_visible,upload_doc from adminr.user where is_otp_login = false
+	]]>
+	</entry>
+	<entry key="saveUserDetailsSQL">
+	<![CDATA[
+	insert into adminr.user(user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, is_active, created_by, created_date, menu_visible, is_otp_login,doc_type, doc_path,upload_doc) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+	]]>
+	</entry>
+	<entry key="saveorisaoneDetailsSQL">
+	<![CDATA[
+	INSERT INTO adminr.orisaone_data("SERVICEID", "REQUESTID", "SUCCESSURL", "CANCELURL") VALUES (?, ?, ?, ?);
+	]]>
+	</entry>
+	<entry key="saveauditlogin">
+	<![CDATA[
+	INSERT INTO adminr.m_audit_login(user_id, ip_add, action, status) VALUES (?, ?, ?, ? );
+
+	]]>
+	</entry>
+	<entry key="saveGuestDetailsSQL">
+	<![CDATA[
+	insert into adminr.user(user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, is_active, created_by, created_date, menu_visible, is_otp_login, doc_type, doc_path,upload_doc) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)
+	]]>
+	</entry>
+	<entry key="updateUserDetailSQL">
+	<![CDATA[
+	update adminr.user set doc_type=?, doc_path=?,upload_doc=? where user_id=? and user_type=?
+	]]>
+	</entry>
+	<entry key="updateForActivateUser">
+	<![CDATA[
+	update adminr.user set password=?,is_active= ?,upload_doc=? where user_id=? and user_type=?
+	]]>
+	</entry>
+	<entry key="updateAllUserDetailsSQL">
+	<![CDATA[
+	update adminr.user set contact_no=?, 
+       password=?,first_login=?,doc_type=?, doc_path=?, upload_doc=?  where user_id=? and user_type=?
+	]]>
+	</entry>
+	<entry key="updateGuestDetailsSQL">
+	<![CDATA[
+	update adminr.user set first_name=?,email_id=?, contact_no=?,doc_type=?, doc_path=?,created_by=?, created_date=now(), is_otp_login=?,password=? where user_id=? and user_type=?
+	]]>
+	</entry>
+	<entry key="updateUserDetailsOtpSQL">
+	<![CDATA[
+	update adminr.user set password=?,doc_type=?, doc_path=?  where user_id=?
+	]]>
+	</entry>
+	<entry key="deleteUserSQL">
+	<![CDATA[
+	update adminr.user set is_active=? WHERE user_id=? and user_type=?;
+	]]>
+	</entry>
+	<entry key="saveUserGroupDetailsSQL">
+	<![CDATA[
+	insert into adminr.user_group(group_id, user_id) values(?, ?)
+	]]>
+	</entry>
+	<entry key="getFirstNameLastNameSQL">
+	<![CDATA[
+		SELECT a.*,b.group_id,d.* FROM adminr.user a join adminr.group b on a.user_type=b.group_name
+		join adminr.group_role c on c.group_id=b.group_id
+		join adminr.role d on d.role_id=c.role_id
+		where a.user_id =? and d.role_id=?
+	]]>
+	</entry>
+	<!-- Added by Lusi for security authentication on Dt 26-Oct-2017 -->
+	<entry key="getUserByUserId">
+	<![CDATA[
+	 select * from  adminr.user where user_id = ? 
+	]]>
+	</entry>
+	<entry key="getUserByUserIdwithUserType">
+	<![CDATA[
+	 select * from  adminr.user where user_id = ? and user_type=? and is_active=true
+	]]>
+	</entry>
+	<entry key="getUserByProfile">
+	<![CDATA[
+		select a.user_id,a.first_name,a.email_id,a.contact_no,a.doc_type,a.doc_path,b.department,b.office_address,b.residence_address,b.gender,b.dob from  adminr.user a join adminr.mater_user_details b on a.user_id=b.user_id and a.user_type = b.user_type where a.user_id = ? and a.user_type=?
+	]]>
+	</entry>
+
+	<entry key="getPasswordByuserIdSQL">
+	<![CDATA[
+	 select password from  adminr.user where user_id = ? and user_type=?
+	]]>
+	</entry>
+
+	<entry key="changePasswordSQL">
+	<![CDATA[
+	 update adminr.user set password = ? where user_id = ? and user_type=?
+	]]>
+	</entry>
+
+<entry key="getUserIdLocationIdSQL">
+<![CDATA[
+         SELECT b.group_id,b.group_name FROM adminr.user a join adminr.group b on a.user_type=b.group_name
+		where a.user_id =? and b.group_name=?
+		]]>
+	</entry>
+	<!-- <entry key="getUserIdLocationIdSQL">
+	<![CDATA[
+		 SELECT b.group_id, c.group_name FROM adminr.user a, adminr.user_group b, adminr.group c 
+		where 
+		a.user_id = ? and a.user_type=?
+		and a.user_id = b.user_id
+		and b.group_id = c.group_id limit 1;
+	]]>
+	</entry> -->
+
+	<!-- <entry key="getFirstNameLastNameSQL"> <![CDATA[ SELECT first_name, 
+		last_name FROM adminr.user where user_id = ? ]]> </entry> -->
+
+
+	<!-- End of Query For****************************** Setting/Createuser Module******************************************* -->
+
+	<entry key="getGroupListSQL">
+	<![CDATA[
+		select g.group_id,g.group_name,g.description,g.is_active, count(ug.group_id) as no_of_users from adminr.group g left join adminr.user_group ug on g.group_id = ug.group_id where is_active=true group by g.group_id    
+	]]>
+	</entry>
+
+	<entry key="getGroupListByIdSQL">
+	<![CDATA[
+		select g.group_id,g.group_name,g.description,g.is_active, count(ug.group_id) as no_of_users from adminr.group g left join adminr.user_group ug on g.group_id = ug.group_id where g.group_id=? and is_active=true group by g.group_id    
+	]]>
+	</entry>
+
+	<entry key="saveGroupSQL">
+	<![CDATA[
+	insert into adminr.group(group_name, description, is_active) values(?, ?, ?)
+	]]>
+	</entry>
+	<entry key="updateGroupSQL">
+	<![CDATA[
+	update adminr.group set group_name=?, description=? where group_id=?
+	]]>
+	</entry>
+	<entry key="deleteGroupSQL">
+	<![CDATA[
+		update adminr.group set is_active = ? where group_id = ?;
+	]]>
+	</entry>
+	<entry key="getMappedUserListSQL">
+	<![CDATA[
+	select user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, a.is_active, created_by, 
+    to_char(created_date,'dd-mm-yyyy') created_date, menu_visible from adminr.user a join adminr.group b on a.user_type=b.group_name
+	where a.is_active=true and 
+	(user_id,group_id) in(select user_id,group_id from adminr.user_group where group_id=?)
+	]]>
+	</entry>
+	<entry key="mapUsersToGroupSQL">
+	<![CDATA[
+	insert into adminr.user_group(group_id, user_id) values(?, ?)
+	]]>
+	</entry>
+	<entry key="deleteMappedUserSQL">
+	<![CDATA[
+	DELETE from adminr.user_group WHERE  user_id=?
+    AND group_id IN (SELECT group_id FROM   adminr.group WHERE  group_name=?);
+	]]>
+	</entry>
+
+	<entry key="getResourceListSQL">
+	<![CDATA[
+	select resource_id, resource_name, resource_type, description, is_active from adminr.resource where is_active=true
+	]]>
+	</entry>
+	<entry key="saveResourceSQL">
+	<![CDATA[
+	insert into adminr.resource(resource_id,resource_name, resource_type, description, is_active) values((select max(COALESCE(resource_id,0))+1 from adminr.resource),?, ?, ?, ?) 
+	]]>
+	</entry>
+	<entry key="updateResourceSQL">
+	<![CDATA[
+	update adminr.resource set  resource_name=?, resource_type=?, description=? where resource_id=?
+	]]>
+	</entry>
+	<entry key="deleteResourceSQL">
+	<![CDATA[
+	update adminr.resource set is_active=? WHERE resource_id=?;
+	]]>
+	</entry>
+	<entry key="getMappedResourcesSQL">
+	<![CDATA[
+	select resource_id, resource_name, resource_type, description, is_active from adminr.resource where is_active=true and resource_id in(select resource_id from adminr.role_resource where role_id=?)	    
+	]]>
+	</entry>
+	<entry key="getUnselectedResourceList">
+	<![CDATA[
+	select resource_id, resource_name, resource_type, description, is_active from adminr.resource where is_active=true and resource_id not in(select resource_id from adminr.role_resource where role_id=?)	
+	]]>
+	</entry>
+	<entry key="deleteMappedResourceSQL">
+	<![CDATA[
+	delete from adminr.role_resource where role_id=? and resource_id=?	    
+	]]>
+	</entry>
+	<entry key="mapResourcesToRoleSQL">
+	<![CDATA[
+	insert into adminr.role_resource(role_id, resource_id) values(?, ?)	    
+	]]>
+	</entry>
+
+	<entry key="getRoleListSQL">
+	<![CDATA[
+	select role_id, role_name, description, is_active from adminr.role where is_active=true order by role_id asc
+	]]>
+	</entry>
+	<entry key="saveRoleSQL">
+	<![CDATA[
+	insert into adminr.role(role_name, description, is_active) values(?, ?, ?)
+	]]>
+	</entry>
+	<entry key="updateRoleSQL">
+	<![CDATA[
+	update adminr.role set role_name=?, description=? where role_id=?
+	]]>
+	</entry>
+	<entry key="deleteRoleSQL">
+	<![CDATA[
+	update adminr.role set is_active=? WHERE role_id=?;
+	]]>
+	</entry>
+
+	<entry key="getMappedRolesToGroupSQL">
+	<![CDATA[
+	select role_id, role_name, description, is_active from adminr.role where is_active=true and role_id in(select role_id from adminr.group_role where group_id=?)	    
+	]]>
+	</entry>
+
+	<entry key="deleteMappedRoleSQL">
+	<![CDATA[
+	delete from adminr.group_role where group_id=? and role_id=?	    
+	]]>
+	</entry>
+	<entry key="mapRoleToGroupSQL">
+	<![CDATA[
+	insert into adminr.group_role(group_id, role_id) values(?, ?)	    
+	]]>
+	</entry>
+
+	<entry key="getMappedParametersToGroupSQL">
+	<![CDATA[
+	select user_id,first_name,email_id,contact_no,group_id, user_type
+	from adminr.user a join adminr.group b on a.user_type=b.group_name
+	where group_id NOT IN(1,2) and user_id  in(select user_id from adminr.user_group where group_id NOT IN(1,2))
+	]]>
+	</entry>
+
+	<entry key="getUserInfoSql">
+	<![CDATA[
+	 select * from  adminr.user where is_active = true and user_id = ? and password = ?
+	]]>
+	</entry>
+
+	<entry key="getGroupIdListByUserIdSql">
+	<![CDATA[
+		select group_id from adminr.group where group_id=(select group_id from adminr.user_group where user_id = ?) and is_active = true
+	]]>
+	</entry>
+
+	<entry key="getListResourceNameSql">
+	<![CDATA[
+		select resource_name from adminr.resource where resource_id in (select resource_id from adminr.role_resource where role_id in(select distinct role_id from adminr.group_role where group_id in ?) and is_active =true) and is_active = true
+	]]>
+	</entry>
+
+	<entry key="getMappedRolesToUserSQL">
+	<![CDATA[
+	select gr.role_id from adminr.group_role gr where group_id = (select g.group_id from adminr.group g,adminr.user_group ug where ug.user_id = ? and g.group_name=? and ug.group_id = g.group_id and g.is_active = true)	    
+	]]>
+	</entry>
+	<entry key="getUniqueResourcesForRolesSQL">
+	<![CDATA[
+	SELECT rs.resource_id, rs.resource_name, rs.resource_type, rs.description, rs.is_active 
+	FROM adminr.role_resource rlrs,adminr.resource rs where rlrs.resource_id = rs.resource_id and rs.is_active = true and rlrs.role_id in (?)	order by rs.resource_id asc    
+	]]>
+	</entry>
+	<entry key="getDataControlSQL">
+	<![CDATA[
+		select param_name,param_val from adminr.group_param where group_id = (select group_id from adminr.user_group where user_id = ?) order by param_name
+	]]>
+	</entry>
+
+	<entry key="getUserTypeQuery">
+	<![CDATA[
+		select user_type from adminr.user where user_id = ?	]]>
+	</entry>
+
+
+	<entry key="getOrgNameSQL">
+	<![CDATA[
+	select user_type from adminr."user" where user_id = ?
+	]]>
+	</entry>
+
+	<entry key="getAllCity">
+	<![CDATA[
+	     select gh_id,gh_name from gh_details order by gh_id asc
+	]]>
+	</entry>
+
+	<entry key="getAllBlockDetails">
+	<![CDATA[
+	     select block_id,block_name from room_block
+	]]>
+	</entry>
+
+	<entry key="mappingUseridToLocation">
+	<![CDATA[
+	   insert into adminr.user_location(id,user_id,user_type,location_id,status,created_by,created_on) values(?, ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+
+	<entry key="getAllGHByCity">
+	<![CDATA[
+	     select block_id,block_name from room_block where gh_id = ?
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUser">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id = ? and a.user_type = ? and a.status=true
+	]]>
+	</entry>
+	<entry key="getAllMappedCityLocByUser">
+	<![CDATA[
+	     select distinct on (c.gh_id)c.gh_id,c.gh_name,b.block_name,b.block_id from adminr.user_location a
+		join public.room_block b on a.location_id = b.block_id
+		join public.gh_details c on c.gh_id = b.gh_id
+		join adminr.group d on a.user_type = d.group_name
+		join adminr.group_role e on e.group_id = d.group_id
+		join adminr.role f on f.role_id = e.role_id
+		where a.user_id =? and a.status=true and f.role_id =?
+	]]>
+	</entry>
+	<entry key="getAllMappedCityLocByUser1">
+	<![CDATA[
+	     select c.gh_id,c.gh_name,b.block_name,b.block_id from adminr.user_location a
+		join public.room_block b on a.location_id = b.block_id
+		join public.gh_details c on c.gh_id = b.gh_id
+		join adminr.group d on a.user_type = d.group_name
+		join adminr.group_role e on e.group_id = d.group_id
+		join adminr.role f on f.role_id = e.role_id
+		where a.user_id =? and a.status=true and f.role_id =?
+	]]>
+	</entry>
+	<entry key="getAllMappedGHByUserRoleCity">
+		<![CDATA[
+	    select c.gh_id,c.gh_name,b.block_name,b.block_id from adminr.user_location a
+		join public.room_block b on a.location_id = b.block_id
+		join public.gh_details c on c.gh_id = b.gh_id
+		join adminr.group d on a.user_type = d.group_name
+		join adminr.group_role e on e.group_id = d.group_id
+		join adminr.role f on f.role_id = e.role_id
+		where a.user_id =? and a.status=true and f.role_id =? and c.gh_id = ?
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUserAndLoc">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id = ? and a.location_id=? and user_type = ? and a.status=true
+	]]>
+	</entry>
+	<entry key="deleteLoc">
+	<![CDATA[
+	     update adminr.user_location set status = false where id = ?
+	]]>
+	</entry>
+	<entry key="getAllState">
+	<![CDATA[
+	     select state_code,state_name from statelist order by state_name asc
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUserFilter">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id=? and a.location_id = ? and b.gh_id=? and a.status=true
+	]]>
+	</entry>
+	<entry key="saveMasterGuestDetailsSQL">
+		<![CDATA[
+			INSERT INTO adminr.mater_user_details(user_id, department, residence_address, gender, dob,user_type) VALUES (?, ?, ?, ?, ?,?)
+		]]>
+	</entry>
+	<entry key="updateMasterGuestDetailsSQL">
+		<![CDATA[
+			update adminr.mater_user_details set residence_address = ?, gender = ?,dob=? where user_id = ? and user_type=?
+		]]>
+	</entry>
+
+	<!-- *************************** -->
+	<entry key="getallApplicantDetailsSQL">
+		<![CDATA[
+        select * from (
+                select row_number() over (partition by req_date::date,a.req_id order by b.guest_id),b.guest_id,
+                a.req_id,b.name,b.gender,a.from_date,a.to_date,a.req_date
+                 FROM gad_request a JOIN guest_details b ON a.req_id = b.req_id
+                where a.status='REQ'and (a.mode_of_req='GAD' or a.mode_of_req='PUB') and  a.req_id NOT IN (select req_id from mod_req_room) and a.from_date > current_date - 5 ORDER BY req_date DESC
+               ) f1 where f1.row_number = 1
+		]]>
+	</entry>
+	<entry key="getallApplicantDetailsbyCityandgHouseSQL">
+        <![CDATA[
+      select * from (
+                select row_number() over (partition by req_date::date,a.req_id order by b.guest_id),b.guest_id,
+                a.req_id,b.name,b.gender,a.from_date,a.to_date,a.req_date
+                 FROM gad_request a JOIN guest_details b ON a.req_id = b.req_id
+                  where a.status='REQ'and (a.mode_of_req='GAD' or a.mode_of_req='PUB')and  
+                  a.req_id NOT IN (select req_id from mod_req_room) and a.from_date > current_date - 5
+                   and a.gh_id=? and block_id=? ORDER BY req_date DESC
+               ) f1 where f1.row_number = 1
+        ]]>
+	</entry>
+	<entry key="getallmoderationDetailsSQL">
+		<![CDATA[
+         select DISTINCT ON (a.req_id)  c.req_id,c.from_date,c.to_date,c.mode_of_req ,a.guest_id,a.name,a.age,a.gender,a.designation,a.department,c.address, b.status,c.req_date from mod_req as b join guest_details 
+         as a on a.req_id=b.req_id join gad_request as c on c.req_id=b.req_id where b.status='MOD' and (c.mode_of_req='GAD' or c.mode_of_req='PUB') and date(c.to_date)>=date(now())  order by a.req_id 
+		]]>
+	</entry>
+	<entry key="getallmoderationDetailsSQLCityAndGhouse">
+		<![CDATA[
+         select DISTINCT ON (a.req_id)  c.req_id,c.from_date,c.to_date,c.mode_of_req ,a.guest_id,a.name,a.age,a.gender,a.designation,a.department,c.address, b.status,c.req_date from mod_req as b join guest_details 
+         as a on a.req_id=b.req_id join gad_request as c on c.req_id=b.req_id where b.status='MOD' and (c.mode_of_req='GAD' or c.mode_of_req='PUB') and date(c.to_date)>=date(now()) and b.gh_id=? and c.block_id=? order by a.req_id 
+		]]>
+	</entry>
+	<!-- *************************************** -->
+
+	<entry key="getModeratorDetailsByReqidSQL">
+	<![CDATA[
+		select * from (
+		SELECT ROW_NUMBER() OVER (PARTITION BY r.req_date::date, r.req_id order by g.guest_id) AS i,
+		r.req_id, r.gh_id,r.block_id,g.guest_id, g.name, g.age, r.purpose, p.item_title as purp_name, r.nor_req, r.nob_g_req, r.nob_l_req, r.file_path, s.doc_path, r.status, r.mode_of_req, r.is_veh_req, r.desg, c.desg_category,r.from_date,r.to_date,
+		v.arrival_time, v.arrival_date, v.arrival_place, v.mode_of_travel, v.ftno,r.is_veh_req1,
+		v1.arrival_time as depr_time, v1.arrival_date as depr_date, v1.arrival_place as depr_plc, v1.mode_of_travel as depr_mode_of_travel, v1.ftno as depr_ftno
+		from public.gad_request r LEFT JOIN public.guest_details g on r.req_id = g.req_id 
+		LEFT JOIN adminr.user s on r.mobile_no = s.user_id
+		LEFT JOIN public.vehicle_req v on v.req_id = r.req_id
+		LEFT JOIN public.vehicle_req1 v1 on v1.req_id = r.req_id
+		LEFT JOIN public.visitor_category c on r.desg = c.vc_id
+		LEFT JOIN public.m_purpose_items p on p.item_id = r.purpose
+		WHERE r.req_id = ? ORDER BY r.req_id DESC
+		) f1 where f1.i = 1
+		]]>
+	</entry>
+
+	<entry key="getRoomCategorrySQL">
+	<![CDATA[
+		select DISTINCT qb.quota_type, q.quota_desc from m_quota_block qb INNER JOIN public.quota q ON qb.quota_type = q.quota_type order by quota_desc ASC
+	]]>
+	</entry>
+
+
+
+	<entry key="getRoomStatusSQL">
+	<![CDATA[
+		select distinct on(a.block_id::Integer) a.block_id,a.block_name,b.gh_id,b.quota_type,b.nu_of_rooms,b.max_beds,b.dormitory_gents,b.dormitory_ladies from (select * from room_block)a join (select * from m_quota_block where quota_type=?)b on a.block_id=b.block_id and a.gh_id=?
+	]]>
+	</entry>
+	<entry key="getmoderationSQL">
+	<![CDATA[
+		insert into mod_req values(?,?,?,?,?,?,?,now(),?,?)
+	]]>
+	</entry>
+	<entry key="getmoderationRoomSQL">
+	<![CDATA[
+		insert into mod_req_room values(?,?,?,?,?,?,?,now())
+	]]>
+	</entry>
+	<entry key="getupdatestatusinGadRequest">
+	<![CDATA[
+		update gad_request set status=?,lastupdated =now() where req_id=?
+	]]>
+	</entry>
+	<entry key="updatecanstatusinGadRequest">
+		<![CDATA[
+		update gad_request set can_status=?,lastupdated =now() where req_id=?
+	]]>
+	</entry>
+	<entry key="UpdatemoderationSQL">
+	<![CDATA[
+		update mod_req set vc_id=?,quota_type=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="deletemoderationRoomSQL">
+	<![CDATA[
+		delete from mod_req_room where req_id=? and mod_id=? and gh_id=?
+	]]>
+	</entry>
+	<entry key="updateconveancyinGadRequest">
+	<![CDATA[
+		update gad_request set is_veh_req=?,is_veh_req1=?,lastupdated=now() where gh_id=? and req_id=?
+	]]>
+	</entry>
+	<entry key="updateconveancyinmodreq">
+	<![CDATA[
+		update mod_req set is_veh_req=?,is_veh_req1=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="updateblockidingadRequest">
+	<![CDATA[
+	update gad_request set block_id=?,lastupdated =now() where req_id=?
+	]]>
+	</entry>
+	<entry key="editmoderationClickquery">
+	<![CDATA[
+		    select * from (
+			SELECT ROW_NUMBER() OVER (PARTITION BY r.req_date::date, r.req_id order by g.guest_id) AS i,
+			r.req_id, mod_req.*,r.gh_id,r.block_id,g.guest_id, g.name, g.age,r.roomtype, r.purpose, p.item_title as purp_name, r.nor_req, r.nob_g_req,
+			r.nob_l_req, r.file_path, s.doc_path, r.status, r.mode_of_req, r.is_veh_req, r.desg, c.desg_category,r.from_date,r.to_date,
+			v.arrival_time, v.arrival_date, v.arrival_place, v.mode_of_travel, v.ftno,r.is_veh_req1,gh_details.gh_name,
+			v1.arrival_time as depr_time, v1.arrival_date as depr_date, v1.arrival_place as depr_plc, v1.mode_of_travel as depr_mode_of_travel, v1.ftno as depr_ftno
+			from public.gad_request r LEFT JOIN public.guest_details g on r.req_id = g.req_id 
+			LEFT JOIN adminr.user s on r.mobile_no = s.user_id
+			LEFT JOIN public.vehicle_req v on v.req_id = r.req_id
+			LEFT JOIN public.vehicle_req1 v1 on v1.req_id = r.req_id
+			LEFT JOIN public.visitor_category c on r.desg = c.vc_id
+			LEFT JOIN public.m_purpose_items p on p.item_id = r.purpose
+			LEFT JOIN mod_req on mod_req.req_id=r.req_id
+			LEFT JOIN gh_details on gh_details.gh_id=r.gh_id
+			WHERE r.req_id IN (select req_id from mod_req_room)and r.req_id =? ORDER BY r.req_id DESC
+			) f1 where f1.i = 1
+	]]>
+	</entry>
+	<entry key="ProcessallList">
+	<![CDATA[
+		select Distinct(block_id),a.req_id,status,vc_id,req_date,quota_type,max(type) as type,from_date,to_date,gs.name from v_current_mod a 
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON a.req_id = gs.req_id
+		where status!='CAN' and 
+		from_date::date >= now()::date 
+		GROUP BY block_id,a.req_id,status,vc_id,req_date,quota_type,from_date,to_date,gs.name
+		order by vc_id,req_date
+	]]>
+	</entry>
+	<entry key="ProcessallListwithGHouseAndCity">
+	<![CDATA[
+				select Distinct(block_id),a.req_id,status,vc_id,req_date,quota_type,max(type),from_date,to_date,gs.name  from v_current_mod a
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON a.req_id = gs.req_id
+		where gh_id=? and block_id=?
+		and status!='CAN' and from_date::date >= now()::date 
+		group by block_id,a.req_id,status,vc_id,req_date,quota_type,from_date,to_date,gs.name
+		order by vc_id,req_date	]]>
+	</entry>
+	<entry key="saveProcesstable">
+	<![CDATA[
+		Insert into process_table values(?,?,now(),?,?,now(),?,?,?,?)
+	]]>
+	</entry>
+	<entry key="getCurrentModTable">
+	<![CDATA[
+		select * from v_current_mod2 a
+		join visitor_category b on a.vc_id=b.vc_id
+	]]>
+	</entry>
+	<entry key="saveinReservationMainTable">
+	<![CDATA[
+		insert into reservation_main_table values(?,to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),?,?,?,?,?,?,?,?,now());
+	]]>
+	</entry>
+	<entry key="updateStatusModReq">
+	<![CDATA[
+		update mod_req set status=?,process_id=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="canRequestForGH">
+	<![CDATA[
+		update gad_request set status=?,lastupdated=now() where userid=? and req_id=?
+	]]>
+	</entry>
+	<entry key="canModRequestForGadTbl">
+	<![CDATA[
+		update gad_request set status=?, can_status=?,lastupdated=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="canModRequestForModTbl">
+	<![CDATA[
+		update mod_req set status=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="canModRequestForModRoomTbl">
+    <![CDATA[
+		update mod_req_room set status=?,last_modified=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="DraftallList">
+	<![CDATA[
+		
+	SELECT * FROM process_table  Where status='TCNF';
+      ]]>
+	</entry>
+
+
+	<entry key="DraftallListwithGHouseAndCity">
+	<![CDATA[		
+	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
+	join room_block rb on rb.block_id = pt.block_id  Where status='TCNF' and  pt.gh_id=? and pt.block_id=? order by created_date desc	
+      ]]>
+	</entry>
+	
+	<entry key="confirmDraftallList">
+	<![CDATA[		
+	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
+	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' order by created_date desc 
+      ]]>
+	</entry>
+	
+	<entry key="confirmDraftallListCount">
+	<![CDATA[
+	SELECT COUNT(*) 
+		FROM process_table pt 
+		JOIN gh_details gd ON pt.gh_id = gd.gh_id 
+		JOIN room_block rb ON rb.block_id = pt.block_id 
+		WHERE pt.status = 'CNF';	
+      ]]>
+	</entry>
+
+	<entry key="confirmDraftallListwithCity">
+	<![CDATA[		
+	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
+	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' and  pt.gh_id= :cityName order by created_date desc 
+      ]]>
+	</entry>
+	
+	<entry key="confirmDraftallListwithCityCount">
+	<![CDATA[		
+	SELECT COUNT(*) 
+		FROM process_table pt 
+		JOIN gh_details gd ON pt.gh_id = gd.gh_id 
+		JOIN room_block rb ON rb.block_id = pt.block_id 
+		WHERE pt.status = 'CNF' 
+		AND pt.gh_id = :cityName
+      ]]>
+	</entry>
+	
+	<entry key="confirmDraftallListwithGHouseAndCity">
+	<![CDATA[	
+	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
+	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' and  pt.gh_id= :cityName and pt.block_id= :guesthouseName order by created_date desc
+      ]]>
+	</entry>
+	
+	<entry key="confirmDraftallListwithGHouseAndCityCount">
+	<![CDATA[	
+	SELECT COUNT(*) 
+		FROM process_table pt 
+		JOIN gh_details gd ON pt.gh_id = gd.gh_id 
+		JOIN room_block rb ON rb.block_id = pt.block_id 
+		WHERE pt.status = 'CNF' 
+  		AND pt.gh_id = :cityName 
+  		AND pt.block_id = :guesthouseName
+      ]]>
+	</entry>
+
+	<entry key="detailsbyid">
+	<![CDATA[
+		
+	SELECT * FROM process_table where process_id=?
+
+      ]]>
+	</entry>
+	<entry key="canProcessRequest">
+	<![CDATA[
+		update process_table set status=? where process_id=?
+
+	]]>
+	</entry>
+
+	<entry key="canProcessRequestmod_req">
+	   <![CDATA[
+		update mod_req set status=?,lastupdate=now() where process_id=?
+
+	]]>
+
+	</entry>
+	<entry key="DraftallList">
+	<![CDATA[
+		
+	SELECT * FROM process_table  Where status='TCNF'
+      ]]>
+	</entry>
+
+
+	<entry key="draftviewQuery">
+	<![CDATA[
+select * from (((select DISTINCT on (guest_details.req_id) guest_details.*,gad_request.from_date,gad_request.to_date,gad_request.purpose,
+gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.family,gad_request.gh_id,gad_request.address as 
+main_address from guest_details join gad_request on gad_request.req_id = guest_details.req_id 
+where guest_details.req_id in (select a.req_id from reservation_waitinglist a where a.par_process_id=? and status!='CAN')or
+ guest_details.req_id in(select b.req_id from reservation_main_table b where b.process_id=? and status!='CAN')) a join (select req_id as mreqid,vc_id from mod_req) b on a.req_id=b.mreqid) c join (select vc_id,priority from visitor_category) d 
+on c.vc_id=d.vc_id   ) x join (select DISTINCT on (req_id) req_id,block_id,'W' as waitres from reservation_waitinglist where par_process_id=?
+and status!='CAN' and req_id not in(select req_id from reservation_main_table where process_id=? and status!='CAN') union select DISTINCT 
+on (req_id) req_id,block_id,'R' as waitres from reservation_main_table where process_id=? and status!='CAN')y on 
+x.req_id=y.req_id order by waitres,block_id
+
+	]]>
+	</entry>
+	<entry key="updateProcessTable">
+	<![CDATA[
+	  Update process_table set officeorderno=?,status=?,last_modified=now() where process_id=?
+      ]]>
+	</entry>
+	<entry key="updatemodreqStatusTable">
+	<![CDATA[
+	  update mod_req set status=?,lastupdate=now() where process_id=?
+      ]]>
+	</entry>
+	<entry key="updatereservationtablestaus">
+	<![CDATA[
+	 update reservation_main_table set status=?,last_modified=now() where process_id=?
+      ]]>
+	</entry>
+
+	<!-- Prasad adminQueries Starts -->
+	<entry key="updateGadReqSql">
+	<![CDATA[
+		update public.gad_request set status=?,lastupdated=now() where req_id=?
+	]]>
+	</entry>
+
+	<entry key="deleteModReqData">
+	<![CDATA[
+		DELETE FROM public.mod_req where req_id=?
+	]]>
+	</entry>
+
+	<entry key="deleteModReqRoomData">
+	<![CDATA[
+		DELETE FROM public.mod_req_room WHERE req_id=?
+	]]>
+	</entry>
+
+	<entry key="getExensionBookingDetailsByIdSQL">
+	<![CDATA[
+		select * from gad_request where req_id=?
+	]]>
+	</entry>
+	<entry key="saveNewShiftDataSQL">
+	<![CDATA[
+		INSERT INTO public.tr_shift_master(
+		shift_id, gh_id, createdby, lastmodified, createdtime, openbal_refund, openbal_regular, 
+		openbal_total, status,par_shiftid,from_time,to_time, block_id)
+		VALUES (?, ?, ?, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+
+	<entry key="isShiftOpenInShiftMasterSql">
+	<![CDATA[
+		SELECT * FROM tr_shift_master WHERE gh_id=? and block_id=? and status='O'
+	]]>
+	</entry>
+	
+	<entry key="ConveyanceListSQL">
+	<![CDATA[
+		select * from v_conv a
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON a.rid = gs.req_id
+		where status ='ALO' 
+		and (arrival_time >= now() OR departure_time >= now()) order by req_date
+	]]>
+	</entry>
+	<entry key="ConveyanceListWithGHouseAndCitySQL">
+	<![CDATA[
+		select * from v_conv a
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON a.rid = gs.req_id
+		where gh_id=? and block_id=? and status ='ALO' 
+		and (arrival_time >= now() OR departure_time >= now()) order by req_date
+	]]>
+	</entry>
+	
+	<entry key="saveCancelModerationSQL">
+	<![CDATA[
+		INSERT INTO cancel_reservation VALUES(?,?,?,NOW(),?,?,?,?,?,?)
+	]]>
+	</entry>
+	
+	<entry key="updateCancelModerationSQL">
+	<![CDATA[
+		UPDATE cancel_reservation SET status = ?, mode_of_cancel = ?, remarks = ?, lastmodified = NOW() where req_id = ? 
+	]]>
+	</entry>
+	
+	<entry key="changeStatusinGadReqTblSQL">
+	<![CDATA[
+		update public.gad_request set status=?,lastupdated=now() where req_id=?
+	]]>
+	</entry>
+	
+	<entry key="getPartialDuesReportDetailsSQL">
+	<![CDATA[
+		SELECT DISTINCT b.req_id, c.from_date, c.to_date, d.name, a.billno,a.bill_id, a.total, a.advance,
+		(a.total::numeric - a.advance::numeric - g.amount::numeric) AS paidTo, a.date, e.onlyname,c.mobile_no,
+		c.block_id
+		FROM tr_bill_master a
+		JOIN tr_billvsguest b ON a.bill_id = b.bill_id
+		JOIN gad_request c ON b.req_id = c.req_id
+		JOIN (SELECT req_id, STRING_AGG((SELECT CONCAT(name, CASE WHEN designation <> '' 
+		THEN CONCAT(',', designation) ELSE '' END, CASE WHEN department <> '' 
+		THEN CONCAT(',', department) ELSE '' END)), ' & ' ORDER BY guest_id) AS name
+		FROM guest_details GROUP BY req_id) AS d ON c.req_id = d.req_id
+		JOIN (SELECT req_id, STRING_AGG(name, ', ') AS onlyname FROM guest_details GROUP BY req_id) AS e 
+		ON c.req_id = e.req_id
+		JOIN tr_receiptvsbill f on f.bill_id = a.bill_id
+		JOIN tr_receipt g on f.rec_id = g.rec_id
+	]]>
+	</entry>
+	
+	<entry key="getDuesReportDetailsSQL">
+	<![CDATA[		
+		SELECT DISTINCT b.req_id, c.from_date, c.to_date,a.billno,a.status,d.name, a.total, a.advance,
+		(a.total::numeric - a.advance::numeric) AS paidTo, a.date
+		FROM tr_bill_master a
+		JOIN tr_billvsguest b ON a.bill_id = b.bill_id
+		JOIN gad_request c ON b.req_id = c.req_id
+		JOIN (SELECT req_id, STRING_AGG((SELECT CONCAT(name, CASE WHEN designation <> '' 
+		THEN CONCAT(',', designation) ELSE '' END, CASE WHEN department <> '' 
+		THEN CONCAT(',', department) ELSE '' END)), ' & ' ORDER BY guest_id) AS name
+		FROM guest_details GROUP BY req_id) AS d ON c.req_id = d.req_id
+	]]>
+	</entry>
+	
+	<entry key="getDuesListReportDetailsSQL">
+	<![CDATA[
+		select distinct(b.req_id),a.balance,a.bill_id,f.rec_id,c.from_date,c.to_date,c.mobile_no,
+		d.name,e.onlyname,f.date_rece,g.date,c.category_type,g.billno,rb.block_name,gd.gh_name from tr_dues a
+		JOIN tr_billvsguest b on a.bill_id = b.bill_id
+		JOIN gad_request c on c.req_id = b.req_id
+		JOIN (SELECT req_id, STRING_AGG((SELECT CONCAT(name, CASE WHEN designation <> '' 
+		THEN CONCAT(',', designation) ELSE '' END, CASE WHEN department <> '' 
+		THEN CONCAT(',', department) ELSE '' END)), ' & ' ORDER BY guest_id) AS name
+		FROM guest_details GROUP BY req_id) AS d ON c.req_id = d.req_id
+		JOIN (SELECT req_id, STRING_AGG(name, ', ') AS onlyname FROM guest_details GROUP BY req_id) AS e 
+		ON c.req_id = e.req_id
+		JOIN tr_receipt f on a.rec_id = f.rec_id
+		JOIN tr_bill_master g on a.bill_id = g.bill_id
+		JOIN room_block rb on c.block_id = rb.block_id
+		JOIN gh_details gd on c.gh_id = gd.gh_id
+	]]>
+	</entry>
+	
+	<entry key="updateBillFullPartialStatusByBillId">
+		<![CDATA[
+		UPDATE tr_bill_master SET full_partial = ?, lastmodified=now() WHERE bill_id = ?
+	]]>
+	</entry>
+	
+	<entry key="updateDuesStatusByBillId">
+		<![CDATA[
+		UPDATE tr_dues SET rec_id = ?,status=?, lastupdated=now() WHERE bill_id = ?
+	]]>
+	</entry>
+	
+	<entry key="getRoleByUserIdwithUserType">
+		<![CDATA[
+		SELECT role_id FROM adminr.group_role gr
+		JOIN adminr.group g ON gr.group_id = g.group_id WHERE group_name = ?
+	]]>
+	</entry>
+	<!-- Prasad adminQueries Ends -->
+
+	<!-- Mohit adminQueries Starts -->
+	<entry key="getReqListByCityAndGH">
+	<![CDATA[
+	SELECT req_id, from_date, to_date, status FROM public.gad_request WHERE status = 'REQ' AND from_date::date >= now()::date
+	]]>
+	</entry>
+
+	<entry key="getSplitBookingGuestDetails">
+	<![CDATA[
+		SELECT b.* FROM public.gad_request a JOIN
+		public.guest_details b ON a.req_id = b.req_id WHERE a.req_id = ?
+	]]>
+	</entry>
+
+	<entry key="updateAdultAndChildrenCount">
+	<![CDATA[
+		UPDATE public.gad_request SET no_of_adults = ?, no_of_children = ? WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="canReqForAllotTbl">
+		<![CDATA[
+		UPDATE tr_allotment SET status=?,lastmodified=now() WHERE req_id=?
+	]]>
+	</entry>
+	<entry key="getCanListFromGADReq">
+	<![CDATA[
+		SELECT gr.req_id, gr.can_status FROM gad_request gr
+		LEFT JOIN partial_cancel_request pcr on gr.req_id = pcr.req_id
+		WHERE (gr.can_status = 'ACAN' OR (gr.can_status = 'PCAN' AND pcr.status = 'ALO'))
+		AND gr.to_date::date >= now()::date
+	]]>
+	</entry>
+	<entry key="createCancelReservation">
+	<![CDATA[
+		INSERT INTO cancel_reservation VALUES(?,?,?,NOW(),?,?,?,?,?)
+	]]>
+	</entry>
+	<entry key="updateCancelReservationStatusWithProcessId">
+	<![CDATA[
+		UPDATE cancel_reservation SET status = ?, lastmodified = NOW() WHERE process_id = ?
+	]]>
+	</entry>
+	<entry key="getCanResByProcessId">
+	<![CDATA[
+		SELECT cr.req_id, cr.block_id, cr.gh_id, cr.status, cr.process_id,
+		cr.mode_of_cancel, pc.from_date, pc.to_date FROM cancel_reservation cr
+		LEFT JOIN partial_cancel_request pc ON cr.req_id = pc.req_id
+		WHERE process_id = ?
+	]]>
+	</entry>
+	<entry key="updateAllotmentModifyStatus">
+	<![CDATA[
+		UPDATE tr_allotment SET mod_status = ?, lastmodified = NOW() WHERE allot_id = ?
+	]]>
+	</entry>
+	<entry key="insertModifyReservation">
+	<![CDATA[
+		INSERT INTO modify_reservation values (?, ?, ?, now(), ?, ?, ?);
+	]]>
+	</entry>
+	<entry key="getAllotIdByProcessId">
+	<![CDATA[
+		SELECT ta.allot_id FROM modify_reservation mr
+		JOIN tr_allotment ta ON mr.req_id = ta.req_id
+		WHERE ta.mod_status = 'MODF' AND mr.process_id = ?
+	]]>
+	</entry>
+	<entry key="updateModifyReservationByProcessId">
+	<![CDATA[
+		UPDATE modify_reservation SET status = ?, last_modified = NOW() WHERE process_id = ?
+	]]>
+	</entry>
+	<entry key="getAllBillingList">
+	<![CDATA[
+		SELECT gr.req_id, gr.from_date, gr.to_date,coalesce(gr.can_status,'') as can_status,gr.no_of_adults, coalesce(gr.no_of_children, 0) AS no_of_children, gs.name, 
+		gr.purpose,gr.mobile_no,qu.quota_desc, gr.category_type, vc.desg_category, pr.item_title, ta.total,adv_amt
+		FROM gad_request gr
+		JOIN quota AS qu ON gr.category_type=qu.quota_type
+		JOIN visitor_category AS vc ON gr.desg=vc.vc_id
+		JOIN m_purpose_items AS pr ON gr.purpose=pr.item_id
+		join( select req_id, SUM(COALESCE(room_rent::NUMERIC, 0)) AS total
+		from public.tr_allotment  WHERE status = 'COUT' 
+		group by req_id) as ta ON ta.req_id = gr.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		JOIN (SELECT SUM(COALESCE(advance_amt::NUMERIC, 0)) AS adv_amt,
+					 req_id AS tc_req_id, MAX(lastmodified) AS lastmodified FROM tr_checkin WHERE status = 'COUT' GROUP BY req_id)
+					 tc ON tc.tc_req_id = gr.req_id
+		WHERE gr.status = 'COUT' and gr.req_date::date>'2023-07-31'::date
+	]]>
+	</entry>
+	<entry key="getShowBillList">
+		<![CDATA[
+		SELECT gr.req_id, gr.from_date, gr.to_date, gr.no_of_adults, coalesce(gr.no_of_children, 0) AS no_of_children, gs.name,
+		gr.mobile_no,gr.purpose,qu.quota_desc, gr.category_type, vc.desg_category, pr.item_title, bg.bill_id,bm.total,bm.advance,bm.date FROM gad_request gr
+		JOIN quota AS qu ON gr.category_type=qu.quota_type
+		JOIN visitor_category AS vc ON gr.desg=vc.vc_id
+		JOIN m_purpose_items AS pr ON gr.purpose=pr.item_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		JOIN (SELECT DISTINCT ON (req_id) req_id, tb.bill_id FROM tr_billvsguest tb
+			JOIN tr_bill_master tbm on tb.bill_id = tbm.bill_id WHERE tbm.status != 'CAN')
+			bg on bg.req_id = gr.req_id
+		JOIN tr_bill_master bm on bm.bill_id = bg.bill_id
+		WHERE gr.status IN ('BILL', 'RECT')
+	]]>
+	</entry>
+	<entry key="getBillMasterById">
+		<![CDATA[
+		SELECT tr.*, nt.from_date as noc_from_date, nt.to_date as noc_to_date  FROM tr_bill_master tr
+		LEFT JOIN noc_table nt ON tr.bill_id = nt.bill_id
+		WHERE tr.bill_id = ?
+	]]>
+	</entry>
+	<entry key="getChargesById">
+		<![CDATA[
+		SELECT * FROM tr_billvsguestvscharges WHERE bill_id = ?
+	]]>
+	</entry>
+	<entry key="getChargeTitleById">
+		<![CDATA[
+		SELECT charges_title FROM master_charges WHERE charges_id = ?
+	]]>
+	</entry>
+	<entry key="foodItemExists">
+	<![CDATA[
+		SELECT count(*) FROM m_food_items WHERE item_title like ?
+	]]>
+	</entry>
+	<entry key="foodItemExistsForUpdate">
+		<![CDATA[
+		SELECT count(*) FROM m_food_items WHERE item_title like ? and item_id != ?
+	]]>
+	</entry>
+	<entry key="addFoodItem">
+	<![CDATA[
+		INSERT INTO m_food_items values (?, ?, ?)
+	]]>
+	</entry>
+	<entry key="getAllFoodItems">
+	<![CDATA[
+		SELECT * FROM m_food_items
+	]]>
+	</entry>
+	<entry key="getFoodItemById">
+	<![CDATA[
+		SELECT * FROM m_food_items WHERE item_id = ?
+	]]>
+	</entry>
+	<entry key="updateFoodItem">
+	<![CDATA[
+		UPDATE m_food_items SET item_title = ?, unitprice = ? WHERE item_id = ?
+	]]>
+	</entry>
+	<entry key="deleteFoodItem">
+	<![CDATA[
+		DELETE from m_food_items WHERE item_id = ?
+	]]>
+	</entry>
+	<!-- <entry key="getGuestDetailsForBill">
+		<![CDATA[
+		SELECT tc.req_id, tc.guest_id, tc.roll_no, tc.advance_amt, tc.gh_id, tc.block_id, tc.purpose,tc.tr_id,tc.adults,tc.no_of_children_below12,
+			   vc.desg_category, gd.name, gd.department, gd.designation, gd.age, ta.checkin_date, ta.checkout_date,
+			   ta.room_no, gr.from_date, gr.to_date, COALESCE(gr.extra_guest, 0) AS extra_guest, qu.category
+		FROM tr_checkin tc
+			JOIN gad_request gr ON gr.req_id = tc.req_id
+			JOIN visitor_category vc ON tc.vc_id = vc.vc_id
+			JOIN guest_details gd ON tc.guest_id = gd.guest_id
+			JOIN quota qu ON gr.category_type = qu.quota_type
+			JOIN (SELECT req_id, checkin_date, checkout_date,
+			STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no FROM tr_allotment
+				WHERE status = 'COUT' GROUP BY req_id, checkin_date, checkout_date) ta ON tc.req_id = ta.req_id
+		WHERE tc.req_id = ? AND  tc.status = 'COUT' ORDER BY gd.guest_id
+	]]>
+	</entry> -->
+	<entry key="getGuestDetailsForBill">
+		<![CDATA[
+	SELECT tc.req_id, tc.guest_id, tc.roll_no, tc.advance_amt, tc.gh_id, tc.block_id, tc.purpose,tc.tr_id,tc.adults,tc.no_of_children_below12,
+	vc.desg_category, gd.name, gd.department, gd.designation, gd.age, ta.checkin_date, ta.checkout_date,
+	ta.room_no, gr.from_date, gr.to_date, COALESCE(gr.extra_guest, 0) AS extra_guest, qu.category
+	FROM tr_checkin tc
+	JOIN gad_request gr ON gr.req_id = tc.req_id
+	JOIN visitor_category vc ON tc.vc_id = vc.vc_id
+	JOIN guest_details gd ON tc.guest_id = gd.guest_id
+	JOIN quota qu ON gr.category_type = qu.quota_type
+	JOIN (SELECT req_id,MIN(checkin_date) as checkin_date, checkout_date,
+	STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no 
+	FROM tr_allotment WHERE status = 'COUT' GROUP BY req_id,checkout_date) ta ON tc.req_id = ta.req_id
+	WHERE tc.req_id =? AND  tc.status = 'COUT' ORDER BY gd.guest_id
+	]]>
+	</entry>
+	<entry key="getGuestDetailsForShowBill">
+		<![CDATA[
+		SELECT tc.req_id, tc.guest_id, tc.roll_no, tc.advance_amt, tc.gh_id,rb.block_name,gh.gh_name,tc.block_id, tc.purpose,tc.tr_id,tc.adults,tc.no_of_children_below12,
+			   vc.desg_category, gd.name, gd.department, gd.designation, gd.age, ta.checkin_date, ta.checkout_date,
+			   ta.room_no ,gh.gh_name,rb.block_name, gr.from_date, gr.to_date,
+			   COALESCE(gr.extra_guest, 0) AS extra_guest, qu.category
+		FROM tr_checkin tc
+			JOIN gad_request gr ON gr.req_id = tc.req_id
+			JOIN gh_details gh ON tc.gh_id = gh.gh_id
+			JOIN room_block rb on tc.block_id = rb.block_id
+			JOIN visitor_category vc ON tc.vc_id = vc.vc_id
+			JOIN quota qu ON gr.category_type = qu.quota_type
+			JOIN guest_details gd ON tc.guest_id = gd.guest_id JOIN (SELECT req_id, checkin_date, checkout_date,
+			   STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no FROM tr_allotment
+			   WHERE status = 'COUT' GROUP BY req_id, checkin_date, checkout_date) ta ON tc.req_id = ta.req_id
+		WHERE tc.req_id = ? AND tc.status IN ('BILL', 'RECT') ORDER BY gd.guest_id
+	]]>
+	</entry>
+	<entry key="getRoomRentForBill">
+		<![CDATA[
+		SELECT SUM(room_rent::NUMERIC) FROM tr_allotment WHERE req_id = ? AND status NOT IN ('CAN', 'NOC')
+	]]>
+	</entry>
+	<entry key="getNocChargeForBill">
+		<![CDATA[
+		SELECT COALESCE(SUM(room_rent::NUMERIC/2), 0) as noc, min(from_date) as from_date, max(to_date) as to_date
+		FROM tr_allotment WHERE req_id = ? AND status = 'NOC'
+	]]>
+	</entry>
+	<entry key="getFoodChargesForBill">
+		<![CDATA[
+		SELECT COALESCE(SUM(total::NUMERIC), 0) FROM tr_guest_catering WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="getMasterCharges">
+		<![CDATA[
+		SELECT * FROM master_charges ORDER BY charges_id
+	]]>
+	</entry>
+	<entry key="extensionExists">
+		<![CDATA[
+		SELECT ext, existing_req_id from gad_request where req_id = ?
+	]]>
+	</entry>
+	<entry key="createBillMaster">
+		<![CDATA[
+		INSERT INTO tr_bill_master (bill_id, billno, createdby, date, lastmodified, status, shift_id, gh_id, block_id,
+		total, advance) VALUES (?, ?, ?, now(), now(), ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="createBillVsGuest">
+		<![CDATA[
+		INSERT INTO tr_billvsguest VALUES (?, ?, ?)
+	]]>
+	</entry>
+	<entry key="createBillVsGuestVsCharges">
+		<![CDATA[
+		INSERT INTO tr_billvsguestvscharges VALUES (?, ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="createOtherCharges">
+		<![CDATA[
+		INSERT INTO tr_guest_othercharges VALUES (?, ?, ?, ?, ?, now(), ?)
+	]]>
+	</entry>
+	<entry key="createNocDuringBill">
+		<![CDATA[
+		INSERT INTO noc_table
+		(noc_id, req_id, from_date, to_date, noc_charge, created_date, approved_date, status, bill_id)
+		VALUES (?, ?, ?, ?, ?, now(), now(), ?, ?)
+	]]>
+	</entry>
+	<entry key="updateCheckinStatusByReqId">
+		<![CDATA[
+		UPDATE tr_checkin SET status = ?, lastmodified=now() WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="getAllReceiptList">
+		<![CDATA[
+		SELECT tb.bill_id, tb.billno, tb.createdby, tb.date, tb.gh_id, q.category,tb.block_id, (tb.total - tb.advance) AS total_amt,
+			   gr.req_id,gr.mobile_no,gr.req_id, gr.userid, gr.from_date, gr.to_date, gs.name, gs.designation, gs.department,
+			   ta.room_no, ta.checkin_date, ta.checkout_date FROM tr_bill_master tb
+		JOIN (SELECT DISTINCT req_id, bill_id FROM tr_billvsguest) tg ON tb.bill_id = tg.bill_id
+		JOIN (SELECT * FROM gad_request WHERE status = 'BILL') gr ON tg.req_id = gr.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number FROM guest_details) AS gh_dt
+			WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		JOIN (SELECT req_id, checkin_date, checkout_date, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+			FROM tr_allotment WHERE status = 'COUT' GROUP BY req_id, checkin_date, checkout_date) ta ON gr.req_id = ta.req_id
+		JOIN quota q ON q.quota_type = gr.category_type
+		WHERE tb.status = 'BILL'
+	]]>
+	</entry>
+	<entry key="getGeneratedReceiptList">
+		<![CDATA[
+		SELECT gr.req_id, gr.from_date, gr.to_date, gr.gh_id, gr.block_id, gr.mobile_no, q.category, tb.bill_id, tb.billno, tb.date,
+		r.rec_id, r.amount, r.total_amount, r.date_rece, gs.name, gs.designation, gs.department,rb.block_name,pi.item_title,
+		gd.gh_name, ta.room_no, ta.checkin_date, ta.checkout_date,gr.address,gs.guest_mobile,gr.no_of_adults,gr.no_of_children,tb.advance,tb.total
+		,rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail,gr.email_id , COALESCE(gr.no_of_adults,0) + COALESCE(gr.no_of_children,0) as no_of_guest
+		,(tb.total::numeric - tb.advance::numeric - r.amount::numeric) AS dues_amount FROM tr_receipt r
+		JOIN tr_receiptvsbill tr ON r.rec_id = tr.rec_id
+		JOIN tr_bill_master tb ON tr.bill_id = tb.bill_id AND tb.status = 'RECT'
+		JOIN (SELECT DISTINCT req_id, bill_id FROM tr_billvsguest) tg ON tb.bill_id = tg.bill_id
+		JOIN (SELECT * FROM gad_request WHERE status = 'RECT') gr ON tg.req_id = gr.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number FROM guest_details) AS gh_dt
+		WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		JOIN (SELECT req_id, checkin_date, checkout_date, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+		FROM tr_allotment WHERE status = 'COUT'
+		GROUP BY req_id, checkin_date, checkout_date) ta ON gr.req_id = ta.req_id
+		JOIN room_block rb on rb.block_id = gr.block_id 
+		JOIN gh_details gd on gd.gh_id = gr.gh_id
+		JOIN quota q ON q.quota_type = gr.category_type
+		JOIN public.m_purpose_items pi on gr.purpose = pi.item_id
+	]]>
+	</entry>
+	<entry key="getGuestDetailsForReceipt">
+		<![CDATA[
+		SELECT gd.name, gd.designation, gd.department FROM tr_billvsguest tr
+		JOIN guest_details gd ON tr.guest_id = gd.guest_id
+		WHERE tr.req_id = ? AND tr.bill_id = ? order by gd.guest_id
+	]]>
+	</entry>
+	<entry key="createReceipt">
+		<![CDATA[
+		INSERT INTO tr_receipt VALUES (?, ?, now(), ?, ?, now(), now(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="createReceiptPaymentMode">
+		<![CDATA[
+		INSERT INTO receipt_payment_mode VALUES (?, ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="createReceiptVsBill">
+		<![CDATA[
+		INSERT INTO tr_receiptvsbill VALUES (?, ?)
+	]]>
+	</entry>
+	<entry key="updateBillStatusByBillId">
+		<![CDATA[
+		UPDATE tr_bill_master SET status = ?, lastmodified=now() WHERE bill_id = ?
+	]]>
+	</entry>
+	<entry key="updateStatusAndFullPartialByBillId">
+		<![CDATA[
+		UPDATE tr_bill_master SET status = ?, full_partial = ?, lastmodified=now() WHERE bill_id = ?
+	]]>
+	</entry>
+	<entry key="createDue">
+		<![CDATA[
+		INSERT INTO tr_dues VALUES (?, ?, now(), now(), ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="getGuestsForFoodBill">
+		<![CDATA[
+		SELECT DISTINCT ON(req_id,from_date)a.req_id,a.from_date,a.to_date,a.status,a.ext,d.process_id, gs.name,
+		a.mobile_no,gs.guest_id, gs.designation, gs.department, a.status, tr.room_no
+		FROM (SELECT * FROM gad_request
+			  WHERE (status='CIN' OR status='PCOUT' OR status='PCIN') AND gh_id= :cityId AND block_id= :ghId) a
+				 LEFT JOIN (SELECT process_id, req_id FROM reservation_main_table WHERE status!='CAN' AND gh_id= :cityId AND block_id= :ghId) d
+						   ON a.req_id=d.req_id
+				 JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+									  FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON a.req_id = gs.req_id
+				 JOIN (SELECT req_id, STRING_AGG(DISTINCT room_no, ',') AS room_no FROM tr_allotment
+					   WHERE status NOT IN ('CAN') group by req_id) AS tr ON a.req_id=tr.req_id
+		WHERE a.req_id IN(SELECT req_id FROM tr_checkin WHERE status !='BILL' )
+	]]>
+	</entry>
+	<entry key="addFoodBill">
+		<![CDATA[
+		INSERT INTO tr_guest_catering VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), ?);
+	]]>
+	</entry>
+
+	<entry key="updateShiftDataSql">
+		<![CDATA[
+		UPDATE tr_shift_master SET createdtime = ?, openbal_refund = ?, openbal_regular = ?, openbal_total = ? WHERE shift_id = ?
+	]]>
+	</entry>
+	<entry key="closePreviousShiftSql">
+		<![CDATA[
+		UPDATE tr_shift_master SET close_time = ?, openbal_regular = ?, openbal_total = ?, status = 'C' WHERE shift_id = ?
+	]]>
+	</entry>
+	<entry key="getDetailsOfPrimaryGuest">
+		<![CDATA[
+		SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+					   FROM guest_details WHERE req_id = ?) AS gh_dt WHERE gh_dt.row_number = 1
+	]]>
+	</entry>
+	<entry key="updateCanStatusTrAllotment">
+		<![CDATA[
+		UPDATE tr_allotment SET can_status = ? WHERE req_id = ? AND status = ?
+	]]>
+	</entry>
+	<entry key="getModeOfPayment">
+		<![CDATA[
+		SELECT mode_of_payment, amount, pos_tr_num FROM receipt_payment_mode WHERE rec_id = ?
+	]]>
+	</entry>
+	<entry key="getAllConferenceList">
+		<![CDATA[
+		SELECT gr.req_id, gr.req_date, gr.gh_id, gr.block_id, gr.status, gr.from_date, gr.to_date, gr.roomtype,
+		gr.mobile_no, tr.name, mch.conf_cat_desc, mcu.conf_use_desc, qu.category, qu.quota_type,
+		tr.address,tr.capacity,tb.charge,
+		tb.additionalcharge,tb.advance_amount,tb.mode_of_payment,tb.conf_bill_id,tb.status as bill_status,
+		mch.conf_cat_id,mcu.conf_use_id
+		FROM gad_request gr
+		JOIN tr_conf_request tr ON gr.req_id = tr.req_id
+		JOIN tr_conf_bill tb ON gr.req_id = tb.req_id
+		JOIN m_conf_hall_category mch ON tr.conf_cat_id = mch.conf_cat_id
+		JOIN m_conf_hall_use mcu ON tr.conf_use_id = mcu.conf_use_id
+		LEFT JOIN quota AS qu ON gr.category_type=qu.quota_type
+		WHERE gr.status = ? AND tb.status = 'P'
+	]]>
+	</entry>
+
+	<entry key="getAllConferenceListForApprove">
+		<![CDATA[
+			SELECT gr.req_id,tr.name, gr.req_date, gr.gh_id, gr.block_id, gr.status, gr.from_date, gr.to_date, gr.roomtype,
+					gr.mobile_no, concat(tr.name, COALESCE(', ' || tr.address, '')), mch.conf_cat_desc, mcu.conf_use_desc, qu.category, qu.quota_type
+					,tr.capacity,tb.charge
+					FROM gad_request gr
+				 JOIN tr_conf_request tr ON gr.req_id = tr.req_id
+				 JOIN tr_conf_bill tb ON gr.req_id = tb.req_id
+				 JOIN m_conf_hall_category mch ON tr.conf_cat_id = mch.conf_cat_id
+				 JOIN m_conf_hall_use mcu ON tr.conf_use_id = mcu.conf_use_id
+				 JOIN mod_req mr on gr.req_id = mr.req_id
+				 LEFT JOIN quota AS qu ON gr.category_type=qu.quota_type
+				WHERE mr.status =? AND tb.status = 'P'
+	]]>
+	</entry>
+	<entry key="getAllotmentDetailsForSms">
+		<![CDATA[
+		SELECT gr.req_id, gr.userid, gr.from_date, gr.to_date, gr.email_id, ta.room_no, gs.name, rb.block_name, gh.gh_name
+		FROM process_table pt
+		JOIN mod_req mr ON pt.process_id = mr.process_id
+		JOIN gad_request gr ON mr.req_id = gr.req_id
+		JOIN room_block rb ON gr.block_id = rb.block_id
+		JOIN gh_details gh ON gr.gh_id = gh.gh_id
+		JOIN (SELECT req_id, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+			  FROM tr_allotment WHERE status = 'PRO' GROUP BY req_id) ta ON gr.req_id = ta.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number FROM guest_details) AS gh_dt
+			  WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		WHERE gr.status = 'PRO' AND roomtype IN ('R', 'RC') AND pt.process_id = ?
+	]]>
+	</entry>
+	<entry key="getPendingPayments">
+		<![CDATA[
+		SELECT order_id, block_id FROM pg_info WHERE order_status = 'Success' AND verify_payment = 'P' AND trans_date <> 'null' AND
+		TO_DATE(trans_date, 'DD/MM/YYYY HH24:MI:SS') >= current_date - INTERVAL '7 days';
+	]]>
+	</entry>
+	<!-- Mohit adminQueries Ends -->
+
+	<!-- sandip adminQueries starts -->
+	<entry key="otherGuestDetails">
+	<![CDATA[
+		select * from ((select * from guest_details) a left join (select guest_id as c_guest_id,status,tr_id,
+ 		arrival_time_date,roll_no,advance_amt,no_of_children_below12,adults from tr_checkin where status!='CAN'
+		and gh_id=?) b on a.guest_id = b.c_guest_id)g where g.req_id=? 
+	]]>
+	</entry>
+	<entry key="otherGuestRoomDetails">
+	<![CDATA[
+		select * from (select type,room_no,bed_no,block_id,gh_id from tr_allotment where allot_id=
+		(select min(allot_id) from tr_checkin_allot where tr_id=? and status='LIV'))aa join 
+		(select block_id,block_name_short,gh_id from room_block)bb on aa.block_id=bb.block_id and aa.gh_id=bb.gh_id
+	]]>
+	</entry>
+	<entry key="otherCheckinRoomDetails">
+	<![CDATA[
+		select * from ((select * from guest_details ) a left join (select guest_id as c_guest_id,status,req_id
+		as rid from tr_checkin where status!='CAN' and gh_id=?) b on a.guest_id = b.c_guest_id and a.req_id=b.rid)
+		g where g.req_id=? 
+	]]>
+	</entry>
+	<entry key="CheckinRoomDetails">
+	<![CDATA[
+		select DISTINCT ON(room_no) room_no,type,bed_no from tr_allotment 
+		where req_id=? and status!='CAN' and block_id=?
+	]]>
+	</entry>
+	<entry key="saveCheckInDetails">
+	<![CDATA[
+	INSERT INTO tr_checkin(tr_id,
+	roll_no, guest_id, arrival_time_date, departure_time_date, advance_amt, req_id, charges_realised, bill_id, remarks,
+	status, no_of_children_below12, shift_id, shiftuser_id, adults, lastmodified,adv_bill_id,gh_id, parent_trid, vc_id, purpose, block_id)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?);
+	]]>
+	</entry>
+
+	<entry key="selectAlotId">
+	<![CDATA[
+	select allot_id from tr_allotment where status not in ('CAN','NOC') and block_id=? and req_id=? 
+	]]>
+	</entry>
+	<entry key="selectAlotIdForCancel">
+	<![CDATA[
+	select allot_id from tr_allotment where status !='CAN' and block_id=? and req_id=? 
+	]]>
+	</entry>
+	<entry key="insertChckAlot">
+	<![CDATA[
+	 INSERT INTO tr_checkin_allot VALUES (?,?,?,?)
+	]]>
+	</entry>
+	<entry key="insertChckReqId">
+	<![CDATA[
+	 INSERT INTO tr_checkin_reqid VALUES (?,?,?,?)
+	]]>
+	</entry>
+	<entry key="insertBalanceSheet">
+	<![CDATA[
+	 INSERT INTO tr_balancesheet(
+	bal_id, shift_id, advance_credit, date_of_transaction, last_modified, status,  mode_c_q, shift_userid, adv_receipt_id, gh_id, block_id)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );
+	]]>
+	</entry>
+	<entry key="selectDesgination">
+	<![CDATA[
+	 select vc_id,desg_category from visitor_category where vc_id=(select desg from gad_request  where req_id=?)
+	]]>
+	</entry>
+	<entry key="selectGuestDetailsInCheckin">
+	<![CDATA[
+	select count(*) from tr_checkin where status='CIN' and req_id=?
+	]]>
+	</entry>
+	<entry key="selectGuestOnReqId">
+	<![CDATA[
+	 select count(*) from guest_details where req_id=?;
+	]]>
+	</entry>
+	<entry key="updateGadStatus">
+	<![CDATA[
+	update gad_request set status=?,lastupdated=? where req_id=?
+	]]>
+	</entry>
+	<entry key="updateAllotMentStatus">
+	<![CDATA[
+	UPDATE tr_allotment set status=?,checkin_date=?,lastmodified=now() WHERE req_id=? and status != 'CAN' 
+	]]>
+	</entry>
+	<entry key="updateAllotMentStatusPro">
+	<![CDATA[
+	UPDATE tr_allotment set status=?, checkin_date=?,lastmodified=? WHERE allot_id=?;
+	]]>
+	</entry>
+	<entry key="cancelAllotMentStatusPro">
+	<![CDATA[
+	UPDATE tr_allotment set status=?,lastmodified=? WHERE allot_id=?;
+	]]>
+	</entry>
+	<entry key="updateAllotMentStatusCout">
+	<![CDATA[
+	UPDATE tr_allotment set status='COUT',checkout_date=?,lastmodified=? WHERE allot_id=?;
+	]]>
+	</entry>
+	<entry key="gstCheckOutDetails">
+	<![CDATA[
+	select distinct on(c.req_id,from_date)c.req_id,c.category_type,c.from_date,c.to_date,c.status,c.ext,d.process_id,c.name,
+	c.req_date,c.gh_id,c.block_id
+	from ((select req_id AS rid,category_type,from_date,to_date,status,ext,req_date,gh_id,block_id
+	from gad_request where (status='CIN' or status='PCIN') and gh_id=? and block_id =? and req_date::date>'2023-07-31'::date) a
+	join (select * from guest_details)b on a.rid=b.req_id) c 
+	left join (select process_id,
+	req_id from reservation_main_table where status!='CAN' and gh_id=? and block_id=?) d on c.rid=d.req_id 
+	]]>
+	</entry>
+	<entry key="checkOutGstRoom">
+	<![CDATA[
+	 select distinct(room_no,bed_no) as roombed, room_no,bed_no,type from tr_allotment where req_id=? and status!='CAN'
+	]]>
+	</entry>
+	<entry key="checkOutStatus">
+	<![CDATA[
+	 select status from tr_checkin where req_id=? and guest_id=? and status!='CAN'
+	]]>
+	</entry>
+	<entry key="checkOutGuest">
+	<![CDATA[
+	 select *  from guest_details where req_id=?
+	]]>
+	</entry>
+	<entry key="otherGuestCheckOutDetails">
+	<![CDATA[
+	select * from ((select * from guest_details) a left join (select guest_id as c_guest_id,status,tr_id,arrival_time_date,roll_no,
+	advance_amt,no_of_children_below12,adults from tr_checkin where status!='CAN' and gh_id=?) b on a.guest_id = b.c_guest_id)g where
+	g.req_id=? 
+	]]>
+	</entry>
+	<entry key="guestCheckOutRoomDetails">
+	<![CDATA[
+	select * from (select type,room_no,bed_no,block_id,gh_id from tr_allotment where allot_id=(select min(allot_id) from tr_checkin_allot
+	where tr_id=? and status!='CAN'))aa join (select block_id,block_name_short,gh_id from room_block)bb on aa.block_id=bb.block_id and
+	aa.gh_id=bb.gh_id 
+	]]>
+	</entry>
+	<entry key="selectCheckOutGuest">
+	<![CDATA[
+	select * from ((select * from guest_details ) a left join (select guest_id as c_guest_id,status,tr_id,arrival_time_date,roll_no,parent_trid,
+	advance_amt,no_of_children_below12,adults from tr_checkin where status='CIN' and gh_id=?) b on a.guest_id = b.c_guest_id)g where
+	g.req_id=?
+	]]>
+	</entry>
+	<entry key="updateCheckOutGuest">
+	<![CDATA[
+	 update tr_checkin set status='COUT', departure_time_date=?,lastmodified=now() 
+	 where tr_id=? and gh_id=? and status='CIN' 
+	]]>
+	</entry>
+	<entry key="updateCheckOutTrCheckAlo">	
+	<![CDATA[
+	 UPDATE tr_checkin_allot SET status='COUT',lastmodified=now() WHERE tr_id=? and status='LIV'
+	]]>
+	</entry>
+	<entry key="selectGuestDetailsInCheckOut">
+	<![CDATA[
+	select count(*) from tr_checkin where status='COUT' and req_id=?
+	]]>
+	</entry>
+	<entry key="selectCancelCheckInDetails">
+	<![CDATA[
+	select * from ((select * from guest_details ) a left join (select guest_id as c_guest_id,roll_no,arrival_time_date,advance_amt,parent_trid,
+	tr_id,status,no_of_children_below12,adults from tr_checkin  where status!='CAN' and gh_id=?) b on a.guest_id = b.c_guest_id
+	left join (select req_id as booking_id,desg,purpose,ext,COALESCE(extra_guest, 0) AS extra_guest from gad_request where req_id=? and status in('CIN','PCIN')) d on a.req_id = d.booking_id)g 
+	left join (select vc_id, desg_category from visitor_category) e on e.vc_id=g.desg left join (select item_id, item_title from m_purpose_items)
+	f on f.item_id=g.purpose
+	where g.req_id=?
+	]]>
+	</entry>
+	<entry key="selectCancelCheckInRoomDetails">
+	<![CDATA[
+		select * from (select type,room_no,bed_no,gh_id,block_id from tr_allotment where allot_id=(select min(allot_id) from tr_checkin_allot
+		where tr_id=?)) a join (select block_id,block_name_short,gh_id from room_block)b on a.gh_id=b.gh_id and a.block_id=b.block_id
+	]]>
+	</entry>
+	<entry key="updateTrcheckinStatus">
+	<![CDATA[
+		update tr_checkin set status='CAN',lastmodified=now() where req_id=? and gh_id=? and status!='CAN' and guest_id =?
+	]]>
+	</entry>
+	<entry key="selectTrCheckinDetail">
+	<![CDATA[
+		select * from tr_checkin where req_id=? and guest_id=? and tr_id=?
+	]]>
+	</entry>
+	<entry key="updateBalanceSheet">
+	<![CDATA[
+		UPDATE tr_balancesheet  SET status='CAN' WHERE adv_receipt_id=? and gh_id=?
+	]]>
+	</entry>
+	<entry key="updateTrCheckinAlot">
+	<![CDATA[
+		UPDATE tr_checkin_allot SET status='CAN',lastmodified=now() WHERE tr_id=?
+	]]>
+	</entry>
+	<entry key="updateTrCheckinReq">
+	<![CDATA[
+		UPDATE tr_checkin_reqid SET status='CAN',lastupdated=now() WHERE tr_id=? and req_id=? and status='LIV'
+	]]>
+	</entry>
+	<entry key="updateTrCheckDetails">
+	<![CDATA[
+		UPDATE tr_checkin SET roll_no=?,advance_amt=?,arrival_time_date =?,adv_bill_id=?,lastmodified=now() where tr_id=? and guest_id=? and req_id=?
+	]]>
+	</entry>
+	<entry key="selectAdvBilId">
+	<![CDATA[
+		select adv_bill_id from tr_checkin where tr_id=? and status='CIN' and req_id=?
+	]]>
+	</entry>
+	<entry key="updateAmountBalanceSheet">
+	<![CDATA[
+		UPDATE tr_balancesheet  SET advance_credit=? WHERE adv_receipt_id=? and gh_id=? 
+	]]>
+	</entry>
+	<entry key="extensioncheckinDetails">
+	<![CDATA[
+		select distinct on(c.req_id) c.gh_id, c.category_type,c.req_id,c.block_id,c.req_date,c.mobile_no,c.from_date,c.to_date,c.name,c.guest_id,c.designation,c.department,c.address,c.status,d.process_id,
+		c.existing_req_id from((select req_id as rid,category_type,from_date,to_date,gh_id,req_date,block_id,mobile_no,status,existing_req_id from gad_request where status not in('CAN','CIN','PCIN','COUT'
+		,'ALO','PALO','REQ','MOD','EXT','PEXT','BILL','RECT') and gh_id=? and block_id=? and ext='1')a join (select * from guest_details)b on a.rid=b.req_id) c left join 
+		(select process_id,req_id from reservation_main_table where status!='CAN')d on c.rid=d.req_id where date(c.to_date)>=date(now())  
+	]]>
+	</entry>
+
+	<entry key="officeOrderGuestList">
+	<![CDATA[
+	SELECT * from (select DISTINCT on (guest_details.req_id) guest_details.*,b.type,tr_allotment.room_no,
+	tr_allotment.room_rent,gad_request.from_date,gad_request.to_date,gad_request.during_stay_conveancy,gad_request.purpose ,
+	gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.category_type,gad_request.desg,
+	gad_request.family,gad_request.gh_id,gad_request.address as main_address,
+	vehicle_req.arrival_time,vehicle_req.arrival_place,vehicle_req.ftno, 
+	vehicle_req1.arrival_time as departure_time,vehicle_req1.arrival_place as departure_place,vehicle_req1.ftno as departure_ftno,gad_request.ext
+	from gad_request 
+	left join (select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE '' END,CASE WHEN 
+    department <> '' THEN CONCAT(',', department) ELSE '' END)),' & ' order by guest_id)as name from guest_details group by req_id)guest_details
+    on gad_request.req_id = guest_details.req_id left join (SELECT req_id,max(type),from_date, to_date, status, STRING_AGG(allot_id, ',') AS
+	allot_id,STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no,
+    STRING_AGG(room_rent,',') AS room_rent FROM tr_allotment WHERE status NOT IN ('CAN') OR (status = 'CAN' AND can_status is not null)
+	GROUP BY req_id,from_date, to_date, status) tr_allotment on tr_allotment.req_id=gad_request.req_id
+	left join vehicle_req on gad_request.req_id = vehicle_req.req_id
+	left join vehicle_req1 on gad_request.req_id = vehicle_req1.req_id
+	left join reservation_main_table b on b.req_id=gad_request.req_id where b.process_id=? and b.type IN('R','BG') and b.status!='CAN')as t  order by desg ASC
+	]]>
+	</entry>
+
+	<entry key="officeOrderPrintGuestList">
+		<!--					   room_details.req_id, room_details.from_date, room_details.to_date, room_details.room_rent,-->
+		<!--			   		   concat(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END) AS room_no,-->
+		<!--			SELECT * FROM get_room_details_by_req_id_from_date(gad_request.req_id)-->
+		<![CDATA[
+		SELECT * from (select
+					   guest_details.name,
+					   room_details.*,
+					   b.type,gad_request.during_stay_conveancy,gad_request.purpose,
+		gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.category_type,gad_request.desg,
+		gad_request.family,gad_request.gh_id,gad_request.address as main_address,
+		vehicle_req.arrival_time,vehicle_req.arrival_place,vehicle_req.ftno,
+		vehicle_req1.arrival_time as departure_time,vehicle_req1.arrival_place as departure_place,vehicle_req1.ftno as departure_ftno
+		FROM gad_request
+		LEFT JOIN LATERAL (
+			SELECT * FROM get_room_details_by_req_id(gad_request.req_id)
+		) room_details ON true
+		left join (select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE '' END,
+			CASE WHEN department <> '' THEN CONCAT(',', department) ELSE '' END)),' & ' order by guest_id)as name from guest_details
+			group by req_id)guest_details on gad_request.req_id = guest_details.req_id
+		left join vehicle_req on gad_request.req_id = vehicle_req.req_id
+		left join vehicle_req1 on gad_request.req_id = vehicle_req1.req_id
+		left join (select distinct req_id, process_id, status, max(type) as type from reservation_main_table GROUP BY req_id, process_id, status) b on b.req_id=gad_request.req_id
+		where b.process_id=? and b.type IN('R','BG') and b.status!='CAN')as t
+		order by desg, req_id, from_date
+	]]>
+	</entry>
+
+	<entry key="officeOrderConveyanceList">
+	<![CDATA[
+	SELECT * from (select DISTINCT on (guest_details.req_id) guest_details.*,b.type,gad_request.from_date,gad_request.to_date,gad_request.during_stay_conveancy,gad_request.purpose ,
+	gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.category_type,gad_request.desg,
+	gad_request.family,gad_request.gh_id,gad_request.address as main_address,
+	vehicle_req.arrival_time,vehicle_req.arrival_place,vehicle_req.ftno, 
+	vehicle_req1.arrival_time as departure_time,vehicle_req1.arrival_place as departure_place,vehicle_req1.ftno as departure_ftno
+	from gad_request 
+	left join (select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE '' END,CASE WHEN department <> '' THEN CONCAT(',', department) ELSE '' END)),' & ' order by guest_id)as name from guest_details group by req_id)guest_details on gad_request.req_id = guest_details.req_id 
+	left join vehicle_req on gad_request.req_id = vehicle_req.req_id
+	left join vehicle_req1 on gad_request.req_id = vehicle_req1.req_id
+	left join reservation_main_table b on b.req_id=gad_request.req_id  where b.process_id=? and b.type IN('C') and b.status!='CAN')as t  order by desg ASC
+	
+	]]>
+	</entry>
+	<entry key="guestDetails">
+	<![CDATA[
+		select *  from guest_details where req_id=?
+	]]>
+	</entry>
+
+	<entry key="viewExtensionGuestDetails">
+	<![CDATA[
+		 select DISTINCT ON(tr_id) * from ((select * from tr_checkin where status='CIN') a join (select allot_id,tr_id as t_tr_id from tr_checkin_allot 
+		 where status!='CAN') b on a.tr_id=b.t_tr_id)c join (select allot_id,gh_id,checkin_date,block_id,room_no from tr_allotment where status in ('CIN','PCIN'))d on c.allot_id=d.allot_id 
+		 where req_id=?
+	]]>
+	</entry>
+
+	<entry key="viewExtensionGuest">
+	<![CDATA[
+			select name,designation,department,address from guest_details where guest_id=?
+	]]>
+	</entry>
+	<entry key="exitingGuestDetailsInTrCheckin">
+	<![CDATA[
+			select * from tr_checkin where req_id=? and guest_id=? and status='CIN'
+	]]>
+	</entry>
+	<entry key="extendsUpdateTrCheckIn">
+	<![CDATA[
+		update tr_checkin set status='PCAN' , lastmodified=now() where req_id=? and guest_id=? and status='CIN';
+	]]>
+	</entry>
+	<entry key="updateExistingGadRequestStatus">
+	<![CDATA[
+		update gad_request set status='EXT' , lastupdated=now() where req_id=? and status='PEXT';
+	]]>
+	</entry>
+	<entry key="updateExistingTrCheckinAllotStatus">
+	<![CDATA[
+		update tr_checkin_allot set status='PCAN' ,lastmodified=now() where tr_id=? and status='LIV'
+	]]>
+	</entry>
+	<entry key="existingTrCheckinAllotGuest">
+	<![CDATA[
+		 select * from tr_checkin_allot where tr_id=? and status='LIV'
+	]]>
+	</entry>
+	<entry key="existingTrCheckinIdStatusUpdate">
+	<![CDATA[
+		update tr_checkin set status='CIN' where tr_id=? and status='PCAN'
+	]]>
+	</entry>
+	<entry key="existingTrCheckinAllotIdStatusUpdate">
+	<![CDATA[
+	update tr_checkin_allot set status='LIV' where tr_id=? and status='PCAN'
+	]]>
+	</entry>
+	<entry key="selectParentReqId">
+	<![CDATA[
+	select req_id from tr_checkin where tr_id=? and status='CIN'
+	]]>
+	</entry>
+	<entry key="updateParentTrIdPext">
+	<![CDATA[
+	update gad_request set status='PEXT' where req_id=? and status='EXT'
+	]]>
+	</entry>
+	<entry key="updateExistingTrAllotMent">
+	<![CDATA[
+	update tr_allotment set status=? where req_id=? and status in ('ACIN','PCIN')
+	]]>
+	</entry>
+	<entry key="updateTrAllotMentDuringSaveExtensionData">
+	<![CDATA[
+	update tr_allotment set status=? where req_id=? and status in('CIN','PCIN')
+	]]>
+	</entry>
+	<entry key="updateTrAllotMentByReqIdAndStatus">
+	<![CDATA[
+	update tr_allotment set status=? where req_id=? and status=?
+	]]>
+	</entry>
+	<entry key="guestCheckinStatus">
+		<![CDATA[
+	   select status  from  tr_checkin   where req_id=? and guest_id=? and status!='CAN'
+		]]>
+	</entry>
+	<entry key="selectPreviousGuestIdThroughNewGusetId">
+		<![CDATA[
+		  select existing_guest_id from guest_details where guest_id=?
+		]]>
+	</entry>
+	<entry key="selectPreviouGstStatusDuringExt">
+		<![CDATA[
+		 select status from tr_checkin where guest_id=? and status !='CAN'
+		]]>
+	</entry>
+	<entry key="updateCancelAlotPrevStatus">
+		<![CDATA[
+		update tr_allotment set status=? where req_id=? and status!='CAN'
+		]]>
+	</entry>
+	<entry key="updateTrCheckOutExitGstCan">
+		<![CDATA[
+		update tr_checkin set status='CAN' where tr_id=? and status='PCAN'
+		]]>
+	</entry>
+	<entry key="updateTrCheckOutExitGstCanInChekcAlo">
+		<![CDATA[
+		update tr_checkin_allot set status='CAN' where tr_id=? and status='PCAN'
+		]]>
+	</entry>
+	<entry key="selectPreviousExtendsTrId">
+		<![CDATA[
+		select parent_trid from tr_checkin where tr_id=? and status!='CAN'
+		]]>
+	</entry>
+	<entry key="updatePreviousExtendsTrId">
+		<![CDATA[
+		update tr_checkin set status='CAN' where tr_id=? and status='PCAN'
+		]]>
+	</entry>
+	<entry key="updatePreviousExtendsTrIdReturn">
+		<![CDATA[
+		update tr_checkin set status='PCAN' where tr_id=? and status='CAN'
+		]]>
+	</entry>
+	<entry key="selectFromDateFromTrAllot">
+		<![CDATA[
+		select from_date from gad_request where req_id=? and status !='CAN'
+		]]>
+	</entry>
+	<entry key="cancelGuestDetailsThroughBookingId">
+		<![CDATA[
+		select * from ((select * from guest_details ) a left join (select guest_id as c_guest_id,roll_no,arrival_time_date,departure_time_date,
+		advance_amt,tr_id,status,no_of_children_below12,adults from tr_checkin where status='COUT') b on a.guest_id = b.c_guest_id)g  where req_id=?
+		]]>
+	</entry>
+	<entry key="updateCancelCheckOutTrCheckin">
+		<![CDATA[
+		update tr_checkin set status=? where tr_id=? and status=?
+		]]>
+	</entry>
+	<entry key="updateCancelCheckOutTrCheckinAllot">
+		<![CDATA[
+		update tr_checkin_allot set status='LIV' where tr_id=? and status in ('COUT','CAN')
+		]]>
+	</entry>
+	<entry key="selectParentTrid">
+		<![CDATA[
+		select parent_trid from tr_checkin where tr_id=? and status='COUT'
+		]]>
+	</entry>
+	<entry key="selectReqId">
+		<![CDATA[
+		select req_id from tr_checkin where tr_id=? 
+		]]>
+	</entry>
+	<entry key="updateTrAllotmentDuringCancelCout">
+		<![CDATA[
+		update tr_allotment set status=? where req_id=? and status in('COUT','CAN')
+		]]>
+	</entry>
+	<entry key="updateCancelCheckOutTrCheckinAllotPrevious">
+		<![CDATA[
+		update tr_checkin_allot set status='PCAN' where tr_id=? and status='CAN'
+		]]>
+	</entry>
+	<entry key="checkPartialCancelOrNot">
+		<![CDATA[
+		select pcr_id from partial_cancel_request where status='ALO' AND req_id=?
+		]]>
+	</entry>
+	<entry key="partialGadRequestCanStatus">
+		<![CDATA[
+		select pcr_id from partial_cancel_request where status='ALO' AND req_id=?
+		]]>
+	</entry>
+	<entry key="partialTrAllotment">
+		<![CDATA[
+		update tr_allotment set status=? where status ='COUT' and allot_id=?
+		]]>
+	</entry>
+	<entry key="partialgadRequest">
+		<![CDATA[
+		update gad_request set can_status=?  where status in ('CIN','PCIN') and req_id=?
+		]]>
+	</entry>
+	<entry key="partialTrAllotmentCanToCin">
+		<![CDATA[
+		update tr_allotment set status=?,can_status=? where status ='CAN' and can_status='PCAN' and allot_id=?
+		]]>
+	</entry>
+	<entry key="deletePartialCancelRequest">
+		<![CDATA[
+		delete from partial_cancel_request where pcr_id=? and status='ALO'
+		]]>
+	</entry>
+	<entry key="selectCheckOutAllotId">
+		<![CDATA[
+		select allot_id from tr_allotment where req_id=? and status='COUT'
+		]]>
+	</entry>
+	<entry key="selectPCANAllotId">
+		<![CDATA[
+		select allot_id from tr_allotment where req_id=? and status='CAN' and can_status='PCAN'
+		]]>
+	</entry>
+	<entry key="getGuestDetails">
+		<![CDATA[
+		select a.guest_id from guest_details a
+		 left join tr_checkin b on a.existing_guest_id=b.guest_id
+		 where b.req_id=? and b.status=?
+		]]>
+	</entry>
+	<!-- <entry key="selectVeicleRequestDetails">
+		<![CDATA[
+		select * from ((select * from vehicle_req where date(arrival_time) >= date(now()))a join (select req_id as reqid,status,is_veh_req,block_id,is_veh_req1 
+		from gad_request where status='PRO')d on a.req_id=d.reqid)e  where  '1'='1'
+		]]>
+	</entry> -->
+	<!--  <entry key="selectVeicleRequestDetails">
+		<![CDATA[
+		SELECT a.req_id, a.is_veh_req,a.status,a.roomtype,gd.name,gd.designation,gd.department,gd.gender,gd.guest_id,a.is_veh_req1, vh1.mode_of_travel as dep_mode_of_travel,vh.arrival_time, vh.arrival_place,vh.ftno,
+		vh.mode_of_travel,vh1.arrival_time as dep_arrival_time, vh1.arrival_place as dep_arrival_place, vh1.ftno as dep_ftno
+		FROM gad_request a
+		LEFT JOIN vehicle_req vh ON a.req_id = vh.req_id
+		LEFT JOIN vehicle_req1 vh1 ON a.req_id = vh1.req_id
+		JOIN guest_details gd ON a.req_id = gd.req_id
+		WHERE a.status = 'PRO' AND a.roomtype In ('C','RC')
+		AND (DATE(vh.arrival_time) >= DATE(NOW()) OR DATE(vh1.arrival_time) >= DATE(NOW()))
+		]]>
+	</entry> -->
+	<entry key="selectVeicleRequestDetails">
+	<![CDATA[
+		SELECT a.req_id, a.is_veh_req, a.status, a.roomtype,
+       gd.name, gd.designation, gd.department, gd.gender, gd.guest_id,
+       a.is_veh_req1, vh1.mode_of_travel AS dep_mode_of_travel,
+       vh.arrival_time, vh.arrival_place, vh.ftno,
+       vh.mode_of_travel, vh1.arrival_time AS dep_arrival_time,
+       vh1.arrival_place AS dep_arrival_place, vh1.ftno AS dep_ftno
+	   FROM gad_request a
+	   LEFT JOIN vehicle_req vh ON a.req_id = vh.req_id
+	   LEFT JOIN vehicle_req1 vh1 ON a.req_id = vh1.req_id
+	   INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+			FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gd ON a.req_id = gd.req_id
+       WHERE a.status = 'PRO' AND a.roomtype IN ('C', 'RC')
+       AND (DATE(vh.arrival_time) >= DATE(NOW()) OR DATE(vh1.arrival_time) >= DATE(NOW()))
+		]]>
+	</entry> 
+	<entry key="countVeicleRequestDetails">
+	<![CDATA[
+		SELECT count(*)
+		FROM gad_request a
+		LEFT JOIN vehicle_req vh ON a.req_id = vh.req_id
+		LEFT JOIN vehicle_req1 vh1 ON a.req_id = vh1.req_id
+		INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gd ON a.req_id = gd.req_id
+		WHERE a.status = 'PRO' AND a.roomtype IN ('C', 'RC')
+		AND (DATE(vh.arrival_time) >= DATE(NOW()) OR DATE(vh1.arrival_time) >= DATE(NOW()))
+		]]>
+	</entry> 
+	<entry key="selectVeicleRequestDetailsDeparture">
+		<![CDATA[
+		select * from ((select * from vehicle_req1 where date(arrival_time) >= date(now()))a join 
+		(select * from gad_request where status='PRO')d on a.req_id=d.req_id)e  where  '1'='1' and
+		e.is_veh_req='0' and e.is_veh_req1='1'
+		]]>
+	</entry>
+	<entry key="departureDetails">
+		<![CDATA[
+		select * from vehicle_req1 where req_id=? and date(arrival_time) >= date(now())
+		]]>
+	</entry>
+
+	<entry key="arrivalDetails">
+		<![CDATA[
+		select * from vehicle_req where req_id=? and date(arrival_time) >= date(now())
+		]]>
+	</entry>
+
+	<entry key="getDriverDetails">
+		<![CDATA[
+		select * from m_vehicle where block_id=?
+		]]>
+	</entry>
+	<entry key="checkVehicleAviability">
+		<![CDATA[
+		select * from vehicle_allotment where req_id != ? and vehicle_no=? and ((to_timestamp(?,'dd-MM-yyyy HH24:MI') between vehicle_start_time  
+		and vehicle_end_time) or (to_timestamp(?,'dd-MM-yyyy HH24:MI') between vehicle_start_time  and vehicle_end_time)) and status!='CAN'
+		]]>
+	</entry>
+	<entry key="insertDataInVehicleAllot">
+		<![CDATA[
+		insert into vehicle_allotment values(?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?)
+		]]>
+	</entry>
+	<entry key="selectMsgsentOrNot">
+		<![CDATA[
+		select status from tr_sms_alltment where req_id=? and gh_id=? and mode=?
+		]]>
+	</entry>
+	<entry key="canAllPending">
+		<![CDATA[
+		update  tr_sms_alltment set status ='D'  where status ='P' and req_id =? and  (mode ='CVALTG' or  mode = 'CVALTV' or  mode = 'CVALTP')
+		]]>
+	</entry>
+	<entry key="selectGstDetails">
+		<![CDATA[
+		select * from (select * from gad_request where req_id=? and gh_id=?) a join 
+		(select * from guest_details)b on a.req_id=b.req_id order by guest_id limit 1
+		]]>
+	</entry>
+	<entry key="gstTrSmsAllt">
+		<![CDATA[
+		INSERT INTO tr_sms_alltment VALUES (?,?,?,?,?,?,now(),?,?,?)
+		]]>
+	</entry>
+	<entry key="gstTrSmsAllt">
+		<![CDATA[
+		INSERT INTO tr_sms_alltment VALUES (?,?,?,?,?,?,now(),?,?,?,?,?)
+		]]>
+	</entry>
+	<entry key="getGstTravelDetails">
+		<![CDATA[
+		select * from vehicle_req where req_id=?
+		]]>
+	</entry>
+	<entry key="getGstTravelDetailsDeparture">
+		<![CDATA[
+		select * from vehicle_req1 where req_id=?
+		]]>
+	</entry>
+	<entry key="updateDataInVehicleAllot">
+		<![CDATA[
+		UPDATE public.vehicle_allotment SET req_id=?, vehicle_details=?, vehicle_no=?, driver_name=?, driver_mobileno=?, time_of_report=?, 
+		place_of_report=?, status=?, gh_id=?, vehicle_start_time=?, vehicle_end_time=?, block_id=?, protocol_name=?, protocol_mobileno=?
+		WHERE vehicle_reqid=? and trip_status=?;
+		]]>
+	</entry>
+	 <entry key="updateSmsAllot">
+		<![CDATA[
+			UPDATE tr_sms_alltment SET subject=?, mobile_no=?, last_modified=now() WHERE req_id=? and gh_id=? and status=? and mode=? and trip_status=?
+		]]>
+	</entry> 
+	<entry key="countVehicleAllotedGuest">
+		<![CDATA[
+		select count (*) from vehicle_allotment where status='AAA' and req_id=? 
+		]]>
+	</entry>
+	<entry key="vehicleAllotmentDetailsGuestWise">
+		<![CDATA[
+		SELECT b.*,a.is_veh_req,a.is_veh_req1,COALESCE(NULLIF(v.arrival_time, NULL),NULLIF(v1.arrival_time, NULL)) AS unexcepted_time,
+		CASE WHEN COALESCE(v.arrival_place, v1.arrival_place) IS NULL THEN '' ELSE COALESCE(v.arrival_place, v1.arrival_place)END AS unexcepted_place
+		FROM gad_request a
+		LEFT JOIN vehicle_allotment b ON a.req_id = b.req_id
+		LEFT JOIN vehicle_req v ON a.req_id = v.req_id AND a.is_veh_req = '1' AND b.trip_status != 'A'
+		LEFT JOIN vehicle_req1 v1 ON a.req_id = v1.req_id AND a.is_veh_req1 = '1' AND b.trip_status != 'D'
+		WHERE b.status = 'AAA' AND a.req_id = ? AND a.block_id = ?
+		]]>
+	</entry>
+	<entry key="cancelVehcileAllotment">
+		<![CDATA[
+		update vehicle_allotment set status='CAN' where req_id=? and status='AAA' and trip_status in ('A','D')
+		]]>
+	</entry>
+	<entry key="cancelSmsVehcileAllotment">
+		<![CDATA[
+		update tr_sms_alltment set status='D' where req_id=? and status='P' and trip_status in ('A','D')
+		]]>
+	</entry>
+	<entry key="viewVehicleAllotedReport">
+		<![CDATA[
+		select * from (((select req_id,req_id as f_id,gh_id,block_id,vehicle_details as arr_veh_detils ,vehicle_no as arr_veh_no, driver_name as arr_drv_name ,driver_mobileno as arr_drv_no ,
+		time_of_report as arr_time_of_report ,place_of_report as arr_place_of_report, protocol_name as arr_pro_name ,protocol_mobileno as arr_pro_no ,status,trip_status			
+		,vehicle_start_time as arr_veh_strt_time,vehicle_end_time as arr_veh_end_time
+		from vehicle_allotment where status='AAA' and trip_status='A') a join (select req_id as rid,mode_of_travel,ftno from vehicle_req) b on 
+		a.req_id=b.rid)e 
+		LEFT JOIN
+		((select req_id as d_id,vehicle_details as dep_veh_detils ,vehicle_no as dep_veh_no, driver_name as dep_drv_name ,driver_mobileno as dep_drv_no ,
+		time_of_report as dep_time_of_report ,place_of_report as dep_place_of_report, protocol_name as dep_pro_name ,protocol_mobileno as dep_pro_no ,status as d_status,trip_status as d_trip_status			
+		,vehicle_start_time as dep_veh_strt_time,vehicle_end_time as dep_veh_end_time
+		from vehicle_allotment where  status='AAA' and trip_status='D') i join (select req_id as rid,mode_of_travel as dep_mod_travel,ftno as dep_ftno from vehicle_req1) f on 
+		i.d_id=f.rid)g on e.req_id=g.d_id
+		LEFT JOIN(SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) k on k.req_id=e.req_id) fa where '1'='1'
+		]]>
+	</entry>
+	<entry key="viewCheckInSlip">
+		<![CDATA[
+		select a.req_id,a.tr_id_list from (select gh_id,max(arrival_time_date) as arrival_date,req_id,STRING_AGG(tr_id::text, ',' order by guest_id asc)
+		AS tr_id_list from tr_checkin where status!='CAN' 
+		
+		]]>
+	</entry>
+	<entry key="viewCheckInSlipIndividualy">
+		<![CDATA[
+		select * from (select * from tr_checkin where status!='CAN' order by arrival_time_date desc)a join (select * from guest_details)b on 
+		a.guest_id=b.guest_id and a.req_id=b.req_id
+		LEFT JOIN (select req_id, STRING_AGG(distinct room_no::text, ',') AS room_list, STRING_AGG(bed_no::text, ',') AS bed_list from tr_allotment where status!='CAN' GROUP BY req_id) r on r.req_id=a.req_id
+		where tr_id=?
+		]]>
+	</entry>
+	<entry key="saveConfernceBookingDetails">
+		<![CDATA[
+		INSERT INTO public.gad_request(
+		req_id, gh_id, lastupdated, from_date,to_date,status,mode_of_req,address, req_date, roomtype, block_id, category_type,mobile_no,userid,is_veh_req,is_veh_req1,ext)
+		VALUES (?, ?, now(), ?, ?,?,?, ?, now(), ?, ?, ?,?,?, ?, ?,?)
+		]]>
+	</entry>
+	<entry key="saveConfernceRequest">
+		<![CDATA[
+		INSERT INTO tr_conf_request(
+		conf_req_id, conf_cat_id, fromdate,todate,conf_use_id, status, entrydate, name, address, gh_id, block_id,capacity,req_id)
+		VALUES (?, ?, ?,?, ?, ?,now(),?, ?, ?, ?, ?,?)
+		]]>
+	</entry>
+	<entry key="saveConfrenceBill">
+		<![CDATA[
+		INSERT INTO tr_conf_bill(
+		conf_bill_id,req_id, charge, status, entrydate, gh_id,additionalcharge,advance_amount,mode_of_payment)
+		VALUES (?, ?, ?, ?, now(), ?,?,?,?);
+		]]>
+	</entry>
+	<entry key="getConfrenceRoomDetails">
+		<![CDATA[
+		SELECT distinct a.conf_cat_id, a.conf_cat_desc
+		FROM m_conf_hall_category a
+		join m_conf_hall_charge b on a.conf_cat_id=b.conf_cat_id
+		where a.status='A' and b.block_id=?
+		]]>
+	</entry>
+	<entry key="getConfrenceUseDetails">
+		<![CDATA[
+		SELECT a.conf_use_id, b.conf_use_desc
+		FROM m_conf_hall_charge a join 
+		m_conf_hall_use b on a.conf_use_id=b.conf_use_id
+		where a.conf_cat_id=? and a.block_id=? and a.status='1'
+		]]>
+	</entry>
+	<entry key="getConfrenceAmount">
+		<![CDATA[
+		select CONCAT(charge,',',capacity)  from m_conf_hall_charge a
+		join m_conf_hall_category b on a.conf_cat_id=b.conf_cat_id
+		where a.conf_cat_id=? and a.conf_use_id=? and a.block_id=?
+		]]>
+	</entry>
+	<entry key="getAmountAndCapacity">
+		<![CDATA[
+		select charge,capacity from m_conf_hall_charge a
+		join m_conf_hall_category b on a.conf_cat_id=b.conf_cat_id
+		where a.conf_cat_id=? and a.conf_use_id=? and a.block_id=? 
+		]]>
+	</entry>
+	<!-- 
+	 *getVacancy previous #17-07-2024
+		select count(a.*) from tr_conf_request  a join tr_conf_bill tcb on tcb.req_id=a.req_id where 
+		(( '2024-08-11 08:00' between a.fromdate and a.todate) or ( '2024-08-11 22:00' between a.fromdate and a.todate)) 
+		and a.conf_cat_id='3' and a.block_id='06' and a.status='1' and tcb.status in ('NB','P','B','FB') -->
+	<entry key="getVacancy">
+		<![CDATA[
+			select count(a.*) from tr_conf_request  a
+			join tr_conf_bill tcb on tcb.req_id=a.req_id
+			left join gad_request gd on gd.req_id=a.req_id
+			where (( ? between a.fromdate  
+			and a.todate) or ( ? between a.fromdate  
+			and a.todate)) and a.conf_cat_id=? and a.block_id=? and a.status='1'
+			and (tcb.status in ('P','B','FB') or (tcb.status='NB' and gd.mode_of_req !='PUB'))
+		]]>
+	</entry>
+	<entry key="getListOfConfrenceRequest">
+		<![CDATA[		
+			select gh.req_id,gh.block_id,gh.from_date,gh.to_date,gh.status,gh.category_type,gh.req_date,gh.mobile_no,b.name,b.address,b.capacity,trb.charge,
+			trb.additionalcharge,trb.advance_amount,trb.mode_of_payment,trb.conf_bill_id,trb.status as bill_status,mc.conf_cat_desc,mu.conf_use_desc,mc.conf_cat_id,mu.conf_use_id,
+			gadDtls.gh_name,rm.block_name
+			from gad_request gh join tr_conf_request b
+			on gh.req_id=b.req_id join tr_conf_bill trb on b.req_id=trb.req_id 
+			left join m_conf_hall_category mc on mc.conf_cat_id=b.conf_cat_id
+			left join m_conf_hall_use mu on mu.conf_use_id=b.conf_use_id
+			left join gh_details gd on gd.gh_id=gh.gh_id
+			left join room_block rm on rm.block_id=gh.block_id
+			JOIN room_block rb on rb.block_id = gh.block_id 
+			JOIN gh_details gadDtls on gadDtls.gh_id = gh.gh_id
+			where gh.status in ('REQ','ALO','PRO','CAN') and gh.mode_of_req in('GH','PUB')  and roomType='CON' AND trb.status not in ('NB','B')
+		]]>
+	</entry>
+	<entry key="getListOfConfrenceRequestAdmin">
+		<![CDATA[		
+			select gh.req_id,gh.block_id,gh.from_date,gh.to_date,gh.status,gh.category_type,gh.req_date,gh.mobile_no,b.name,b.address,b.capacity,trb.charge,
+			trb.additionalcharge,trb.advance_amount,trb.mode_of_payment,trb.conf_bill_id,trb.status as bill_status,mc.conf_cat_desc,mu.conf_use_desc,mc.conf_cat_id,mu.conf_use_id,
+			gadDtls.gh_name,rm.block_name
+			from gad_request gh join tr_conf_request b
+			on gh.req_id=b.req_id join tr_conf_bill trb on b.req_id=trb.req_id 
+			left join m_conf_hall_category mc on mc.conf_cat_id=b.conf_cat_id
+			left join m_conf_hall_use mu on mu.conf_use_id=b.conf_use_id
+			left join gh_details gd on gd.gh_id=gh.gh_id
+			left join room_block rm on rm.block_id=gh.block_id
+			JOIN room_block rb on rb.block_id = gh.block_id 
+			JOIN gh_details gadDtls on gadDtls.gh_id = gh.gh_id
+			where gh.status in ('REQ','ALO','PRO','CAN')  and (gh.mode_of_req in('GH') OR (gh.mode_of_req='PUB' and trb.status not in ('NB','B'))) and roomType='CON'
+		]]>
+	</entry>
+	<entry key="updateConfrenceBalance">
+		<![CDATA[
+			update tr_conf_bill set status=? , additionalcharge=? where req_id=? and status !='D'
+		]]>
+	</entry>
+	<entry key="editConfrenceDetails">
+		<![CDATA[
+			update tr_conf_request set  name=?,address=?,capacity=? where req_id=? and  status='1'
+		]]>
+	</entry>
+	<entry key="editGadDetails">
+		<![CDATA[
+			update gad_request set address=?,mobile_no=? where req_id=? and status='REQ'
+		]]>
+	</entry>
+	<entry key="updateCancelgad">
+		<![CDATA[
+			update gad_request set status='CAN' where req_id=? and status in ('REQ','ALO','PRO')
+		]]>
+	</entry>
+	<entry key="updateCancelConfrenceBalance">
+		<![CDATA[
+			update tr_conf_bill set status='D' where req_id=? and status='P'
+		]]>
+	</entry>
+	<entry key="updateCancelConfrenceRequest">
+		<![CDATA[
+			update tr_conf_request set status='0' where req_id=? and status='1'
+		]]>
+	</entry>
+	<entry key="selectGhIdBillId">
+		<![CDATA[
+			select conf_bill_id,gh_id from tr_conf_bill where req_id=? and status='B'
+		]]>
+	</entry>
+	<entry key="saveInConfReciept">
+		<![CDATA[
+				INSERT INTO tr_conf_receipt(
+				conf_receipt_id, conf_bill_id, payed, status, entrydate, gh_id, balance, conf_req_id)
+				VALUES (?, ?, ?, ?, now(), ?, ?, ?);
+		]]>
+	</entry>
+	<entry key="updateConfrenceBill">
+		<![CDATA[
+			select conf_bill_id,gh_id from tr_conf_bill where req_id=? and status='B'
+		]]>
+	</entry>
+	<entry key="updateConfrenceBillStatus">
+		<![CDATA[
+			update tr_conf_bill set status=? where conf_bill_id=? and status!='D'
+		]]>
+	</entry>
+	<entry key="getPaymentType">
+		<![CDATA[
+			select gr.req_id,guest_details.name,c.*,d.status,b.status as rec_status,d.gh_id,d.entrydate as bill_date,b.entrydate as receipt_date,guest_details.block_id,gr.mobile_no
+			,rb.block_name,gd.gh_name, rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail,q.category,gr.address as guest_address,tc.fromdate,tc.todate 
+			,chc.conf_cat_desc,chu.conf_use_desc,d.advance_amount,b.payed,d.charge,d.additionalcharge
+			from tr_conf_receipt b 
+			join receipt_payment_mode c on c.rec_id=b.conf_receipt_id
+			join tr_conf_bill d on d.conf_bill_id=b.conf_bill_id
+			join public.gad_request gr on d.req_id = gr.req_id
+			join public.tr_conf_request tc on tc.req_id = d.req_id
+			left join (select block_id,req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN address <> '' THEN CONCAT(',', address) ELSE '' END)),' & ' order by req_id)as name from tr_conf_request group by req_id,block_id)guest_details on d.req_id = guest_details.req_id 
+			JOIN room_block rb on rb.block_id = guest_details.block_id 
+			JOIN gh_details gd on gd.gh_id = d.gh_id
+			JOIN quota q ON q.quota_type = gr.category_type
+			JOIN public.m_conf_hall_category chc on tc.conf_cat_id = chc.conf_cat_id
+			JOIN public.m_conf_hall_use chu on tc.conf_use_id = chu.conf_use_id
+			where d.conf_bill_id=?
+		]]>
+	</entry>
+	<entry key="getConfrenceRoomDetailsGuestSide">
+		<![CDATA[
+		SELECT distinct a.conf_cat_id, a.conf_cat_desc
+		FROM m_conf_hall_category a
+		join m_conf_hall_charge b on a.conf_cat_id=b.conf_cat_id
+		where a.status='A' and b.block_id=?
+		]]>
+	</entry>
+	
+	<entry key="getConfrenceUseDetailsGuestSide">
+		<![CDATA[
+		SELECT a.conf_use_id, b.conf_use_desc
+		FROM m_conf_hall_charge a join 
+		m_conf_hall_use b on a.conf_use_id=b.conf_use_id
+		where a.conf_cat_id=? and a.block_id=? and a.status='1'
+		]]>
+		</entry>
+		
+		<entry key="guestPaymentDetails">
+		<![CDATA[
+		select a.req_id,a.name,z.mobile_no,a.address,a.capacity,b.charge,b.advance_amount,c.conf_cat_desc,d.conf_use_desc,b.conf_bill_id from tr_conf_request a 
+		join tr_conf_bill b
+		on a.req_id=b.req_id
+		join m_conf_hall_category c
+		on a.conf_cat_id=c.conf_cat_id
+		join m_conf_hall_use d
+		on a.conf_use_id=d.conf_use_id
+		join gad_request z on 
+		z.req_id=a.req_id
+		where a.req_id=? and a.status!='0' and b.status!='D'
+		]]>
+		</entry>
+		
+		<entry key="getGhId">
+		<![CDATA[
+		select gh_id from room_block where block_id=?
+		]]>
+		</entry>
+		
+		<entry key="totalRoomRent">
+		<![CDATA[
+		select sum(room_rent::numeric) from tr_allotment 
+		where req_id=? and status!='CAN' and block_id=?
+		]]>
+		</entry>
+		<entry key="forNocStatus">
+		<![CDATA[
+		SELECT allot_id FROM tr_allotment WHERE from_date < ? and req_id=? and status='PRO'
+		]]>
+		</entry>
+		<entry key="forRestStatus">
+		<![CDATA[
+		SELECT allot_id FROM tr_allotment WHERE from_date >= ? and req_id=? and status!='CAN'
+		]]>
+		</entry>
+		<entry key="forUpdateNocStatus">
+		<![CDATA[
+		update tr_allotment set status=?,checkin_date=null,checkout_date=null where allot_id=? and status in('PRO')
+		]]>
+		</entry>
+		<entry key="forUpdateCinStatus">
+		<![CDATA[
+		update tr_allotment set status=?,checkin_date=? where allot_id=?
+		]]>
+		</entry>
+		<entry key="forUpdateCinStatusNotTime">
+		<![CDATA[
+		update tr_allotment set status=? where allot_id=?
+		]]>
+		</entry>
+		<entry key="updateAllotMentStatusNotTime">
+		<![CDATA[
+		update tr_allotment set status=? where req_id=? and status != 'CAN' 
+		]]>
+		</entry>
+		<entry key="limitedStatusChange">
+		<![CDATA[
+		 update tr_allotment set status=? where req_id=? and status='PCIN'
+		]]>
+		</entry>
+		<entry key="getVehicleAllotedReportDeparture">
+		<![CDATA[
+		select * from (
+		((select req_id as d_id,vehicle_details as dep_veh_detils ,vehicle_no as dep_veh_no, driver_name as dep_drv_name ,driver_mobileno as dep_drv_no ,
+		time_of_report as dep_time_of_report ,place_of_report as dep_place_of_report, protocol_name as dep_pro_name ,protocol_mobileno as dep_pro_no ,status as d_status,trip_status as d_trip_status			
+		,vehicle_start_time as dep_veh_strt_time,vehicle_end_time as dep_veh_end_time
+		from vehicle_allotment where  status='AAA' and trip_status='D') i join 
+		(select req_id as rid,mode_of_travel as dep_mod_travel,ftno as dep_ftno from vehicle_req1) f on 
+		 i.d_id=f.rid)e
+		LEFT JOIN gad_request gd on gd.req_id=e.rid
+		LEFT JOIN(SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+		FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) k on k.req_id=e.rid) fa where  is_veh_req1='1' and is_veh_req='0'
+		]]>
+		</entry>
+		
+		<entry key="getToDateForCheckout">
+		<![CDATA[
+		select to_date from gad_request where  status!='CAN' and req_id=?
+		]]>
+		</entry>
+		
+		<entry key="spentDate">
+		<![CDATA[
+		SELECT allot_id FROM tr_allotment WHERE to_date <= ? and req_id=? and status in ('CIN','PCIN')
+		]]>
+		</entry>
+		
+		<entry key="leftOverDate">
+		<![CDATA[
+		 SELECT allot_id FROM tr_allotment WHERE to_date > ? and req_id=? and status in ('CIN','PCIN')
+		]]>
+		</entry>
+		<entry key="spentDateStatus">
+		<![CDATA[
+		update tr_allotment set status='COUT',checkout_date=? where allot_id=?
+		]]>
+		</entry>
+		<entry key="leftOverStatus">
+		<![CDATA[
+		update tr_allotment set status='CAN' ,can_status='PCAN' where allot_id=?
+		]]>
+		</entry>
+		<entry key="countForSlip">
+		<![CDATA[
+		update tr_allotment set status='CAN' where allot_id=?
+		]]>
+		</entry>
+		<entry key="checkPartialCancelUpdateOrNot">
+		<![CDATA[		
+		select count(*) from partial_cancel_request where status!='CAN' and req_id=?
+		]]>
+		</entry>
+		<entry key="updateGadUpdateCanStatus">
+		<![CDATA[		
+		update gad_request set can_status='PCAN' where status='COUT' and req_id=?
+		]]>
+		</entry>
+		<entry key="updateTrCheckInCoutStatus">
+		<![CDATA[		
+		update tr_checkin_allot set status=? where status='LIV' and allot_id=?
+		]]>
+		</entry>
+		
+		<entry key="insertInPartialContentRequest">
+		<![CDATA[		
+		INSERT INTO partial_cancel_request(
+		pcr_id, from_date, to_date, req_id, status, last_modified)
+		VALUES (?, ?, ?, ?, ?, now());
+		]]>
+		</entry>
+		<entry key="selectArrivalTimeInTrCheckIn">
+		<![CDATA[		
+		select arrival_time_date from tr_checkin where tr_id=? and status!='CAN'
+		]]>
+		</entry>
+		<entry key="deleteTrCheckInAllotOnEdit">
+		<![CDATA[		
+		delete from tr_checkin_allot where tr_id=? and status='LIV'
+		]]>
+		</entry>
+		<entry key="updateVehArrivalTime">
+		<![CDATA[		
+		update vehicle_req set arrival_time=? where req_id=?
+		]]>
+		</entry>
+		<entry key="updateVehArrivalTime1">
+		<![CDATA[		
+		update vehicle_req1 set arrival_time=? where req_id=?
+		]]>
+		</entry>
+		<entry key="setNoOfExtraGuest">
+		<![CDATA[		
+		update gad_request set extra_guest=? where req_id=?
+		]]>
+		</entry>
+		<entry key="getNoOfGuest">
+		<![CDATA[		
+		SELECT COALESCE(extra_guest, 0) AS extra_guest 
+		FROM gad_request 
+		WHERE req_id = ?;
+		]]>
+		</entry>
+		<entry key="getModifyRoomSm">
+		select req_id from modify_reservation where process_id=?
+		</entry>
+		<!-- for the data table process -->
+		<entry key="countForCheckInSlip">
+		<![CDATA[		
+				select  count(DISTINCT req_id) from tr_checkin where status!='CAN'
+		]]>
+		</entry>
+		<entry key="getGuestForSms">
+		<![CDATA[		
+		select distinct on(gd.req_id) name,mobile_no,email_id,block_name,gh_name from guest_details  gd
+		join gad_request  gr on gd.req_id=gr.req_id
+		join room_block rb on gr.block_id=rb.block_id 
+		join gh_details gcd on gr.gh_id=gcd.gh_id 
+		where gd.req_id=?
+		]]>
+		</entry>
+		<entry key="getNocRecord">
+		<![CDATA[		
+		select a.req_id,a.from_date,a.to_date,SUM(ta.room_rent::numeric) AS total_room_rent from gad_request a 
+		join tr_allotment ta on ta.req_id=a.req_id
+		LEFT join noc_table nt on nt.req_id = ta.req_id 
+		where a.status='PRO' AND ta.status='PRO'
+	 	AND a.to_date < NOW() - INTERVAL '1' DAY
+		AND nt.req_id IS NULL
+		group by a.req_id,a.from_date,a.to_date
+		]]>
+		</entry>
+		<entry key="saveDataInNocTable">
+		<![CDATA[		
+		INSERT INTO noc_table(
+		noc_id, req_id,from_date, to_date, noc_charge, created_date)
+		VALUES (?, ?, ?, ?, ?,now())
+		]]>
+		</entry>
+		<entry key="AllotTimeApproverList">
+		<![CDATA[		
+		SELECT a.block_id,
+      CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE ''
+		END,CASE WHEN department <> '' THEN CONCAT(',', department) ELSE '' END,',',d.address) AS concatenated_string,
+       a.req_id,
+       a.status,
+       a.vc_id,
+       a.req_date,
+       a.quota_type,
+       max(a.type) as type,
+       a.from_date,
+       a.to_date,
+       string_agg(DISTINCT c.room_no::text, ', ') AS room_nos,
+	   string_agg(DISTINCT c.room_rent::text, ', ') AS room_rents,
+	   d.during_stay_conveancy,
+	   concat('Flight/Train No:', COALESCE(' ' || v.ftno, ''), COALESCE(' at ' || v.arrival_time, ''),
+		COALESCE(' in ' || v.arrival_place, '')) AS arrival,
+		concat('Flight/Train No:', COALESCE(' ' || v1.ftno, ''), COALESCE(' at ' || v1.arrival_time, ''),
+		COALESCE(' in ' || v1.arrival_place, '')) AS departure
+		FROM v_current_mod a
+		JOIN (
+		    SELECT *
+		    FROM (
+		        SELECT *,
+		               ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		        FROM guest_details
+		    ) AS gh_dt
+		    WHERE gh_dt.row_number = 1
+		) b ON b.req_id = a.req_id
+		JOIN tr_allotment c ON c.req_id = a.req_id
+		JOIN gad_request d ON d.req_id = a.req_id
+		left join vehicle_req v on v.req_id=a.req_id
+		left join vehicle_req1 v1 on v1.req_id=a.req_id
+		WHERE a.status != 'CAN'
+		  AND a.from_date::date >= now()::date
+		  AND c.status!='CAN'
+		]]>
+		</entry>
+	<entry key="AllotConveyanceListSQL">
+		<![CDATA[		
+		select  distinct on(a.rid) a.* ,CONCAT(b.name, COALESCE(', ' || NULLIF(b.designation, ''), ''), COALESCE(', ' || NULLIF(b.department, ''), ''),',',gr.address) AS concatenated_string,
+		concat('Flight/Train No:', COALESCE(' ' || c.ftno, ''), COALESCE(' at ' || c.arrival_time, ''),
+		COALESCE(' in ' || c.arrival_place, '')) AS arrival,
+		concat('Flight/Train No:', COALESCE(' ' || d.ftno, ''), COALESCE(' at ' || d.arrival_time, ''),
+		COALESCE(' in ' || d.arrival_place, '')) AS departure,
+		case when gr.during_stay_conveancy = '0' then 'No' else 'yes' end
+		from v_conv a
+		left join gad_request gr on gr.req_id=a.rid
+		left join (
+		    SELECT *
+		    FROM (
+		        SELECT *,
+		               ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number
+		        FROM guest_details
+		    ) AS gh_dt
+		    WHERE gh_dt.row_number = 1
+		) b on b.req_id=a.rid
+		left join vehicle_req c on  c.req_id=a.rid
+		left join vehicle_req1 d on  d.req_id=a.rid
+		where a.status ='ALO' 
+		and (a.arrival_time >= now() OR a.departure_time >= now()) 
+		 
+		]]>
+		</entry>
+		<entry key="getCancelListForApproverSQLAlo">
+		<![CDATA[		
+		select a.req_id,a.req_date,d.name,COALESCE(c.from_date, COALESCE(n.from_date, a.from_date)) AS from_date,COALESCE(c.to_date, a.to_date) AS to_date,a.mobile_no,a.email_id,a.status,a.can_status,CONCAT(d.name, COALESCE(', ' || NULLIF(d.designation, ''), ''), COALESCE(', ' || NULLIF(d.department, ''), ''),',',a.address)
+		AS concatenated_string
+		,STRING_AGG(g.room_no, ',') AS room_no,STRING_AGG(g.room_rent, ',') AS room_rent,
+		(CASE WHEN (n.req_id IS NOT null OR c.req_id IS NOT null) THEN 1 ELSE 0 END) AS partial_c
+		from gad_request as a LEFT JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS
+		row_number FROM guest_details) AS b WHERE b.row_number = 1) AS d ON a.req_id = d.req_id
+		left join partial_cancel_request c on d.req_id = c.req_id 
+		left join tr_allotment g on g.req_id = a.req_id 
+		LEFT JOIN noc_table n on n.req_id = a.req_id
+		]]>
+		</entry>
+		<entry key="getModifiedListAlloTime">
+		<![CDATA[		
+		SELECT DISTINCT ON (g.req_id) g.req_id,g.req_date,g.from_date,g.to_date,g.category_type,g.mobile_no,CONCAT(gs.name, COALESCE(', ' || NULLIF(gs.designation, ''), ''), COALESCE(', ' || NULLIF(gs.department, ''), ''),',',g.address) AS name,g.status,
+		s.subject,s.prev_order_no,s.prev_order_date,STRING_AGG(distinct(SELECT  CONCAT(a.prev_room_no, CASE WHEN a.prev_bed_no IS NOT NULL THEN
+		CONCAT('-', a.prev_bed_no) END)), ',') AS prev_room_no, STRING_AGG(DISTINCT a.prev_room_rent, ',') AS prev_room_rent,
+		STRING_AGG(distinct(SELECT  CONCAT(a.room_no, CASE WHEN a.bed_no IS NOT NULL THEN
+		CONCAT('-', a.bed_no) END)), ',') AS room_no, STRING_AGG(DISTINCT a.room_rent, ',') AS room_rent
+		FROM gad_request g JOIN tr_sms_alltment s ON g.req_id = s.req_id JOIN tr_allotment a ON a.req_id = g.req_id
+		LEFT JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number FROM guest_details
+		) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON g.req_id = gs.req_id WHERE a.mod_status = 'MMODF'
+		]]>
+		</entry>
+		<entry key="getAllotRoomByReqId">
+		<![CDATA[		
+		select req_id,string_agg(allot_id::text, ',') AS allot_ids, string_agg(room_no::text, ',') AS room_nos,from_date,to_date 
+		from tr_allotment where req_id=? and status='PRO' group by from_date,to_date,req_id
+		order by from_date asc 
+		]]>
+		</entry>
+		<entry key="updateAllotRoomCan">
+		<![CDATA[		
+		update tr_allotment set status=? where status=? 
+		]]>
+		</entry>
+		<entry key="countCheckIn">
+		<![CDATA[		
+		select count(distinct(c.req_id,from_date)) as sum from((select req_id as rid,req_date,from_date,category_type,to_date,gh_id,status,block_id from gad_request where status in ('PRO', 'PCIN') and gh_id=?
+		and ext='0' and block_id=?)a join (select * from guest_details)b on a.rid=b.req_id) c left join (select process_id,req_id from reservation_main_table where
+		status!='CAN' and gh_id=? and block_id=?)d on c.rid=d.req_id
+		]]>
+		</entry>
+		<entry key="countCheckOut">
+		<![CDATA[		
+		select count(distinct(c.req_id,from_date))
+		from ((select req_id AS rid,category_type,from_date,to_date,status,ext,req_date,gh_id,block_id
+		from gad_request where (status='CIN' or status='PCIN') and gh_id=? and block_id =?) a
+		join (select * from guest_details)b on a.rid=b.req_id) c 
+		left join (select process_id,req_id from reservation_main_table where status!='CAN' and gh_id=? and block_id=?) d on c.rid=d.req_id
+		]]>
+		</entry>
+		<entry key="checkPendingNocSQL">
+		<![CDATA[
+			select count(*) from gad_request a join noc_table b on a.req_id=b.req_id 
+			where a.mobile_no=? and b.status is null and noc_charge is not null
+		]]>
+		</entry>
+		<entry key="updateUserDetailsSQL">
+			<![CDATA[
+				update adminr.user set first_name=?,last_name=?,email_id=?,contact_no=?
+				where user_id=? and user_type=?
+			]]>
+		</entry>
+		<entry key="getFullCancelUserDeailsForSms">
+			<![CDATA[
+					SELECT DISTINCT ON (ta.req_id) gr.req_id,gd.name,gr.mobile_no,gr.email_id,STRING_AGG(DISTINCT ta.room_no, ',') AS room_numbers,
+				gr.from_date,gr.to_date,nt.from_date AS nfrom_date,nt.to_date AS nto_date,COALESCE(nt.noc_charge, 0) AS noc_charge,rb.block_name,
+				gh.gh_name FROM gad_request gr JOIN (SELECT DISTINCT ON (req_id) * FROM guest_details ORDER BY req_id, guest_id) gd ON gr.req_id =
+				gd.req_id JOIN tr_allotment ta ON ta.req_id = gr.req_id JOIN cancel_reservation cr ON cr.req_id = gr.req_id JOIN room_block rb ON 
+				gr.block_id = rb.block_id JOIN gh_details gh ON gh.gh_id = gr.gh_id LEFT JOIN noc_table nt ON nt.req_id = cr.req_id
+				WHERE cr.process_id = ? and gr.can_status!='PCAN'  GROUP BY ta.req_id, gr.req_id, gd.name, gr.mobile_no, gr.email_id,
+				gr.from_date, gr.to_date, nt.from_date, nt.to_date, nt.noc_charge,rb.block_name, gh.gh_name
+			]]>
+		</entry>
+		<entry key="getPartialCancelUserDeailsForSms">
+			<![CDATA[
+					SELECT DISTINCT ON (ta.req_id) gr.req_id,gd.name,gr.mobile_no,gr.email_id,STRING_AGG(DISTINCT ta.room_no, ',') AS room_numbers,
+						pcr.from_date,pcr.to_date,rb.block_name,gh.gh_name FROM gad_request gr JOIN (SELECT DISTINCT ON (req_id) * 
+						FROM guest_details ORDER BY req_id, guest_id) gd ON gr.req_id =gd.req_id JOIN tr_allotment ta ON ta.req_id = gr.req_id JOIN 
+						cancel_reservation cr ON cr.req_id = gr.req_id JOIN room_block rb ON gr.block_id = rb.block_id JOIN gh_details gh ON gh.gh_id
+						= gr.gh_id JOIN partial_cancel_request pcr on gr.req_id=pcr.req_id WHERE cr.process_id = ? and gr.can_status='PCAN' GROUP BY ta.req_id, gr.req_id,
+						gd.name, gr.mobile_no, gr.email_id,pcr.from_date, pcr.to_date,rb.block_name, gh.gh_name
+			]]>
+		</entry>
+		<entry key="pendingDuesFillupResponse">
+			<![CDATA[
+					select distinct on (gd.req_id) gr.req_id,gd.name,gr.email_id,gr.mobile_no,gr.from_date,gr.to_date,rb.block_name,ghd.gh_name from gad_request gr join guest_details gd on 
+					gr.req_id=gd.req_id join room_block rb on gr.block_id=rb.block_id join gh_details ghd on gr.gh_id=ghd.gh_id 
+					where gr.req_id=?
+			]]>
+		</entry>
+		<entry key="getConferenceSmsDetails">
+		<![CDATA[
+			select a.name,e.mobile_no,a.fromdate,f.advance_amount,b.gh_name,c.block_name,d.conf_cat_desc from
+			tr_conf_request a join room_block c on c.block_id=a.block_id
+			join gh_details b on b.gh_id=a.gh_id
+			join m_conf_hall_category d on d.conf_cat_id=a.conf_cat_id
+			join gad_request e on e.req_id=a.req_id 
+			join tr_conf_bill f on f.req_id=a.req_id 
+			where a.req_id=?
+		]]>
+		</entry>
+		<entry key="getCashInCheckIn">
+		<![CDATA[
+			select coalesce(sum(advance_amt::numeric),0) from tr_checkin tr
+			join gad_request gd on gd.req_id=tr.req_id
+			where tr.arrival_time_date::date= :fromDate and tr.status !='CAN'
+		]]>
+		</entry>
+		<entry key="getCashInReceipt">
+		<![CDATA[
+			select coalesce(sum(rpm.amount::numeric),0) from tr_receipt tr
+		join receipt_payment_mode rpm on rpm.rec_id=tr.rec_id
+		where tr.date_rece::date= :fromDate  and tr.status='RECT'
+		and rpm.mode_of_payment='cash'
+		]]>
+		</entry>
+		<entry key="getCashInConference">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from tr_conf_receipt tcr
+		join receipt_payment_mode rpm on rpm.rec_id=tcr.conf_receipt_id
+		join gad_request gd on gd.req_id=tcr.conf_req_id
+		where tcr.entrydate::date= :fromDate
+		and rpm.mode_of_payment='cash'
+		]]>
+		</entry>
+		<entry key="getCashInNoc">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from noc_table nt
+		join receipt_payment_mode rpm on rpm.rec_id=nt.rec_id
+		join gad_request gd on gd.req_id=nt.req_id
+		where nt.date_of_pay::date= :fromDate
+		and rpm.mode_of_payment='cash'
+		]]>
+		</entry>
+		<entry key="getPosInReceipt">
+		<![CDATA[
+		select coalesce(sum(rpm.amount::numeric),0) from tr_receipt tr
+		join receipt_payment_mode rpm on rpm.rec_id=tr.rec_id
+		where tr.date_rece::date= :fromDate and tr.status='RECT'
+		and rpm.mode_of_payment='pos'
+		]]>
+		</entry>
+		<entry key="getPosInConference">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from tr_conf_receipt tcr
+		join receipt_payment_mode rpm on rpm.rec_id=tcr.conf_receipt_id
+		join gad_request gd on gd.req_id=tcr.conf_req_id
+		where tcr.entrydate::date= :fromDate
+		and rpm.mode_of_payment='pos'
+		]]>
+		</entry>
+		<entry key="getPosInNoc">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from noc_table nt
+		join receipt_payment_mode rpm on rpm.rec_id=nt.rec_id
+		join gad_request gd on gd.req_id=nt.req_id
+		where nt.date_of_pay::date= :fromDate
+		and rpm.mode_of_payment='pos'
+		]]>
+		</entry>
+		<entry key="getOnlineInReceipt">
+		<![CDATA[
+		select coalesce(sum(rpm.amount::numeric),0) from tr_receipt tr
+		join receipt_payment_mode rpm on rpm.rec_id=tr.rec_id
+		where tr.date_rece::date= :fromDate  and tr.status='RECT'
+		and rpm.mode_of_payment='online'
+		]]>
+		</entry>
+		<entry key="getOnlineInConference">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from tr_conf_receipt tcr
+		join receipt_payment_mode rpm on rpm.rec_id=tcr.conf_receipt_id
+		join gad_request gd on gd.req_id=tcr.conf_req_id
+		where tcr.entrydate::date= :fromDate
+		and rpm.mode_of_payment='online'
+		]]>
+		</entry>
+		<entry key="getOnlineInNoc">
+		<![CDATA[		
+		select coalesce(sum(rpm.amount::numeric),0) from noc_table nt
+		join receipt_payment_mode rpm on rpm.rec_id=nt.rec_id
+		join gad_request gd on gd.req_id=nt.req_id
+		where nt.date_of_pay::date=:fromDate
+		and rpm.mode_of_payment='online'
+		]]>
+		</entry>
+		<entry key="getCategoryPercent">
+		<![CDATA[		
+		SELECT
+		    COUNT(*) AS total_count,
+		    SUM(CASE WHEN category_type = 'C1' THEN 1 ELSE 0 END) AS C1Count,
+		    SUM(CASE WHEN category_type = 'C2' THEN 1 ELSE 0 END) AS C2Count,
+		    SUM(CASE WHEN category_type = 'C3' THEN 1 ELSE 0 END) AS C3Count,
+		    SUM(CASE WHEN category_type = 'C4' THEN 1 ELSE 0 END) AS C4Count,
+		    (SUM(CASE WHEN category_type = 'C1' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS C1,
+		    (SUM(CASE WHEN category_type = 'C2' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS C2,
+		    (SUM(CASE WHEN category_type = 'C3' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS C3,
+		    (SUM(CASE WHEN category_type = 'C4' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS C4
+		FROM gad_request
+		WHERE req_date::date = :fromDate AND status NOT IN ('CAN') AND roomtype NOT IN ('CON')
+		]]>
+		</entry>
+		<entry key="getPurposePercent">
+		<![CDATA[			
+			SELECT
+			  SUM(CASE WHEN purpose = '1' THEN 1 ELSE 0 END) AS p1Count,
+			  SUM(CASE WHEN purpose = '2' THEN 1 ELSE 0 END) AS p2Count,
+			  SUM(CASE WHEN purpose = '3' THEN 1 ELSE 0 END) AS p3Count,
+			  SUM(CASE WHEN purpose = '4' THEN 1 ELSE 0 END) AS p4Count,
+			  SUM(CASE WHEN purpose = '1' THEN 1 ELSE 0 END) * 100 / COUNT(*) AS p1,
+			  SUM(CASE WHEN purpose = '2' THEN 1 ELSE 0 END) * 100 / COUNT(*) AS p2,
+			  SUM(CASE WHEN purpose = '3' THEN 1 ELSE 0 END) * 100 / COUNT(*) AS p3,
+			  SUM(CASE WHEN purpose = '4' THEN 1 ELSE 0 END) * 100 / COUNT(*) AS p4
+			FROM gad_request
+			WHERE req_date::date = :fromDate AND status NOT IN ('CAN') and roomtype not in('CON')
+		]]>
+		</entry>
+		<entry key="getBarCount">
+		<![CDATA[			
+			WITH date_counts AS (
+		    SELECT
+		        from_date::date AS days,
+		        COUNT(*) AS count
+		    FROM
+		        gad_request
+		    WHERE
+		        status NOT IN ('CAN', 'EXT')
+		        AND from_date::date BETWEEN CURRENT_DATE AND (CURRENT_DATE + INTERVAL '4 days')
+
+		]]>
+		</entry>
+		<entry key="guestReportCount">
+		<![CDATA[			
+			SELECT count(*)
+			FROM gad_request AS gh
+			LEFT JOIN quota AS qu ON gh.category_type=qu.quota_type
+			LEFT JOIN visitor_category AS vc ON gh.desg=vc.vc_id
+			LEFT JOIN gh_details AS ct ON ct.gh_id= gh.gh_id
+			LEFT JOIN room_block AS bl ON bl.block_id= gh.block_id
+			LEFT JOIN vehicle_req AS v1 ON v1.req_id=gh.req_id
+			LEFT JOIN vehicle_req1 AS v2 ON v2.req_id=gh.req_id
+			INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+			FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gh.req_id = gs.req_id
+			LEFT JOIN m_purpose_items AS pr ON gh.purpose=pr.item_id
+			LEFT JOIN cancel_reservation cr on cr.req_id=gh.req_id
+		]]>
+		</entry>
+		<entry key="updateDataInTrAllotmentCanStatus">
+		<![CDATA[			
+			UPDATE tr_allotment SET can_status =? where req_id=? and status=?
+		]]>
+		</entry>
+		<entry key="getFromDateForOccupancy">
+		<![CDATA[			
+			SELECT TO_CHAR(from_date, 'DD-MM-YYYY HH24:MI') AS formatted_date
+			FROM gad_request
+			WHERE req_id =?
+		]]>
+		</entry>
+		<entry key="prevReqBackOperation">
+		<![CDATA[			
+			update gad_request set status=? where status=? and req_id=?
+		]]>
+		</entry>
+		<entry key="deleteFromGad">
+		<![CDATA[			
+			delete from gad_request where req_id=?
+		]]>
+		</entry>
+		<entry key="deleteFromGuest">
+		<![CDATA[			
+			delete from guest_details where req_id=?
+		]]>
+		</entry>
+		<entry key="count24can">
+		<![CDATA[			
+			select count(*) from gad_request where req_id=? and can_status='24CAN'
+		]]>
+		</entry>
+		<entry key="getPcanFromDt">
+		<![CDATA[			
+			select from_date from partial_cancel_request where req_id=? and status !=?
+		]]>
+		</entry>
+		<entry key="allotDateNeedToBeChange">
+		<![CDATA[			
+			SELECT count(*) FROM tr_allotment WHERE status = 'PCIN' AND req_id=? LIMIT 1
+		]]>
+		</entry>
+		<entry key="getUserOrderOrBlockId">
+		<![CDATA[			
+			SELECT nc.noc_id,nc.noc_charge,pg.order_id,pg.block_id FROM pg_info pg
+			LEFT JOIN noc_table nc ON pg.reference=nc.req_id
+			WHERE pg.reference = ? AND pg.order_status=? AND pg.verify_payment=? AND nc.status is null ORDER BY order_id DESC LIMIT 1
+		]]>
+		</entry>
+		<entry key="getDeleteReport">
+		<![CDATA[			
+			SELECT gr.*,gs.name FROM gad_request gr JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+			FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+			WHERE gr.req_date >='2023-07-31'::date AND gr.status='CAN' AND gr.req_id NOT IN (SELECT req_id FROM cancel_reservation)
+		]]>
+		</entry>
+		<entry key="getDeleteReportCount">
+		<![CDATA[			
+		SELECT count(*) FROM gad_request gr JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number
+			FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+			WHERE gr.req_date >='2023-07-31'::date AND gr.status='CAN' AND gr.req_id NOT IN (SELECT req_id FROM cancel_reservation)
+		]]>
+		</entry>
+		<entry key="checkProfileDocPresentOrNot">
+			<![CDATA[			
+			SELECT upload_doc FROM adminr.user WHERE user_id=? and user_type='GUEST'
+			]]>
+		</entry>
+		<entry key="saveOnPasswordHistory">
+		<![CDATA[			
+			INSERT INTO adminr.user_password_history(
+			user_id, password, role, lastupdated_by, perform_on, lastupdated_on)
+			VALUES (?, ?, ?, ?, ?, NOW());
+		]]>
+		</entry>
+		<entry key="getRecentPassword">
+		<![CDATA[			
+			SELECT password FROM adminr.user_password_history
+			WHERE user_id=? AND role=?
+			ORDER BY id DESC LIMIT 5
+		]]>
+		</entry>
+		<entry key="getRecentLastUpdatedDateOfUser">
+		<![CDATA[			
+			SELECT lastupdated_on FROM adminr.user_password_history
+			WHERE user_id=? AND role=?
+			ORDER BY id DESC LIMIT 1
+		]]>
+		</entry>
+	<!-- sandip adminQueries ends -->
+		
+	<!-- Deepti adminQueries starts -->
+	
+	<!-- Deepti adminQueries ends -->
+	
+	<!-- Amit adminQueries starts -->
+	
+	<entry key="getOccupancyDetails">
+		<![CDATA[
+		SELECT  rd.room_no,coalesce(rb.reason,'') as reason,tr.req_id,coalesce(nrb.allot_room,'0') as allot_room, rd.room_type, rd.max_no_beds, gad.from_date as checkin_date, gad.to_date, gst.name,
+		exgst.name as ex_name, exgad.from_date as ex_from_date, exgad.to_date as ex_to_date, gh.gh_name,bl.block_name,COALESCE(tr.type,'') as type,trex.type as expect_type,
+		noalo.nod_g_req as nor_req,noalo.nod_g_req,exgad.nor_req as exRoom,exgad.nod_g_req as exNob
+		FROM room_details AS rd
+		LEFT JOIN (SELECT  req_id,from_date,type,status,room_no,block_id FROM tr_allotment WHERE status  IN ('CIN', 'PCIN')
+		AND from_date::date =now()::date group by req_id,from_date,type,status,room_no,block_id) AS tr ON rd.room_no = tr.room_no
+		and rd.block_id=tr.block_id
+		LEFT JOIN (SELECT string_agg(name,', ') as name, req_id FROM guest_details group by req_id)as gst on tr.req_id=gst.req_id
+		and rd.block_id=tr.block_id
+		LEFT JOIN LATERAL(SELECT COUNT(*) as allot_room, req_id, block_id,room_no FROM (SELECT DISTINCT ON (room_no, bed_no) room_no,bed_no,req_id, 
+		block_id FROM tr_allotment where room_no=rd.room_no and block_id=rd.block_id and req_id=tr.req_id and from_date::date =now()::date ) as sub group by sub.req_id,
+		sub.block_id,sub.room_no)AS nrb ON true				
+		LEFT JOIN (SELECT * FROM gad_request )as gad on gst.req_id=gad.req_id
+		LEFT JOIN LATERAL(SELECT COUNT(*) as nod_g_req FROM tr_allotment WHERE req_id=tr.req_id AND from_date::date=now()::date AND room_no=rd.room_no) AS noalo ON true
+		LEFT JOIN LATERAL(SELECT DISTINCT ON(room_no) room_no as rn, * FROM tr_allotment WHERE status  IN ('ALO', 'PRO') AND 
+		( (from_date::date>=now()::date)) AND rd.room_no = room_no AND  rd.block_id =block_id 
+		ORDER BY room_no,from_date ASC) AS trex ON true 
+		LEFT JOIN (SELECT string_agg(name,', ') as name, req_id FROM guest_details group by req_id)as exgst on trex.req_id=exgst.req_id
+		LEFT JOIN (SELECT * FROM gad_request )as exgad on exgst.req_id=exgad.req_id
+		LEFT JOIN (SELECT gh_id,gh_name FROM gh_details) as gh on gh.gh_id=rd.gh_id
+		LEFT JOIN (SELECT block_name,block_id FROM room_block) as bl on bl.block_id=rd.block_id
+		LEFT JOIN (SELECT reason,room_no FROM m_repair_block) as rb on rb.room_no=rd.room_no
+		WHERE rd.block_id=? and rd.gh_id=? order by rd.room_no
+		]]>
+	</entry>
+	<entry key="getOccupancyDetailsUpdated">
+	<![CDATA[
+		SELECT  rd.room_no,coalesce(rb.reason,'') as reason,tr.req_id,coalesce(nrb.allot_room,'0') as allot_room, rd.room_type, rd.max_no_beds, gad.from_date as checkin_date, gad.to_date, gst.name,
+		fnex.concatreqid as ex_name, gh.gh_name,bl.block_name,COALESCE(tr.type,'') as type,
+		noalo.nod_g_req as nor_req,noalo.nod_g_req
+		FROM room_details AS rd
+		LEFT JOIN (SELECT  req_id,from_date,type,status,room_no,block_id FROM tr_allotment WHERE status  IN ('CIN', 'PCIN')
+		AND from_date::date =now()::date group by req_id,from_date,type,status,room_no,block_id) AS tr ON rd.room_no = tr.room_no
+		and rd.block_id=tr.block_id
+		LEFT JOIN (SELECT string_agg(name,', ') as name, req_id FROM guest_details group by req_id)as gst on tr.req_id=gst.req_id
+		and rd.block_id=tr.block_id
+		LEFT JOIN LATERAL(SELECT COUNT(*) as allot_room, req_id, block_id,room_no FROM (SELECT DISTINCT ON (room_no, bed_no) room_no,bed_no,req_id, 
+		block_id FROM tr_allotment where room_no=rd.room_no and block_id=rd.block_id and req_id=tr.req_id and from_date::date =now()::date ) as sub group by sub.req_id,
+		sub.block_id,sub.room_no)AS nrb ON true				
+		LEFT JOIN (SELECT * FROM gad_request )as gad on gst.req_id=gad.req_id
+		LEFT JOIN LATERAL(SELECT COUNT(*) as nod_g_req FROM tr_allotment WHERE req_id=tr.req_id AND from_date::date=now()::date AND room_no=rd.room_no) AS noalo ON true
+		LEFT JOIN LATERAL(SELECT STRING_AGG(CONCAT(fn.name,'<br>', fn.date_range,'(',fn.type,')'), '<br>') as concatreqid,fn.rn FROM (SELECT DISTINCT ON(a.room_no,a.req_id) room_no as rn,c.date_range,b.name,(CASE WHEN a.type='R' 
+		THEN (CASE WHEN c.nor_req>'1' THEN CONCAT(c.nor_req,' ','Rooms') ELSE '1 Room' END) 
+		ELSE (CASE WHEN c.nod_g_req>'1' THEN CONCAT(c.nod_g_req,' ','Beds') ELSE '1 Bed' END)  END) AS type FROM tr_allotment a
+		LEFT JOIN (SELECT STRING_AGG(name,',') as name,req_id FROM guest_details GROUP BY req_id) b ON b.req_id=a.req_id 
+		LEFT JOIN (SELECT  STRING_AGG(CONCAT('(',TO_CHAR(from_date, 'DD.MM.YYYY HH24:MI'), ' - ', TO_CHAR(to_date, 'DD.MM.YYYY HH24:MI'),')'), ', ') AS date_range,req_id,nor_req,nod_g_req FROM gad_request GROUP BY req_id) c on c.req_id=a.req_id
+		WHERE a.status  IN ('ALO', 'PRO') AND ((a.from_date::date>=now()::date)) AND rd.room_no = a.room_no AND  rd.block_id =a.block_id 
+		ORDER BY a.req_id,a.room_no,a.from_date ASC) as fn GROUP BY fn.rn) as fnex on true
+		LEFT JOIN (SELECT gh_id,gh_name FROM gh_details) as gh on gh.gh_id=rd.gh_id
+		LEFT JOIN (SELECT block_name,block_id FROM room_block) as bl on bl.block_id=rd.block_id
+		LEFT JOIN (SELECT reason,room_no FROM m_repair_block) as rb on rb.room_no=rd.room_no
+		WHERE rd.block_id=? and rd.gh_id=? order by rd.room_no
+	]]>
+	</entry>
+	<entry key="totalAmount">
+	<![CDATA[
+		select sum(room_rent::numeric) from tr_allotment where req_id = ? and status in ('CIN','PCIN','NOC')
+	]]>
+	</entry>
+	
+	<entry key="updateTrConfBillStatus">
+	<![CDATA[
+		UPDATE tr_conf_bill SET status = ? WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="getTrConfBillDetails">
+	<![CDATA[
+		SELECT * FROM tr_conf_bill WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="saveTrConfReceipt">
+	<![CDATA[
+		INSERT INTO tr_conf_receipt(
+		conf_receipt_id, conf_bill_id, payed, status, entrydate, gh_id, balance, conf_req_id)
+		VALUES (?, ?, ?, ?, now(), ?, ?, ?);
+	]]>
+	</entry>
+	<entry key="getBankRefRecPayMode">
+	<![CDATA[
+		SELECT bank_ref FROM receipt_payment_mode WHERE rec_id = ?
+	]]>
+	</entry>
+	<entry key="updatePgInfo">
+	<![CDATA[
+		UPDATE pg_info SET verify_payment = ? WHERE order_id = ?
+	]]>
+	</entry>
+	<entry key="getPgInfoDetails">
+	<![CDATA[
+		SELECT order_id FROM pg_info WHERE reference = ?
+	]]>
+	</entry>
+	
+	<!-- Amit adminQueries ends -->
+	<!-- Prerana adminQueries starts -->
+		<entry key="getDuesListForBookingIdSQL">
+		<![CDATA[
+		select distinct(b.req_id),a.balance,a.bill_id,f.rec_id,c.from_date,c.to_date,c.mobile_no,rb.block_name,gd.gh_name,
+		d.name,e.onlyname,f.date_rece,g.date,c.category_type,g.billno,pi.item_title,q.category,COALESCE(c.no_of_adults,0) + COALESCE(c.no_of_children,0) as no_of_guest
+		,rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail,c.email_id,c.address,c.mobile_no, ta.room_no from tr_dues a
+		JOIN tr_billvsguest b on a.bill_id = b.bill_id
+		JOIN gad_request c on c.req_id = b.req_id
+		JOIN room_block rb on c.block_id = rb.block_id
+		JOIN gh_details gd on c.gh_id = gd.gh_id
+		JOIN (SELECT req_id, STRING_AGG((SELECT CONCAT(name, CASE WHEN designation <> '' 
+		THEN CONCAT(',', designation) ELSE '' END, CASE WHEN department <> '' 
+		THEN CONCAT(',', department) ELSE '' END)), ' & ' ORDER BY guest_id) AS name
+		FROM guest_details GROUP BY req_id) AS d ON c.req_id = d.req_id
+		JOIN (SELECT req_id, STRING_AGG(name, ', ') AS onlyname FROM guest_details GROUP BY req_id) AS e 
+		ON c.req_id = e.req_id
+		JOIN (SELECT req_id, checkin_date, checkout_date, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+		FROM tr_allotment WHERE status = 'COUT'
+		GROUP BY req_id, checkin_date, checkout_date) ta ON c.req_id = ta.req_id
+		JOIN tr_receipt f on a.rec_id = f.rec_id
+		JOIN tr_bill_master g on a.bill_id = g.bill_id
+		JOIN quota q ON q.quota_type = c.category_type
+		JOIN public.m_purpose_items pi on c.purpose = pi.item_id
+		where c.req_id= ?
+		]]>
+	</entry>
+	<entry key="getCountForSysDashboard">
+		<![CDATA[	
+		SELECT
+    	(SELECT COUNT(*) FROM adminr."user") AS total_user,
+    	(SELECT COUNT(*) FROM gh_details) AS total_city,
+    	(SELECT COUNT(*) FROM room_block) AS total_Gh,
+    	SUM(CASE WHEN user_type = 'GUEST' THEN 1 ELSE 0 END) AS guest,
+    	SUM(CASE WHEN user_type = 'MANAGER' THEN 1 ELSE 0 END) AS manager,
+    	SUM(CASE WHEN user_type = 'RECEPTIONIST' THEN 1 ELSE 0 END) AS receptionist,
+    	SUM(CASE WHEN user_type = 'APPROVER' THEN 1 ELSE 0 END) AS approver,
+    	SUM(CASE WHEN user_type = 'MODERATOR' THEN 1 ELSE 0 END) AS moderator
+		FROM adminr."user"
+		]]>
+	</entry>
+	<entry key="getOpenShiftInfoSql">
+	<![CDATA[
+		SELECT * FROM tr_shift_master WHERE shift_id = ?
+	]]>
+	</entry>
+	<!-- Prerana adminQueries ends -->
+	<entry key="getRebookingLstDtlsSQL">
+	<![CDATA[
+		SELECT gd.req_id, gs.name, gd.mobile_no,gd.roomtype, gd.from_date, gd.to_date, gd.req_date, 
+			gd.purpose,pr.item_title, gd.category_type, qu.category, gd.gh_id, ct.gh_name, gd.block_id, bl.block_name,
+			cr.status, cr.mode_of_cancel, gd.status
+			FROM cancel_reservation cr
+			LEFT JOIN gad_request gd ON gd.req_id = cr.req_id 
+			LEFT JOIN gh_details AS ct ON ct.gh_id = gd.gh_id
+			LEFT JOIN room_block AS bl ON bl.block_id= gd.block_id
+			LEFT JOIN quota AS qu ON gd.category_type=qu.quota_type
+			INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id, 3) ASC) AS row_number
+					FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gd.req_id = gs.req_id
+			LEFT JOIN m_purpose_items AS pr ON gd.purpose=pr.item_id 
+	]]>
+	</entry>
+	<entry key="getRebookingLstDtlsSQLCount">
+	<![CDATA[
+		SELECT COUNT(*)
+			FROM cancel_reservation cr
+			LEFT JOIN gad_request gd ON gd.req_id = cr.req_id 
+			LEFT JOIN gh_details AS ct ON ct.gh_id = gd.gh_id
+			LEFT JOIN room_block AS bl ON bl.block_id= gd.block_id
+			LEFT JOIN quota AS qu ON gd.category_type=qu.quota_type
+			INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id, 3) ASC) AS row_number
+					FROM guest_details) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gd.req_id = gs.req_id
+			LEFT JOIN m_purpose_items AS pr ON gd.purpose=pr.item_id 
+	]]>
+	</entry>
+	<entry key="updateGadReqStatus">
+	<![CDATA[
+		update public.gad_request set status='REQ',lastupdated=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="updateCanReservationStatus">
+	<![CDATA[
+		update public.cancel_reservation set status='CAN', mode_of_cancel='REBOOK', lastmodified=now() where req_id=?
+	]]>
+	</entry>
+</properties>
+

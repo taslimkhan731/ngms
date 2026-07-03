@@ -1,0 +1,184 @@
+<ion-content>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="logo-text">Approve List</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon name="notifications-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+  <div class="content">
+    <div>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select City"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option value="1">Delhi</ion-select-option>
+          <ion-select-option value="2">Mumbai</ion-select-option>
+          <ion-select-option value="3">Kolkata</ion-select-option>
+          <ion-select-option value="4">Chennai</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select Guest House"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option value="1">Odisha Bhawan,Delhi</ion-select-option>
+          <ion-select-option value="2">Odisha Bhawan,Mumbai</ion-select-option>
+          <ion-select-option value="3">Odisha Bhawan,Kolkata</ion-select-option>
+          <ion-select-option value="4">Odisha Bhawan,Chennai</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="cardHeight">
+      <ion-card>
+        <ion-card-header>
+          APPROVE LIST
+        </ion-card-header>
+        <ion-card-content>
+          <div class="table-responsive bg-white mt-3">
+            <table class="table table-hover  text-center">
+              <thead>
+                <tr>
+                  <th class="text-nowrap">SI No.</th>
+                  <th class="text-nowrap">Booking Id</th>
+                  <th class="text-nowrap">Booking date</th>
+                  <th class="text-nowrap">From date</th>
+                  <th class="text-nowrap">Quata Type</th>
+                  <th class="text-nowrap">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td><ion-icon name="eye-outline"></ion-icon></td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td><ion-icon name="eye-outline"></ion-icon></td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td><ion-icon name="eye-outline"></ion-icon></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          MODIFIED LIST
+        </ion-card-header>
+        <ion-card-content>
+          <div class="table-responsive bg-white mt-3">
+            <table class="table table-hover  text-center">
+              <thead>
+                <tr>
+                  <th class="text-nowrap">SI No.</th>
+                  <th class="text-nowrap">Booking Id</th>
+                  <th class="text-nowrap">Booking date</th>
+                  <th class="text-nowrap">From date</th>
+                  <th class="text-nowrap">Name</th>
+                  <th class="text-nowrap">Mobile No.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          CANCEL LIST
+        </ion-card-header>
+        <ion-card-content>
+          <div class="table-responsive bg-white mt-3">
+            <table class="table table-hover  text-center">
+              <thead>
+                <tr>
+                  <th class="text-nowrap">SI No.</th>
+                  <th class="text-nowrap">Booking Id</th>
+                  <th class="text-nowrap">Booking date</th>
+                  <th class="text-nowrap">From date</th>
+                  <th class="text-nowrap">Name</th>
+                  <th class="text-nowrap">Mobile No.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+  <div class="btnCss text-center mb-2">
+    <ion-button class="" *ngFor="let btn of splitBtnClass" class="actionBtn" [class.selected]="selectedValue == btn.btnName"
+      (click)="getButtonName(btn.btnName)">
+      <!-- <ion-icon [name]="btn.btnIcon" style="padding: 3px;"></ion-icon> -->
+      {{btn.btnName}}</ion-button>
+  </div>
+</ion-content>

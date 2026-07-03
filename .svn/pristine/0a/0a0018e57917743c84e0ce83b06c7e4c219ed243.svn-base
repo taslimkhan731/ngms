@@ -1,0 +1,266 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start" style="padding: 7px;">
+      <ion-icon name="chevron-back-outline" (click)="backButton()"></ion-icon>
+    </ion-buttons>Add Guest Details
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="addGuestDetailsForm" (ngSubmit)="submitGuestDetails(addGuestDetailsForm.value)">
+    <div>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="popover" placeholder="Select Category" formControlName="categoryType"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option value="1">Category 1</ion-select-option>
+          <ion-select-option value="2">Category 2</ion-select-option>
+          <ion-select-option value="3">Category 3</ion-select-option>
+          <ion-select-option value="4">Category 4</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="popover" (ionChange)="show()" formControlName="selectBookingType"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" placeholder="Select booking type">
+          <ion-select-option *ngFor="let item of bookingType" [value]="item.value">{{item.title}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <ion-card *ngIf="segmentVal=='room'|| segmentVal=='roomWithConveyance'||'conveyance'">
+      <ion-card-header>
+        <ion-label>
+          <ion-icon name="bed-outline"></ion-icon>Bed/Room Details
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl">Check One of the following :</ion-label>
+              <ion-radio-group formControlName="check">
+                <ion-radio value="room"></ion-radio>
+                <ion-label>Book Room/Bed</ion-label>
+                <ion-radio value="dormitory"></ion-radio>
+                <ion-label>Book Dormitory</ion-label>
+              </ion-radio-group>
+            </ion-col>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl">No of Rooms</ion-label>
+              <ion-select interface="popover" placeholder="No of Room" formControlName="noOfRoom">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Booking For</ion-label>
+              <ion-select interface="popover"  formControlName="bookingFor" value="others">
+                <ion-select-option value="1" selected>Others</ion-select-option>
+                
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Purpose of visit</ion-label>
+              <ion-select interface="popover" placeholder="Purpose of visit" formControlName="visitPurpose">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Designation</ion-label>
+              <ion-select interface="popover" placeholder="Designation" formControlName="designation">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl required">During stay need conveyance</ion-label>
+              <ion-radio-group formControlName="needConveyance">
+                <ion-radio value="yes"></ion-radio>
+                <ion-label>Yes</ion-label>
+                <ion-radio value="no"></ion-radio>
+                <ion-label>No</ion-label>
+              </ion-radio-group>
+            </ion-col>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl">Check-in Date</ion-label>
+              <ion-input type="date" formControlName="fromDate"></ion-input>
+            </ion-col>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl">Check-Out Date</ion-label>
+              <ion-input type="date" formControlName="toDate"></ion-input>
+            </ion-col>
+            <ion-col size="12" *ngIf="segmentVal!=='conveyance'">
+              <ion-label class="lbl">No. of Days</ion-label>
+              <ion-input type="number" formControlName="noOfDays" placeholder="No. of Days"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">No. of Adults</ion-label>
+              <ion-input type="number" formControlName="adult" placeholder="No. of Adult"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">No. of Children</ion-label>
+              <ion-input type="number" formControlName="children" placeholder="No. of Children"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Email ID</ion-label>
+              <ion-input type="email" placeholder="youremail@gmail.com" formControlName="emailID"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Category Document Type</ion-label>
+              <ion-select interface="popover" placeholder="Category Document Type" formControlName="categoryDocType">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Category Document Upload</ion-label>
+              <ion-input type="file" formControlName="categoryDocUpload"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Office/Residence Address</ion-label>
+              <ion-textarea type="text" placeholder="Office/Residence Address" rows="3"
+                formControlName="officeAddress"></ion-textarea>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Mobile Number</ion-label>
+              <ion-input type="number" placeholder="+91 XXXXXXXXXX" formControlName="mobileNo"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Guest Document Type</ion-label>
+              <ion-input type="file" formControlName="docType" placeholder="Guest Document Type"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Guest Document Upload</ion-label>
+              <ion-input type="file" formControlName="docUpload" placeholder="Guest Document Upload"></ion-input>
+            </ion-col>
+
+            <!-- <ion-col size="12">
+              <ion-label class="lbl">No of Beds</ion-label>
+              <ion-select interface="popover" placeholder="No of Bed" formControlName="noOfBeds">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col> -->
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- <ion-card *ngIf="segmentVal=='conveyance'" >
+      <ion-card-header>
+        <ion-label>
+          <ion-icon name="person-outline"></ion-icon>Conveyance Details
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="lbl required">Category</ion-label>
+              <ion-select interface="popover" placeholder="Category" formControlName="category">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+                <ion-select-option value="4">4</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card> -->
+
+    <ion-card *ngIf="segmentVal=='conveyance'|| segmentVal=='roomWithConveyance'">
+      <ion-card-header>
+        <ion-label>
+          <ion-icon name="car-outline"></ion-icon>Arrival Details
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="lbl required">Mode of travel</ion-label>
+              <ion-select interface="popover" placeholder="Mode of travel" formControlName="modeOfTravel">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Flight/Train Number</ion-label>
+              <ion-input type="number" placeholder="Flight/Train Number" formControlName="flightNo"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Arrival Date</ion-label>
+              <ion-input type="date" formControlName="arrivalDate"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Arrival Time</ion-label>
+              <ion-input type="time" placeholder="HH:MM AM/PM" formControlName="arrivalTime"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Arrival Place</ion-label>
+              <ion-select interface="popover" placeholder="Arrival Place" formControlName="arrivalPlace">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="segmentVal=='conveyance'|| segmentVal=='roomWithConveyance'">
+      <ion-card-header>
+        <ion-label>
+          <ion-icon name="car-outline"></ion-icon>Departure Details
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="lbl required">Mode of travel</ion-label>
+              <ion-select interface="popover" placeholder="Mode of travel" formControlName="modeOfTravelDept">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Flight/Train Number</ion-label>
+              <ion-input type="number" placeholder="Flight/Train Number" formControlName="flightNoDept"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Departure Date</ion-label>
+              <ion-input type="date" formControlName="deptDate"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Departure Time</ion-label>
+              <ion-input type="time" formControlName="deptTime"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Departure Place</ion-label>
+              <ion-select interface="popover" placeholder="Departure Place" formControlName="deptPlace">
+                <ion-select-option value="1">1</ion-select-option>
+                <ion-select-option value="2">2</ion-select-option>
+                <ion-select-option value="3">3</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+    <ion-row class="ion-justify-content-center">
+      <ion-button type="submit" class="submitBtn" color="green">
+        Submit</ion-button>
+    </ion-row>
+  </form>
+</ion-content>

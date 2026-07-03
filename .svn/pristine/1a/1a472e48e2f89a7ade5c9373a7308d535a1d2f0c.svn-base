@@ -1,0 +1,75 @@
+ion-toolbar {
+    ion-title {
+      position: relative;
+      top: -2px;
+      padding-left: 0px;
+    }
+  #filtermodal-modal{
+    --background: green;
+    --background-activated: green;
+  }
+    ion-button {
+     
+      font-size: 14px;
+      position: relative;
+      right: 10px;
+  
+      ion-icon {
+        font-size: 21px;
+      }
+     
+    }
+   
+  
+  }
+ion-content {
+    --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+
+    .filterCls {
+        margin: 0px 9px 0 11px;
+        border-radius: 2px;
+        background-color: #067e06;
+        color: white;
+        font-size: 95%;
+
+        .lebel {
+            padding: 14px
+        }
+
+        // ion-button {
+        //     --background: white;
+        //     color: rgb(4 114 4);
+        //     border-radius: 4px;
+        //     height: 32px;
+
+        //     ion-icon {
+        //         // font-size: xx-large;
+        //         // border-radius: 4px;
+        //         font-size: xx-large;
+        //         background: white;
+        //         color: green;
+        //         padding: 3px;
+        //         border-radius: 32px;
+        //     }
+        // }
+    }
+}
+
+
+::ng-deep .action-sheet-selected.sc-ion-action-sheet-ios {
+  white-space: nowrap;       /* Prevent text from wrapping */
+  // overflow: hidden;         /* Hide text that overflows the container */
+  text-overflow: ellipsis;
+  color: #000000 !important;
+  font-size: 13px !important;
+}
+
+::ng-deep .action-sheet-button.sc-ion-action-sheet-ios {
+  color: #000000 !important;
+  font-size: 13px !important;
+}
+
+::ng-deep .action-sheet-cancel.sc-ion-action-sheet-ios {
+  color: red !important;
+  font-size: 13px !important;
+}

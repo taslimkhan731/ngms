@@ -1,0 +1,69 @@
+<ion-content >
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false" ></ion-menu-button>
+    </ion-buttons>
+    <ion-title >Select Guest To Make Bill</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon  name="notifications-outline"></ion-icon>
+    </ion-buttons>
+    </ion-toolbar>
+    <div class="content">
+      <div>
+        <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+          <ion-select interface="action-sheet" placeholder="Select City"
+            [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+            <ion-select-option value="1">Delhi</ion-select-option>
+            <ion-select-option value="2">Mumbai</ion-select-option>
+            <ion-select-option value="3">Kolkata</ion-select-option>
+            <ion-select-option value="4">Chennai</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+          <ion-select interface="action-sheet" placeholder="Select Guest House"
+            [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+            <ion-select-option value="1">Odisha Bhawan,Delhi</ion-select-option>
+            <ion-select-option value="2">Odisha Bhawan,Mumbai</ion-select-option>
+            <ion-select-option value="3">Odisha Bhawan,Kolkata</ion-select-option>
+            <ion-select-option value="4">Odisha Bhawan,Chennai</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <div class="mt-1 filterCls">
+        <ion-row>
+          <ion-col size="6" class=" mt-2" class="lebel">
+            Data Entry List
+          </ion-col>
+          <ion-col size="6" class="ion-text-end ">
+            <ion-button ><ion-icon name="reload-circle-sharp"></ion-icon></ion-button>
+            <ion-button (click)="presentPopover($event)"><ion-icon name="search-circle-sharp"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+      <div class="cardHeight">
+        <ion-card *ngFor="let data of cardData " class="mt-1">
+          <!-- <ion-card-header>
+            <ion-card-title class="text-center">{{data.title}}</ion-card-title>
+          </ion-card-header> -->
+          <ion-card-content>
+            <ion-row style="padding-left: 46px;">
+              <ion-col size="6" *ngFor="let d of data.bookingDetails">
+                <ion-label class="label-key">{{d.key}}</ion-label><br>
+                <ion-label class="label-value">{{d.val}}</ion-label>
+              </ion-col>
+            </ion-row>
+            <div class="text-center mb-2" >
+              <ion-button  *ngFor="let btn of btnData index as i" 
+               [ngStyle]="{'color':btn.color,'--background':btn.background,'font-size':'76%','width':'20%','padding':'2px'}" >
+                <!-- <ion-icon [name]="btn.btnIcon" style="padding: 5px;"></ion-icon> -->
+                {{btn.btnName}}
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+    
+</ion-content>
+
+

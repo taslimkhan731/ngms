@@ -1,0 +1,505 @@
+<ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">View Details</ion-title>
+</ion-toolbar>
+<ion-content>
+  <form [formGroup]="form">
+    <div class="containerr">
+      <ion-card *ngIf="type != 'conference'">
+        <ion-card-header>
+          <ion-label>
+            Booking Details
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">
+                <ion-label class="label-key">Booking Id</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.bookingId}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">City</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.cityName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">Guest House</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.blockName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">Booking Type</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">
+                  <ng-container *ngIf="allBookingData?.roomType == 'RC'">Room with Conveyance</ng-container>
+                  <ng-container *ngIf="allBookingData?.roomType == 'R'">Room</ng-container>
+                  <ng-container *ngIf="allBookingData?.roomType == 'C'">Conveyance</ng-container>
+                </ion-label>
+              </ion-col>
+
+              <ng-container *ngIf="allBookingData?.roomType !== 'C'">
+                <ion-col size="6">
+                  <ion-label class="label-key "><b>From Date</b></ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-value">{{allBookingData?.frmDt}}</ion-label>
+                </ion-col>
+
+                <ion-col size="6">
+                  <ion-label class="label-key "><b>To Date</b></ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-value">{{allBookingData?.toDt}}</ion-label></ion-col>
+
+                <ion-col size="6">
+                  <ion-label class="label-key "><b>No. Of Days</b></ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-value">{{allBookingData?.noOfDays}}</ion-label>
+                </ion-col>
+
+                <ion-col size="6">
+                  <ion-label class="label-key "><b>No. Of Rooms</b></ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-value">{{allBookingData?.noOfRooms}}</ion-label>
+                </ion-col>
+
+                <ion-col size="6">
+                  <ion-label class="label-key "><b>No. Of Beds</b></ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-value">{{allBookingData?.noOfBedsDormitory ? allBookingData?.noOfBedsDormitory
+                    : '-'}}</ion-label>
+                </ion-col>
+              </ng-container>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>No. Of Adult</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.noOfAdults}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>No. Of Children</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.noOfChildren}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Purpose Of Visit</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.purpName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Category</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.catgName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Mobile No</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.mob}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Address</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.offAddr}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Email Id</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value"
+                  [ngStyle]="{'color': allBookingData?.emailId == '' ? 'red':'black'}">{{allBookingData?.emailId ?
+                  allBookingData?.emailId : 'NA' }}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Designation</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.desgName}}</ion-label>
+              </ion-col>
+              <ng-container *ngIf="allBookingData?.bookingId.startsWith('P')">
+                <ion-col size="6" style="display: flex;align-items: center;">
+                  <ion-label class="label-key "><b>Profile Doc</b></ion-label>
+                </ion-col>
+                <ion-col size="6" class="text-center">
+                  <button class="view-btn" *ngIf="allBookingData?.list[0].guestDocFile" (click)="viewFile(allBookingData?.list[0].guestDocFile,allBookingData?.list[0].guestDocPath)">View</button>
+                </ion-col>
+              </ng-container>
+              <ion-col size="6" style="display: flex;align-items: center;">
+                <ion-label class="label-key ">
+                  <b *ngIf="allBookingData?.purp == '1'">Official Doc</b>
+                  <b *ngIf="allBookingData?.purp == '3'">Patient Doc</b>
+                  <b *ngIf="allBookingData?.purp == '4'">Student Doc</b>
+                  <b *ngIf="allBookingData?.purp != '1' && allBookingData?.purp != '3' && allBookingData?.purp != '4' ">Support
+                    Doc</b>
+                </ion-label>
+              </ion-col>
+              <ion-col size="6" class="text-center">
+                <button class="view-btn" *ngIf="allBookingData?.suppDocName" (click)="viewFile(allBookingData?.suppDocFile,allBookingData?.suppDocName)">View</button>
+              </ion-col>
+              <ion-col size="6" style="display: flex;align-items: center;">
+                <ion-label class="label-key "><b>Category Doc</b></ion-label>
+              </ion-col>
+              <ion-col size="6" class="text-center">
+                <button class="view-btn" *ngIf="allBookingData?.catgDocName" (click)="viewFile(allBookingData?.catgDocFile,allBookingData?.catgDocName)">View</button>
+              </ion-col>
+
+              <ion-col size="6" style="display: flex;align-items: center;">
+                <ion-label class="label-key "><b>Guest Doc</b></ion-label>
+              </ion-col>
+              <ion-col size="6" class="text-center">
+                <button class="view-btn" *ngIf="allBookingData?.gDocName" (click)="viewFile(allBookingData?.gDocFile,allBookingData?.gDocName)">View</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+
+        <ion-card-header>
+          <ion-label>
+            Conveyance Details
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12">
+                <ion-label class="label-key"><b>Conveyance from (Reception):</b></ion-label>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="label-value">
+                  {{arrivalDetails}}
+                </ion-label>
+              </ion-col>
+
+              <ion-col size="12">
+                <ion-label class="label-key "><b>Conveyance to (See off):</b></ion-label>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="label-value"> {{departDetails}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Conveyance needed?</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">
+                  <ion-radio-group formControlName="convayance">
+                    <ng-container *ngIf="showYes">
+                      <ion-radio value='1' style="height: 16px !important;width: 16px !important;"></ion-radio>
+                      <ion-label> Yes </ion-label>
+                    </ng-container>
+                    <ng-container *ngIf="showNo">
+                      <ion-radio value='0' style="height: 16px !important;width: 16px !important;"></ion-radio>
+                      <ion-label> No</ion-label>
+                    </ng-container>
+                  </ion-radio-group>
+                </ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>During stay need conveyance?</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">
+                  <ion-radio-group formControlName="duringstay">
+                    <ng-container *ngIf="showDuringStayYes">
+                      <ion-radio value='1' style="height: 16px !important;width: 16px !important;"></ion-radio>
+                      <ion-label> Yes </ion-label>
+                    </ng-container>
+                    <ion-radio value='0' style="height: 16px !important;width: 16px !important;"></ion-radio>
+                    <ion-label> No</ion-label>
+                  </ion-radio-group>
+                </ion-label>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </ion-card-content>
+        <ng-container *ngIf="type == 'cancel'">
+          <ion-card-header>
+            <ion-label>
+              Room Allotment Details
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <div style="overflow: auto;margin-top: 10px;">
+              <table style="width:100%">
+                <thead style="white-space: nowrap;">
+                  <tr>
+                    <th>Date</th>
+                    <th>Room-Bed No</th>
+                    <th>Rent</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of allBookingData?.partialCancelRoomDetails">
+                    <td>{{r.fromDate}}</td>
+                    <td>{{r.roomNo}}</td>
+                    <td>{{r.roomRent}}</td>
+                    <td>{{r.type}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ng-container>
+        <ng-container *ngIf="allBookingData?.status == 'ALO' && allBookingData?.roomType !== 'C'">
+          <ion-card-header>
+            <ion-label>
+              Room Allotment Details
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <div style="overflow: auto;margin-top: 10px;">
+              <table style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Room-Bed No</th>
+                    <th>Rent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of allBookingData?.roomDetails">
+                    <td>{{r.fromDate}}</td>
+                    <td>{{r.roomNo}}</td>
+                    <td>{{r.roomRent}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ng-container>
+        <ng-container
+          *ngIf="(allBookingData?.status == 'PRO' || allBookingData?.status == 'CIN') && allBookingData?.roomType !== 'C'">
+          <ion-card-header>
+            <ion-label>
+              Modified Room Details
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <div style="overflow: auto;margin-top: 10px;">
+              <table style="width:100%">
+                <thead style="white-space: nowrap;">
+                  <tr style="font-size: 12px;">
+                    <th>Previous order No</th>
+                    <th>Previous order Date</th>
+                    <th>Reason</th>
+                    <th>Previous Room-Bed No</th>
+                    <th>Previous Rent</th>
+                    <th>Modified Room-Bed No</th>
+                    <th>Modified Rent</th>
+                  </tr>
+                </thead>
+                <tbody style="font-size: 12px;text-align: center;">
+                  <tr *ngFor="let r of allBookingData?.modifiedDetails">
+                    <td>{{r.prevOrderNo}}</td>
+                    <td>{{r.prevOrderDate}}</td>
+                    <td>{{r.reason}}</td>
+                    <td>{{r.roomNo}}</td>
+                    <td>{{r.roomRent}}</td>
+                    <td>{{r.modifiedRoomNo == null || r.modifiedRoomNo == '' ? r.modifiedBedNo : r.modifiedRoomNo}}</td>
+                    <td>{{r.modifiedRoomRent}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ng-container>
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Guest Details
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-card *ngFor="let data of allBookingData?.list;let i = index"
+            style=" border: 0.957234px solid #A0E6A4;margin: 10px 6px !important;">
+
+            <ion-card-content>
+              <ion-row>
+                <ion-col size="6">
+                  <ion-label class="label-key">Name</ion-label><br>
+                  <ion-label class="label-value">{{data.guestName}}</ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-key">Age</ion-label><br>
+                  <ion-label class="label-value">{{data.guestAge}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <ion-label class="label-key">Gender</ion-label><br>
+                  <ion-label class="label-value">
+                    <ng-container *ngIf="data.guestGender == 'M'">Male</ng-container>
+                    <ng-container *ngIf="data.guestGender == 'F'">Female</ng-container>
+                    <ng-container *ngIf="data.guestGender == 'O'">Others</ng-container>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="6" *ngIf="allBookingData?.catg != 'C4'">
+                  <ion-label class="label-key">Designation</ion-label><br>
+                  <ion-label class="label-value">{{data.guestDesignation}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6" *ngIf="allBookingData?.catg != 'C4'">
+                  <ion-label class="label-key">Department</ion-label><br>
+                  <ion-label class="label-value">{{data.guestDepartment}}</ion-label>
+                </ion-col>
+              </ion-row>
+
+
+            </ion-card-content>
+          </ion-card>
+        </ion-card-content>
+
+      </ion-card>
+      <ion-card *ngIf="type == 'conference'">
+        <ion-card-header>
+          <ion-label>
+            Booking Details
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">
+                <ion-label class="label-key">Booking Id</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.bookingId}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">City</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.cityName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">Guest House</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.guestHouseName}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key">Name</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">
+                  <ion-label class="label-value">{{allBookingData?.name}}</ion-label>
+                </ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Mobile No</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.mobile}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Booking Date</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.bookingDt}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key "><b>From Date</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.fromDate}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>To Date</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.toDate}}</ion-label></ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Category</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.caetgoryType}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Capacity</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.capacity}}</ion-label>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Booking Type</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.confreqnceUseDesc}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Hall Category</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.confrenceDesc}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Address</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.address}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Booking Amount</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.charge}}</ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-key "><b>Advance Amount</b></ion-label>
+              </ion-col>
+              <ion-col size="6">
+                <ion-label class="label-value">{{allBookingData?.advanceAmount}}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </form>
+
+
+
+
+</ion-content>

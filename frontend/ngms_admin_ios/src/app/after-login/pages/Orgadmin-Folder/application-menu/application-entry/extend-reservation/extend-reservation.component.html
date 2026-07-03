@@ -1,0 +1,125 @@
+<!-- <ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start" style="padding: 7px;" (click)="goBack()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>Extend Reservation</ion-title>
+    <ion-buttons slot="end" style="padding: 7px;" (click)="reset()">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header> -->
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start" style="padding: 7px;" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-buttons>
+      <ion-title>Extend Reservation</ion-title>
+      <ion-buttons slot="end" style="padding: 7px;" (click)="reset()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <form [formGroup]="searchForm" (ngSubmit)="submit(searchForm.value)">
+      <ion-row style="margin: 0px 9px 0 10px;">
+        <ion-col size="12">
+          <ion-item class="mt-1" style="border: 2px solid #52a752;border-radius: 6px;">
+            <ion-input type="text" placeholder="Enter Request ID" formControlName="reqId"
+              (keyup)="transformText($event)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="mt-1" style="border: 2px solid #52a752;border-radius: 6px;">
+            <ion-input type="text" placeholder="Enter Name" formControlName="name"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="mt-1" style="border: 2px solid #52a752;border-radius: 6px;">
+            <ion-input type="text" maxlength="10" placeholder="Mobile Number" formControlName="mob"></ion-input>
+          </ion-item>
+        </ion-col>
+        <div class="text-error text-danger" *ngIf="isSubmitBtnClicked == true">
+          <span class="text-danger"
+            *ngIf="(searchForm.get('reqId').value =='' && searchForm.get('name').value == ''&& searchForm.get('mob').value == '') || showError">*Please
+            provide
+            request id or name or mobile number.</span>
+        </div>
+        <ion-col size="12" style="float:right">
+          <ion-button style="float: right;" type="submit">Search</ion-button>
+        </ion-col>
+        <!-- <ion-col size="12">
+        <ion-item class="mt-1" style="border: 2px solid #52a752;margin: 0px 9px 0 10px;border-radius: 6px;">
+          <ion-input type="text" placeholder="Enter Desgignation"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item class="mt-1" style="border: 2px solid #52a752;margin: 0px 9px 0 10px;border-radius: 6px;">
+          <ion-input type="text" placeholder="Enter From Date"></ion-input>
+        </ion-item>
+      </ion-col> -->
+      </ion-row>
+    </form>
+
+    <ng-container *ngIf="responseData.length > 0">
+      <ion-row style="margin: 0px 9px 0 10px;">
+        <ion-col><i>{{responseData.length}} record found.</i></ion-col>
+      </ion-row>
+      <ion-card *ngFor="let data of responseData">
+        <ion-card-content style="padding:10px 10px !important">
+          <ion-row style="padding-left: 6px;padding-bottom:5px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Booking Id</ion-label><br>
+              <ion-label class="label-value">{{data.bookingId}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">Guest Name</ion-label><br>
+              <ion-label class="label-value">{{data.name}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;padding-bottom:5px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Booking Date</ion-label><br>
+              <ion-label class="label-value">{{data.bookingDt}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">From Date</ion-label><br>
+              <ion-label class="label-value">{{data.fromDate | date:'dd-MM-YYYY HH:mm'}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;padding-bottom:5px;">
+            <ion-col size="6">
+              <ion-label class="label-key">To Date</ion-label><br>
+              <ion-label class="label-value">{{data.toDate | date:'dd-MM-YYYY HH:mm'}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">Designation</ion-label><br>
+              <ion-label class="label-value">{{data.desg}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Mobile No</ion-label><br>
+              <ion-label class="label-value">{{data.mobile}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button type="button" (click)="goToExtendForm(data)"
+                [ngStyle]="{'color':'#0078FF','--background':'#E1EDFF','--background-activated':'#E1EDFF','font-size':'83%','font-weight':'600', 'width': '-webkit-fill-available'}">
+                Extend</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+    <ng-container *ngIf="showNoAvail == true">
+      <div class="img-wrapper">
+        <img class="noDataAvail" src="../../../../../../../assets/afterlogin/no-data-img.png" alt="">
+        <p>No Data Available</p>
+      </div>
+    </ng-container>
+
+  </ion-grid>
+
+</ion-content>

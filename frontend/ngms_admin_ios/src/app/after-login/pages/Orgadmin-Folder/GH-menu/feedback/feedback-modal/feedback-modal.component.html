@@ -1,0 +1,50 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title style="padding-left:16px !important">Response To Feedback</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header> -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding-left:16px !important">Response To Feedback</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <ion-label class="feedbackLbl" position="stacked">
+        <h2 style="margin: 10px 0px;
+        color: darkgreen;">Remarks</h2>
+      </ion-label>
+      <textarea class="textarea ion-padding text-justify mb-2" [value]="repliedSms" cols="30" rows="6"></textarea>
+      <ion-checkbox [(ngModel)]="showTextarea" (ionChange)="onChange($event)"></ion-checkbox>
+      <ion-label style="padding-left: 2px;position: relative;bottom: 7px !important;" position="stacked">Do you want to add more Comments?</ion-label>
+
+      <div *ngIf="showTextarea">
+        <ion-textarea class="textarea p-1" labelPlacement="floating" (ionInput)="countCharacters($event)"
+          [(ngModel)]="repliedCustomSms" maxlength=100></ion-textarea>
+      </div>
+
+      <ion-text color="danger" *ngIf="showTextarea">
+        {{ maximumLength-characterCount }} Characters Remaining
+      </ion-text>
+    </ion-card-content>
+
+    <ion-row style="padding-left: 6px;">
+      <ion-col size="6">
+      </ion-col>
+      <ion-col size="6" class="ion-text-right">
+        <ion-button fill="solid" style="--background: darkgreen;" (click)="onSubmit()">Submit</ion-button>
+      </ion-col>
+    </ion-row>
+
+
+
+  </ion-card>
+
+</ion-content>

@@ -1,0 +1,60 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="modalcontroller.dismiss()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Room Cancellation</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="modalcontroller.dismiss()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Room Cancellation</ion-title>
+</ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="containerr">
+    <ion-card>
+      <ion-card-content style="padding-top: 16px !important;">
+        <!-- <ion-row style="padding-left: 6px;">
+          <ion-col size="4" *ngFor="let data of driverList">
+            <div>
+              <img src="../../../../../../../assets/afterlogin/icons8-driver-96.png" alt=""><br>
+              <ion-button (click)="view(data)" class="driver-btn"><ion-icon name="eye-outline"></ion-icon></ion-button><ion-button (click)="addDriver(data)" class="driver-btn">ADD</ion-button>
+            </div>
+          </ion-col>
+        </ion-row> -->
+        <div style="overflow-x:auto;">
+          <table style="width: 100%;">
+            <thead class="thead text-center text-nowrap">
+              <tr>
+                <th>Date	</th>
+                <th>Rooms</th>
+              </tr>
+            </thead>
+            <tbody class="tbody text-center text-nowrap">
+                <tr  *ngFor="let data of allotedRoomData">
+                  <td>{{data.fromDate + ' - ' + data.toDate }}</td>
+                  <td>
+                    <tr>
+                      <td *ngFor="let allot of data.alltmentDetails;let i = index"> <ion-label style="bottom: 4px !important;
+                        position: relative;">{{allot.allotRoom}} : </ion-label> <ion-checkbox (ionChange)="onSelect($event)" style="margin-right: 5px;" [attr.disabled]="i == 0"
+                        [value]="allot.allotId" labelPlacement="end"></ion-checkbox></td>
+                    </tr>
+                  </td>              
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <div class="d-flex justify-content-center" style="margin-right: 10px;margin-bottom: 10%;">
+      <!-- <ion-button class="cancel-btn" *ngIf="dataComingFrom=='MOD'" (click)="cancel(allBookingData)">
+        Cancel</ion-button> -->
+      <ion-button class="submit-btn" (click)="cancelAllotRoom()"> Cancel Allot Room </ion-button>
+      <!-- <ion-button class="close-btn" (click)="goBack()"> Back</ion-button> -->
+    </div>
+
+
+  </div>
+</ion-content>

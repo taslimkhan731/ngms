@@ -1,0 +1,99 @@
+<ion-content>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="logo-text">Receptionist Shift</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-icon name="notifications-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+  <div class="content">
+    <div>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select City"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option value="1">Delhi</ion-select-option>
+          <ion-select-option value="2">Mumbai</ion-select-option>
+          <ion-select-option value="3">Kolkata</ion-select-option>
+          <ion-select-option value="4">Chennai</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select Guest House"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option value="1">Odisha Bhawan,Delhi</ion-select-option>
+          <ion-select-option value="2">Odisha Bhawan,Mumbai</ion-select-option>
+          <ion-select-option value="3">Odisha Bhawan,Kolkata</ion-select-option>
+          <ion-select-option value="4">Odisha Bhawan,Chennai</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="cardHeight">
+      <ion-card>
+        <ion-label class="hehadinglbl">{{selectedValue}}</ion-label>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-label class="lbl">From Date:</ion-label>
+              <ion-input type="date"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="lbl">To Date:</ion-label>
+              <ion-input type="date"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="lbl">From Time:</ion-label>
+              <ion-input type="time"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="lbl">To Time:</ion-label>
+              <ion-input type="time"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Opening Balance Refund:</ion-label>
+              <ion-input type="text"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Opening Balance Refund:</ion-label>
+              <ion-input type="text"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl">Total Balance Refund:</ion-label>
+              <ion-input type="text"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <div class="shiftCls">
+          <ion-label class="shiftlbl ">Shift members:</ion-label>
+          <table class="table table-bordered bg-white">
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td> <ion-checkbox ></ion-checkbox></td>
+                <td>receptionist 1</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td> <ion-checkbox ></ion-checkbox></td>
+                <td>receptionist 2</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td> <ion-checkbox ></ion-checkbox></td>
+                <td>receptionist 3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ion-card>
+    </div>
+  </div>
+  <div class="btnCss text-center mb-2">
+    <ion-button class="" *ngFor="let btn of splitBtnClass" class="actionBtn"
+      [class.selected]="selectedValue == btn.btnName" (click)="getButtonName(btn.btnName)">
+      <!-- <ion-icon [name]="btn.btnIcon" style="padding: 3px;"></ion-icon> -->
+      {{btn.btnName}}</ion-button>
+  </div>
+</ion-content>

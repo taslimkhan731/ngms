@@ -1,0 +1,78 @@
+ion-toolbar {
+    --background: darkgreen;
+    color: white;
+    letter-spacing: 2px;
+    font-size: 16px;
+
+    ion-icon {
+        font-size: xx-large;
+        // background: white;
+        // color: green;
+        padding: 3px;
+        // border-radius: 32px;
+    }
+}
+
+ion-content {
+    --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+
+    .containerr {
+        // padding: 2% 2%;
+
+        ion-card {
+            background: #FFFFFF;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding-bottom: 10px;
+
+
+            ion-card-content {
+                padding: 2px;
+
+                table {
+                    .thead th {
+                        border: none !important;
+                        border-left: 1px solid white !important;
+                        background: linear-gradient(156.81deg, #50CB89 -22.76%, #109851 108.33%) ! important;
+                        color: white;
+                        padding: 12px 12px;
+                    }
+
+                    .tbody {
+                        border: 1px solid #bebebe;
+
+                        td {
+                            padding: 7px;
+                        }
+
+                        tr {
+                            border-bottom: 1px solid #d5d5d5;
+                        }
+                    }
+                }
+
+                .add {
+                    padding: 5px 7px;
+                    background: linear-gradient(180deg, #549F08 0%, #0F8D4B 100%);
+                    box-shadow: 3px 2px 5px rgb(0 0 0/ 25%);
+                    color: #ffffff;
+                    font-weight: 700 !important;
+                    font-size: 20px;
+                    border-radius: 6px;
+                }
+
+                .driver-btn {
+                    --padding-bottom: 5px !important;
+                    --padding-end: 8px !important;
+                    --padding-start: 8px;
+                    --padding-top: 5px;
+                    height: 30px;
+                }
+
+            }
+
+
+        }
+
+    }
+}

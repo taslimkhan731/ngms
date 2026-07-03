@@ -1,0 +1,33 @@
+ion-card {
+    background: #F5FEF9;
+    border: 0.957234px solid #A0E6A4;
+    border-radius: 8px;
+
+    .lbl {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14.3364px;
+        line-height: 17px;
+        display: flex;
+        align-items: center;
+        color: #414042;
+        margin-top: 7px;
+        margin-bottom: 4px;
+    }
+
+    ion-input,
+    ion-textarea {
+        background: #FFFFFF;
+        border: 0.892779px solid #A2E6A7;
+        box-shadow: inset 1.78556px 1.78556px 2.67834px rgb(86 103 113 / 29%);
+        border-radius: 4.46389px;
+        --padding-top: 5px;
+        --padding-end: 9px;
+        --padding-bottom: 5px;
+        --padding-start: 9px;
+    }
+    ion-button {
+        --background: linear-gradient(180deg, #549f08 0%, #0f8d4b 100%);
+    }
+
+}

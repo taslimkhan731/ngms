@@ -1,0 +1,484 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Office Order</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;">Office Order</ion-title>
+  </ion-toolbar> 
+</ion-header>
+<ion-content>
+  <div class="containerr">
+    <ion-card>
+
+      <ng-container *ngIf="allPreviewData?.processList.length">
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Approved List/Confirmed List
+          </ion-label>
+        </ion-card-header>
+
+        <!-- <ion-card-content> -->
+        <ion-card-content style="padding: 0 12px !important; ">
+          <ion-accordion-group
+            style="border: 2px solid #dae9da;margin-top: 15px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);">
+            <ng-container *ngFor="let data of allPreviewData?.processList">
+
+              <ion-accordion>
+                <ion-item slot="header" style="--background: #e1ffef;">
+                  <ion-label class="label-key">{{splitName(data.name) + '(' + data.bookingId + ')'}}</ion-label>
+                </ion-item>
+                <div slot="content" class="insideAccordian">
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Name,Designation & Address</ion-label><br>
+                      <ion-label class="label-value">{{data.name}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Period of Stay</ion-label><br>
+                      <ion-label class="label-value">{{data.frmDt}} to {{data.toDt}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Suite/Room No</ion-label><br>
+                      <ion-label class="label-value">{{data.roomNo}}</ion-label>
+
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">During Stay Conveyance</ion-label><br>
+                      <ion-label class="label-value">
+                        <ng-container *ngIf="data.goSignDesig == '0'">No</ng-container>
+                        <ng-container *ngIf="data.goSignDesig != '0'">Yes</ng-container>
+                      </ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Arrival</ion-label><br>
+                      <ion-label class="label-value">
+                        {{data.officeorderno == 'Flight/Train No:' ? 'NA' :data.officeorderno }}
+                      </ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Departure</ion-label><br>
+                      <ion-label class="label-value">
+                        {{data.periodOfStay == 'Flight/Train No:' ? 'NA' :data.periodOfStay }}
+                      </ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Rent(Per Day/Per Room/Per Bed) In INR</ion-label><br>
+                      <ion-label class="label-value">{{data.roomRent}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </ion-accordion>
+            </ng-container>
+          </ion-accordion-group>
+        </ion-card-content>
+        <!-- </ion-card-content> -->
+      </ng-container>
+      <ng-container *ngIf="allPreviewData?.conveyanceList.length">
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Conveyance List
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content style="padding: 0 12px !important; ">
+          <ion-accordion-group
+            style="border: 2px solid #dae9da;margin-top: 15px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);">
+            <ng-container *ngFor="let data of allPreviewData?.conveyanceList">
+              <ion-accordion>
+                <ion-item slot="header" style="--background: #e1ffef;">
+                  <ion-label class="label-key">{{splitName(data.name) + '(' + data.bookingId + ')'}}</ion-label>
+                </ion-item>
+                <div slot="content" class="insideAccordian">
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Name,Designation & Address</ion-label><br>
+                      <ion-label class="label-value">{{data.name}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Arrival</ion-label><br>
+                      <ion-label class="label-value">{{data.modId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Departure</ion-label><br>
+                      <ion-label class="label-value">{{data.mrrId}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </ion-accordion>
+            </ng-container>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData?.modifiedList.length">
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Modified List
+          </ion-label>
+        </ion-card-header>
+
+        <ion-card-content style="padding: 0 12px !important; ">
+          <ion-accordion-group
+            style="border: 2px solid #dae9da;margin-top: 15px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);">
+            <ng-container *ngFor="let data of allPreviewData?.modifiedList">
+              <ion-accordion>
+                <ion-item slot="header" style="--background: #e1ffef;">
+                  <ion-label class="label-key">{{splitName(data.name) + '(' + data.bookingId + ')'}}</ion-label>
+                </ion-item>
+                <div slot="content" class="insideAccordian">
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Name,Designation & Address:</ion-label><br>
+                      <ion-label class="label-value">{{data.name}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Period of Stay:</ion-label><br>
+                      <ion-label class="label-value">{{data.fromDate}} to {{data.toDate}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Previoud Order No:</ion-label><br>
+                      <ion-label class="label-value">{{data.submittedOn}}</ion-label>
+
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Reason:</ion-label><br>
+                      <ion-label class="label-value">{{data.remarks}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Previous Suite/Room No:</ion-label><br>
+                      <ion-label class="label-value">{{data.partialCancelFromDt}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Previous Rent(Per Day/Per Room/Per Bed) In INR:</ion-label><br>
+                      <ion-label class="label-value">{{data.confBillId}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Modified Suite/Room No:</ion-label><br>
+                      <ion-label class="label-value">{{data.confCatId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Modified Rent(Per Day/Per Room/Per Bed) In INR:</ion-label><br>
+                      <ion-label class="label-value">{{data.confUseId}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </ion-accordion>
+            </ng-container>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData?.cacelledList.length">
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Cancelled List
+          </ion-label>
+        </ion-card-header>
+        <ion-card-content style="padding: 0 12px !important; ">
+          <ion-accordion-group
+            style="border: 2px solid #dae9da;margin-top: 15px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);">
+            <ng-container *ngFor="let data of allPreviewData?.cacelledList">
+              <ion-accordion>
+                <ion-item slot="header" style="--background: #e1ffef;">
+                  <ion-label class="label-key">{{splitName(data.name) + '(' + data.bookingId + ')'}}</ion-label>
+                </ion-item>
+                <div slot="content" class="insideAccordian">
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="12">
+                      <ion-label class="label-key">Name,Designation & Address:</ion-label><br>
+                      <ion-label class="label-value">{{data.noOfChildren}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Period of Stay:</ion-label><br>
+                      <ion-label class="label-value">{{data.fromDate}} to {{data.toDate}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="6">
+                      <ion-label class="label-key">Suite/Room No:</ion-label><br>
+                      <ion-label class="label-value">{{data.noRooms}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Mode of Cancel:</ion-label><br>
+                      <ion-label class="label-value">{{data.status}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </ion-accordion>
+            </ng-container>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData?.conferenceList.length">
+        <ion-card-header style="margin-bottom: 5px !important;">
+          <ion-label>
+            Conference List
+          </ion-label>
+        </ion-card-header>
+        <ion-card-content style="padding: 0 12px !important; ">
+          <ion-accordion-group
+            style="border: 2px solid #dae9da;margin-top: 15px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);">
+            <ng-container *ngFor="let data of allPreviewData?.conferenceList">
+              <ion-accordion>
+                <ion-item slot="header" style="--background: #e1ffef;">
+                  <ion-label class="label-key">{{splitName(data.name) + '(' + data.bookingId + ')'}}</ion-label>
+                </ion-item>
+                <div slot="content" class="insideAccordian">
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="12">
+                      <ion-label class="label-key">Name,Designation & Address:</ion-label><br>
+                      <ion-label class="label-value">{{data.name}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">From Date:</ion-label><br>
+                      <ion-label class="label-value">{{data.fromDate}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="6">
+                      <ion-label class="label-key">To date:</ion-label><br>
+                      <ion-label class="label-value">{{data.toDate}}</ion-label>
+
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Time Duration:</ion-label><br>
+                      <ion-label class="label-value">{{data.confUseDesc}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="6">
+                      <ion-label class="label-key">Hall Type:</ion-label><br>
+                      <ion-label class="label-value">{{data.confCatDesc}}</ion-label>
+
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Capacity:</ion-label><br>
+                      <ion-label class="label-value">{{data.capacity}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Amount:</ion-label><br>
+                      <ion-label class="label-value">{{data.advanceAmount}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </ion-accordion>
+            </ng-container>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ng-container>
+    </ion-card>
+    <div id="printPreview" class="printPreview" style="font-family: Helvetica !important;">
+      <h3 style="text-align: center;">GOVERNMENT OF ODISHA</h3>
+      <p style="text-align: unset;">
+        Accommodation in {{allPreviewData.guestHouse}}, {{allPreviewData.city}} is reserved in favour of the following
+        persons which can be availed on
+        payment of rent as noted below. If reservation is not availed or not cancelled by the Home Department, the
+        allottee has to
+        pay 50% of the rent otherwise payable. The allottees are request to share their feedback on their experience in
+        the
+        Bhawan using the link in the SMS received after check out.</p>
+      <ng-container *ngIf="allPreviewData.processList.length!=0">
+        <h5 style="text-decoration: underline;text-align: left;">Allotment List</h5>
+        <table style="width: 100%;border: 1px solid black;border-collapse: collapse;">
+          <thead>
+            <tr style="border: 1px solid black !important; text-align: center;">
+              <th style="border: 1px solid black;border-collapse: collapse;">Sl No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Name , Designation & Address</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Period of stay</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Suite /Room No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">During Stay Conveyance</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Arrival</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Departure</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Rent(Per Day/Per Room/Per Bed) In INR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border: 1px solid black !important; text-align: center;"
+              *ngFor="let item of allPreviewData.processList;let i = index;">
+              <td style="border: 1px solid black;">{{i+1}}</td>
+              <td style="border: 1px solid black;">{{item.name}}</td>
+              <td style="border: 1px solid black;">{{item.frmDt}} to {{item.toDt}}</td>
+              <td style="border: 1px solid black;">{{item.roomNo}}</td>
+              <ng-container *ngIf="item.goSignDesig === '0'; else yesBlock">
+                <td style="border: 1px solid black;">No</td>
+              </ng-container>
+              <ng-template #yesBlock>
+                <td style="border: 1px solid black;">Yes</td>
+              </ng-template>
+              <ng-container *ngIf="item.officeorderno === 'Flight/Train No:'; else yesBlockaArrival">
+                <td style="border: 1px solid black;">No</td>
+              </ng-container>
+              <ng-template #yesBlockaArrival>
+                <td style="border: 1px solid black;">{{item.officeorderno}}</td>
+              </ng-template>
+              <ng-container *ngIf="item.periodOfStay === 'Flight/Train No:'; else yesBlockDeparture">
+                <td style="border: 1px solid black;">No</td>
+              </ng-container>
+              <ng-template #yesBlockDeparture>
+                <td style="border: 1px solid black;">{{item.periodOfStay}}</td>
+              </ng-template>
+              <td style="border: 1px solid black;">{{item.roomRent}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData.conveyanceList.length!=0">
+        <h5 style="text-decoration: underline;text-align: left;">Conveyance List</h5>
+        <table style="width: 100%;border-collapse: collapse;">
+          <thead>
+            <tr style="border: 1px solid black !important; text-align: center;">
+              <th style="border: 1px solid black;border-collapse: collapse;">Sl No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Name , Designation & Address</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">During Stay Conveyance</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Arrival</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Departure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border: 1px solid black !important; text-align: center;"
+              *ngFor="let item of allPreviewData.conveyanceList;let i = index;">
+              <td style="border: 1px solid black;">{{i+1}}</td>
+              <td style="border: 1px solid black;">{{item.name}}</td>
+              <td style="border: 1px solid black;">{{item.prevOrderDt}}</td>
+              <ng-container *ngIf="item.modId === 'Flight/Train No:'; else yesBlockaArrivalConveyance">
+                <td style="border: 1px solid black;">No</td>
+              </ng-container>
+              <ng-template #yesBlockaArrivalConveyance>
+                <td style="border: 1px solid black;">{{item.modId}}</td>
+              </ng-template>
+              <ng-container *ngIf="item.mrrId === 'Flight/Train No:'; else yesBlockDepartureConveyance">
+                <td style="border: 1px solid black;">No</td>
+              </ng-container>
+              <ng-template #yesBlockDepartureConveyance>
+                <td style="border: 1px solid black;">{{item.mrrId}}</td>
+              </ng-template>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData.modifiedList.length!=0">
+        <h5 style="text-decoration: underline;text-align: left;">Modified List</h5>
+        <table style="width: 100%;border-collapse: collapse;">
+          <thead>
+            <tr style="border: 1px solid black !important; text-align: center;">
+              <th style="border: 1px solid black;border-collapse: collapse;">Sl No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Name , Designation & Address</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Period Of Stay</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Previous Order No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Previous Order Date</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Reason</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Previous Suite/Room No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Previous Rent(Per Day/Per Room/Per Bed) In
+                INR</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Modified Suite /Room No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Modified Rent(Per Day/Per Room/Per Bed) In
+                INR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border: 1px solid black !important; text-align: center;"
+              *ngFor="let item of allPreviewData.modifiedList;let i = index;">
+              <td style="border: 1px solid black;">{{i+1}}</td>
+              <td style="border: 1px solid black;">
+                {{item.name}}{{item.designation==null?'':','+item.designation}}{{item.department==null?'':','+item.department}}
+              </td>
+              <td style="border: 1px solid black;">{{item.fromDate}} to {{item.toDate}}</td>
+              <td style="border: 1px solid black;">{{item.submittedOn}}</td>
+              <td style="border: 1px solid black;">{{item.prevOrderDt}}</td>
+              <td style="border: 1px solid black;">{{item.remarks}}</td>
+              <td style="border: 1px solid black;">{{item.partialCancelFromDt}}</td>
+              <td style="border: 1px solid black;">{{item.confBillId}}</td>
+              <td style="border: 1px solid black;">{{item.confCatId}}</td>
+              <td style="border: 1px solid black;">{{item.confUseId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData.cacelledList.length!=0">
+        <h5 style="text-decoration: underline;text-align: left;">Cancelled List</h5>
+        <table style="width: 100%;border-collapse: collapse;">
+          <thead>
+            <tr style="border: 1px solid black !important; text-align: center;">
+              <th style="border: 1px solid black;border-collapse: collapse;">Sl No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Name ,Designation & Address</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Period Of Cancellation</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Suite/Room No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Mode of Cancel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border: 1px solid black !important; text-align: center;"
+              *ngFor="let item of allPreviewData.cacelledList;let i = index;">
+              <td style="border: 1px solid black;">{{i+1}}</td>
+              <td style="border: 1px solid black;">{{item.noOfChildren}}</td>
+              <td style="border: 1px solid black;">{{item.fromDate}} to {{item.toDate}}</td>
+              <td style="border: 1px solid black;">{{item.noRooms}}</td>
+              <td style="border: 1px solid black;">{{item.status}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="allPreviewData.conferenceList.length!=0">
+        <h6 style="text-decoration: underline;text-align: left;">Conference List</h6>
+        <table style="width: 100%;border-collapse: collapse;">
+          <thead>
+            <tr style="border: 1px solid black !important; text-align: center;">
+              <th style="border: 1px solid black;border-collapse: collapse;">Sl No</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Name , Address</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">From Date</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">To Date</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Time duration </th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Hall Type</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Capacity</th>
+              <th style="border: 1px solid black;border-collapse: collapse;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border: 1px solid black !important; text-align: center;"
+              *ngFor="let item of allPreviewData.conferenceList;let i = index;">
+              <td style="border: 1px solid black;">{{i+1}}</td>
+              <td style="border: 1px solid black;">{{item.name}}</td>
+              <td style="border: 1px solid black;">{{item.fromDate}}</td>
+              <td style="border: 1px solid black;">{{item.toDate}}</td>
+              <td style="border: 1px solid black;">{{item.confUseDesc}}</td>
+              <td style="border: 1px solid black;">{{item.confCatDesc}}</td>
+              <td style="border: 1px solid black;">{{item.capacity}}</td>
+              <td style="border: 1px solid black;">{{item.advanceAmount}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <div style="margin-top: 10px;text-align: unset;">
+        <p>N.B.(1) The reservation is subject to clearance of outstanding dues if any. (2) Valid for allottee only. (3)
+          Any reservation
+          is subject to cancellation/modification under unforeseen circumstances. (4) Check in at 9:00AM and Check out
+          at 08.00
+          AM. (5) The Allottees are requested to produce their photo identity cards at the reception counter for
+          identification. (6)
+          Reservation status can be accessed in the Website https://bhawan.homeodisha.gov.in of Home Department.</p>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end" style="margin-right: 10px;">
+      <ion-button class="submit-btn" (click)="printPreview()"> Print PDF </ion-button>
+      <ion-button class="close-btn" (click)="goBack()"> Back</ion-button>
+    </div>
+  </div>
+</ion-content>

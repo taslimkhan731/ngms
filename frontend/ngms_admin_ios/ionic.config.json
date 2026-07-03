@@ -1,0 +1,8 @@
+{
+  "name": "Nalco",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

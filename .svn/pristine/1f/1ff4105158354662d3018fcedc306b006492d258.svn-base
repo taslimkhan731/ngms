@@ -1,0 +1,30 @@
+<div class="header">
+  <h5 style="float:left">Terms & Conditions</h5>
+  <ion-icon style="float: right;" name="close-outline" (click)="dismiss()"></ion-icon>
+</div>
+<br>
+<section>
+  <div>
+    <ul>
+      <li>{{inclExcl}}</li>
+      <li *ngIf="data=='02'">Additional rent of RS.6000/-per hour will
+        be charged for each extended hour.</li>
+      <li *ngIf="data == '02'">This has been concurred in by Finance
+        Department vide Noting-65 in the OSWAS file
+        HOME-BE_MISC-0005-2022.</li>
+      <li>The reservation in any bhawan may be
+        cancelled in visit of Hon'ble Governor, Hon'ble CM,Hon'ble Chief
+        justice of orissa High court or any other state govt.
+        programs or sponsored programs.</li>
+      <li>In case of cancellation of reservation from
+        office side,you are requested to contact the manager of
+        concerned bhawan for refund if any amount paid.</li>
+      <li>The amount paid towards booking of the
+        Confernce hall/Auditorium/MP hall/Open Terrace/Lounge is
+        non-refundable.</li>
+      <li>The acknowledgement/receipt is to be
+        produced before the manager for the concerened Bhawan prior to
+        use of Conference hall/Auditorium/MP hall/Open Terrace/Lounge.</li>
+    </ul>
+  </div>
+</section>

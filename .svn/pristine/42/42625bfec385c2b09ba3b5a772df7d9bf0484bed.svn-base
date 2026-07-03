@@ -1,0 +1,246 @@
+<ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">{{headerName}} Details</ion-title>
+</ion-toolbar>
+<ion-content>
+  <!-- <form> -->
+    <div class="containerr">
+      <ion-card>
+        <ng-container *ngIf="responseData?.otherguestCheckinDetails.length > 0 ">
+          <ion-card-header>
+            <ion-label>
+              Other Guests
+            </ion-label>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-card *ngFor="let otherGuests of responseData?.otherguestCheckinDetails"
+              style="border: 0.957234px solid #A0E6A4;">
+              <ion-card-content>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Booking Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.reqId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.guestId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Guest Details</ion-label><br>
+                      <ion-label class="label-value">{{getName(otherGuests)}}</ion-label>
+                    </ion-col>
+                    <ng-container *ngIf="otherGuests.status == null">
+                      <ion-col size="6">
+                        <ion-label class="label-key">Status</ion-label><br>
+                        <ion-label class="label-value" style="color:red">Not Checked in</ion-label>
+                      </ion-col>
+                    </ng-container>
+                    <ng-container *ngIf="otherGuests.status !== null">
+                      <ion-col size="6">
+                        <ion-label class="label-key">Register No</ion-label><br>
+                        <ion-label class="label-value">{{otherGuests?.rollNo}}</ion-label>
+                      </ion-col>
+                      <ion-col size="6">
+                        <ion-label class="label-key">Time</ion-label><br>
+                        <ion-label class="label-value">{{otherGuests?.arrivalTimeDate}}</ion-label>
+                      </ion-col>
+                      <ion-col size="6">
+                        <ion-label class="label-key">Advance Amount</ion-label><br>
+                        <ion-label class="label-value">{{otherGuests?.advanceAmount}}</ion-label>
+                      </ion-col>
+                      <ion-col size="6">
+                        <ion-label class="label-key">Room</ion-label><br>
+                        <ion-label class="label-value">{{otherGuests?.roomDetails.roomNo}}</ion-label>
+                      </ion-col>
+                    </ng-container>
+                  </ion-row>
+                </ion-grid>
+              </ion-card-content>
+            </ion-card>
+          </ion-card-content>
+        </ng-container>
+        <ng-container *ngIf="btntype=='COUT'">
+          <ion-card-header>
+            <ion-label>
+              Current Check Out
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-card *ngFor="let otherGuests of responseData?.guestDetails;let i = index"
+              style="border: 0.957234px solid #A0E6A4;">
+              <ion-card-content>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Booking Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.reqId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.guestId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Details</ion-label><br>
+                      <ion-label class="label-value">{{getName(otherGuests)}}</ion-label>
+                    </ion-col>
+
+                    <ion-col size="6">
+                      <ion-label class="label-key">Register No</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.rollNo}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">CheckIn Time</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.arrivalTime}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Advance Amount</ion-label><br>
+                      <ion-label class="label-value">
+                        <ng-container *ngIf="otherGuests?.advncAmount == ''">0</ng-container>
+                        <ng-container
+                          *ngIf="otherGuests?.advncAmount  !== ''">{{otherGuests?.advncAmount}}</ng-container>
+                      </ion-label>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="label-key">Room</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.roomDetails?.blockName}} -
+                        {{otherGuests?.roomDetails?.roomNo}}</ion-label>
+                    </ion-col>
+                    <ion-col size="8">
+                      <ion-label class="label-key">Checkout Date</ion-label><br>
+                      <ion-label>
+                        <input type="datetime-local" #coutDate [id]="otherGuests?.guestId" [min]="minDate"
+                          [max]="maxDate">
+                      </ion-label>
+                    </ion-col>
+                    <!-- <ion-col size="6">
+                      <ion-label class="label-key">Checkout Time</ion-label><br>
+                      <ion-label>
+                        <ion-input type="time" [max]="maxTime" [value]="maxTime" style="width: 100%;"></ion-input>
+                      </ion-label>
+                    </ion-col> -->
+
+                  </ion-row>
+                </ion-grid>
+              </ion-card-content>
+            </ion-card>
+          </ion-card-content>
+        </ng-container>
+        <ng-container *ngIf="btntype=='CIN'">
+          <ion-card-header>
+            <ion-label>
+              Current Check In
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-card *ngFor="let otherGuests of responseData?.guestDetails; let i = index"
+              style="border: 0.957234px solid #A0E6A4;">
+              <ion-card-content>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Booking Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.reqId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.guestId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Details</ion-label><br>
+                      <ion-label class="label-value">{{getName(otherGuests)}}
+                        
+                        <!-- <ng-container *ngIf="otherGuests?.designation == ''">{{otherGuests?.name}},
+                          {{otherGuests?.department}}</ng-container>
+                        <ng-container
+                          *ngIf="otherGuests?.department == ''">{{otherGuests?.name}},{{otherGuests?.designation}}</ng-container>
+                        <ng-container
+                          *ngIf="otherGuests?.department == '' && otherGuests?.designation == ''">{{otherGuests?.name}}</ng-container>
+                        <ng-container
+                          *ngIf="otherGuests?.department && otherGuests?.designation">{{otherGuests?.name}},{{otherGuests?.designation}},{{otherGuests?.department}}</ng-container> -->
+                      </ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Room</ion-label><br>
+                      <ion-label class="label-value">
+                        {{responseData?.checkinRoom[0]?.type}}
+                      </ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Designation</ion-label><br>
+                      <ion-label class="label-value">{{responseData?.selectDesgination?.desgName}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Purpose</ion-label><br>
+                      <ion-label class="label-value">
+                        {{responseData?.selectPurpose}}
+                      </ion-label>
+                    </ion-col>
+                    <ion-col size="5">
+                      <ion-label class="label-key">Register No</ion-label><br>
+                    </ion-col>
+                    <ion-col size="7">
+                      <input type="text" style="width:100%" placeholder="Enter Register No" [id]="otherGuests?.guestId"
+                        #rollNo>
+                    </ion-col>
+                    <ion-col size="5">
+                      <ion-label class="label-key">CheckIn Time</ion-label><br>
+                    </ion-col>
+                    <ion-col size="7">
+                      <input type="datetime-local" style="width: 100%;" #cinTime [id]="otherGuests?.guestId"
+                        [min]="minDate" [max]="maxDate">
+                    </ion-col>
+                    <ion-col size="5">
+                      <ion-label class="label-key">Advance Amount</ion-label><br>
+                    </ion-col>
+                    <ion-col size="7">
+                      <input type="number" style="width: 100%;" placeholder="Enter Advance Amount"
+                        [id]="otherGuests?.guestId" #advAmount>
+                    </ion-col>
+                    <!-- <ion-col size="8">
+                      <ion-label class="label-key">Additional Guest</ion-label><br>
+                    </ion-col>
+                    <ion-col>
+                      <input type="number">
+                    </ion-col> -->
+                  </ion-row>
+                </ion-grid>
+              </ion-card-content>
+            </ion-card>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="5">
+                  <ion-label class="label-key">Total Amount</ion-label><br>
+                </ion-col>
+                <ion-col size="7">
+                  <ion-label class="label-value">{{responseData?.roomRent}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="5">
+                  <ion-label class="label-key">Additional Guest</ion-label><br>
+                </ion-col>
+                <ion-col size="7">
+                  <input type="text" style="width: 100%;" [(ngModel)]="extraGuest" placeholder="Enter Extra Guest">
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ng-container>
+      </ion-card>
+
+      <div class="d-flex justify-content-end" style="margin-right: 10px;">
+        <ion-button type="button" class="submit-btn" *ngIf="btntype=='CIN'" (click)="submitCheckIn()">Check In</ion-button>
+        <ion-button type="button" class="submit-btn" *ngIf="btntype=='COUT'" (click)="submit()">Check Out</ion-button>
+        <ion-button class="close-btn" (click)="goBack()"> Back</ion-button>
+      </div>
+    </div>
+  <!-- </form> -->
+
+
+
+
+</ion-content>

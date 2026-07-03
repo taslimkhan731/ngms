@@ -1,0 +1,79 @@
+<ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Current Check-In Details</ion-title>
+</ion-toolbar>
+<ion-content>
+  <form>
+    <div class="containerr">
+      <ion-card>
+        <ng-container>
+          <ion-card-header>
+            <ion-label>
+             Guest Details
+            </ion-label>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-card *ngFor="let otherGuests of responseData;let i = index" style="border: 0.957234px solid #A0E6A4;margin-left: 10px;margin-right: 10px;">
+              <ion-card-content>
+                <ion-grid>
+                  <ion-row style="padding-left: 6px;">
+                    <ion-col size="6">
+                      <ion-label class="label-key">Request Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.reqId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Guest Id</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.guestId}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Register No</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.rollNo}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Time</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.arrivalTime}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">No. Of Adults </ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.adults}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">No. Of Children</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.childrenBelow}}</ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Room</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.roomDetails?.roomNo}} </ion-label>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-label class="label-key">Advance Amount</ion-label><br>
+                      <ion-label class="label-value">{{otherGuests?.advncAmount}}</ion-label>
+                    </ion-col>
+                    <!-- <ion-col size="6">
+                      <ion-label class="label-key">Checkout Time</ion-label><br>
+                      <ion-label>
+                        <ion-input type="time" [max]="maxTime" [value]="maxTime" style="width: 100%;"></ion-input>
+                      </ion-label>
+                    </ion-col> -->
+
+                  </ion-row>
+                </ion-grid>
+              </ion-card-content>
+            </ion-card>
+          </ion-card-content>
+        </ng-container>
+      </ion-card>
+
+      <div class="d-flex justify-content-end" style="margin-right: 10px;">
+        <ion-button class="submit-btn" (click)="submit()">Submit</ion-button>
+        <ion-button class="close-btn"> Back</ion-button>
+      </div>
+    </div>
+  </form>
+
+
+
+
+</ion-content>

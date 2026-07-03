@@ -1,0 +1,417 @@
+<!-- <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-menu-button auto-hide="false"></ion-menu-button>
+  </ion-buttons>
+  <ion-title>Home</ion-title>
+</ion-toolbar> -->
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons slot="start">
+			<ion-menu-button></ion-menu-button>
+		</ion-buttons>
+    <ion-title style="text-align: start;">Home</ion-title>
+    </ion-toolbar>
+    </ion-header>
+
+<ion-content>
+  <div class="content">
+    <ion-grid>
+      <div class="filter">
+        <ion-row>
+          <ion-col size="6">
+            <div class="date">
+              Date : {{currentDate }}
+            </div>
+          </ion-col>
+          <ion-col size="2">
+            <ion-button (click)="refresh()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="4">
+            <ion-button id="filtermodal-modal" (click)="openFilterModal()">
+              <ion-icon name="filter-outline"></ion-icon>&nbsp;Filter
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <ion-card class="card-1">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Reservation
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                    <ion-icon name="people-outline"></ion-icon>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Total Booking</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.totalBooking }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Online</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.online }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Offline</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.offline }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Cancelled</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.cancelled }}</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="card-2">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Occupancy
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                    <ion-icon name="list-outline"></ion-icon>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Moderation</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.moderation }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Allotment</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.alloted }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Approved</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.approved }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Check In</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.checkIn }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Check Out</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.checkOut }}</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="card-3">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Billing/Payments
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                    <ion-icon name="card-outline"></ion-icon>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">POS</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.posAmount }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Cash</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.cash }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Online</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.onlineAmount }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">Total</div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.totalAmount }}</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="card-4">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Feedback
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                    <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">
+                    <img class="noDataAvail" src="../../../../../../../assets/afterlogin/5star.png" alt="">
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.excellent }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">
+                    <img class="noDataAvail" src="../../../../../../../assets/afterlogin/4star.png" alt="">
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.good }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">
+                    <img class="noDataAvail" src="../../../../../../../assets/afterlogin/3star.png" alt="">
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.average }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">
+                    <img class="noDataAvail" src="../../../../../../../assets/afterlogin/2star.png" alt="">
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.poor }}</div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="label">
+                    <img class="noDataAvail" src="../../../../../../../assets/afterlogin/1star.png" alt="">
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="value">{{ dashboardData?.vpoor }}</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Category
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #categoryCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Purpose
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #purposeCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <div class="heading">
+                    Next 5 days Booking
+                  </div>
+                </ion-col>
+                <ion-col size="2">
+                  <div class="list-icon">
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #bookingCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+        </ion-card-content>
+      </ion-card>
+    </ion-grid>
+  </div>
+
+  <ion-modal #filtermodal trigger="filtermodal-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">
+              <ion-icon style="color: #ffffff;" name="arrow-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Filter</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form [formGroup]="filterForm" (ngSubmit)="submitFilterForm(filterForm.value)">
+          <div style="margin-top: 5px;">
+            <div style="position: relative; left: 13px; font-size: 18px;">City</div>
+            <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+              <ion-select interface="action-sheet" placeholder="Select City" (ionChange)="getGuestHouseList($event)"
+                [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" formControlName="city">
+                <ion-select-option [value]=item.cityId
+                  *ngFor="let item of getAllCityList">{{item.cityName}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+          <div style="margin-top: 5px;">
+            <div style="position: relative; left: 13px; font-size: 18px;">Guest House</div>
+            <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+              <ion-select interface="action-sheet" placeholder="Select Guest House"  
+                [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}"  formControlName="gHouse">
+                <ion-select-option [value]=item.id *ngFor="let item of guestHouseList">{{item.name}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+          <div style="margin-top: 5px;">
+            <div style="position: relative; left: 13px; font-size: 18px;">Date</div>
+            <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+              <ion-input type="date" formControlName="date"></ion-input>
+            </ion-item>
+          </div>
+          <ion-button type="submit" expand="block" style="margin: 20px 0px 0px 6px !important;
+          width: 96% !important; --background: green !important;--background-activated: green !important;">Submit</ion-button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

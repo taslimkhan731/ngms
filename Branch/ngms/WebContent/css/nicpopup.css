@@ -1,0 +1,27 @@
+.pagedivcss{
+  margin:0px auto;
+width:100%;
+position: absolute;
+}
+
+
+.poparrow_imgcss
+{ 
+display:none;
+}
+    .nicpopbox {
+          display:block;
+     display:none;
+     top:100px !important;
+      background:#FFF;
+      border:solid 1px #BBBBBB;
+      border-radius:5px;
+      box-shadow:0px 0px 15px #999;
+       position:absolute;
+       align:center;
+    }
+
+    .table-striped th, .table-striped td {
+    	text-align:left;
+    	
+    }

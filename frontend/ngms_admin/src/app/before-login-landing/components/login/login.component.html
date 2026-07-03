@@ -1,0 +1,96 @@
+<!-- <div class="background-img"></div> -->
+<ion-content class="background-img">
+    <div class="content">
+        <ion-grid class="header-logo">
+            <ion-row>
+                <ion-col style="text-align: center;">
+                    <img src="../../../assets/beforelogin/Logo.svg" class="mt-3" width="40%" height="46%">
+                    <h1>e-bhawan</h1>
+                    <p>Home Department, Government of Odisha</p>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <form [formGroup]="loginForm" (ngSubmit)="getLoginData(loginForm.value)">
+            <ion-card class="my-card">
+                <ion-card-header class="my-cardheader">
+                    <ion-card-title class="my-cardtitle">Login</ion-card-title>
+                </ion-card-header>
+                <ion-card-content class="my-cardcontent">
+                    <div class="card-field">
+                        <ion-label class="label required">User Type</ion-label>
+                        <ion-select placeholder="Select" interface="action-sheet"  formControlName="userType">
+                            <!-- <ion-select-option value="SYSADMIN">SYSADMIN</ion-select-option> -->
+                            <ion-select-option value="ORGADMIN">ORGADMIN</ion-select-option>
+                            <ion-select-option value="APPROVER">APPROVER</ion-select-option>
+                            <ion-select-option value="MANAGER">MANAGER</ion-select-option>
+                            <ion-select-option value="RECEPTIONIST">RECEPTIONIST</ion-select-option>
+                            <ion-select-option value="MODERATOR">MODERATOR</ion-select-option>
+                        </ion-select>
+                        <div class="text-error text-danger"
+                            *ngIf="((loginForm.controls.userType.touched || loginForm.controls.userType.dirty) && loginForm.controls.userType.invalid) || isSubmitBtnClicked == true">
+                            <span class="text-danger" *ngIf="loginForm.controls.userType.errors?.required">*This field
+                                is mandatory</span>
+                        </div>
+                        <ion-label class="label required">User Id</ion-label>
+                        <ion-input placeholder="Provide Mobile No." type="email" clearInput="true"
+                            formControlName="userId"></ion-input>
+                        <div class="text-error text-danger"
+                            *ngIf="((loginForm.controls.userId.touched || loginForm.controls.userId.dirty) && loginForm.controls.userId.invalid) || isSubmitBtnClicked == true">
+                            <span class="text-danger" *ngIf="loginForm.controls.userId.errors?.required">*Please Enter Your User ID</span>
+                        </div>
+                        <ion-label class="label required">Password</ion-label>
+                        <!-- <ion-input placeholder="Password" type="password" clearInput="true"
+                            formControlName="password"></ion-input> -->
+                            <ion-row class="ion-align-items-center cs-input">
+                                <ion-col size="10" style="padding:0px !important">
+                                    <ion-input style="border-top-right-radius: 0px !important;
+                                    border-bottom-right-radius: 0px !important;" placeholder="Enter Password" [type]="showPassword ? 'text' : 'password'"
+                                        clearInput="true" formControlName="password"></ion-input>
+                                </ion-col>
+                                <ion-col size="2" style="padding: 0px !important;">
+                                    <button type="button" style="padding-top: 9px;padding-bottom: 9px;" class="datetime-button" (click)="togglePassword()"><ion-icon
+                                            style="font-size: 21px !important;" [name]="showPassword ? 'eye-off' : 'eye'" slot="end"></ion-icon>
+                                    </button>
+                                </ion-col>
+                            </ion-row>
+                        <div class="text-error text-danger"
+                            *ngIf="((loginForm.controls.password.touched || loginForm.controls.password.dirty) && loginForm.controls.password.invalid) || isSubmitBtnClicked == true">
+                            <span class="text-danger" *ngIf="loginForm.controls.password.errors?.required">*Please Enter Password</span>
+                        </div>
+                        <ion-text color="medium">
+                            <p (click)="forgetPassword('forgot-password')">Forgot Password?</p>
+                        </ion-text>
+                        <div class="cd">
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col size="9">
+                                        <img [src]="captchaURL" class="captchaImg" alt="Captcha Text">
+                                    </ion-col>
+                                    <ion-col size="3" class="mx-auto">
+                                        <ion-button (click)="getCaptcha()" class="refresh">
+                                            <ion-icon name="reload-outline" class="refresh" (click)="getCaptcha()"
+                                                class="refresh"></ion-icon>
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </div>
+                        <ion-label class="label">Enter Captcha</ion-label>
+                        <ion-input type="text" clearInput="true" placeholder="Enter Captcha"
+                            formControlName="captcha"></ion-input>
+                        <div class="text-error text-danger"
+                            *ngIf="((loginForm.controls.captcha.touched || loginForm.controls.captcha.dirty) && loginForm.controls.captcha.invalid) || isSubmitBtnClicked == true">
+                            <span class="text-danger" *ngIf="loginForm.controls.captcha.errors?.required">*This field is
+                                mandatory</span>
+                        </div>
+                    </div>
+                    <ion-button class="my-3" type="submit" expand="block">Sign in</ion-button>
+
+                    <!-- <ion-label class="label" style="margin-top: 15px;" (click)="goForRegistration('register')">Don’t have an
+                    account
+                    yet?&nbsp;<a>Register</a></ion-label> -->
+                </ion-card-content>
+            </ion-card>
+        </form>
+    </div>
+</ion-content>

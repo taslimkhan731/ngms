@@ -1,0 +1,43 @@
+<div class="background-img"></div>
+<div class="content">
+    <ion-grid class="header-logo">
+        <ion-row>
+            <ion-col style="text-align: center;">
+                <img src="../../../assets/beforelogin/Logo.svg" class="mt-3" width="40%" height="46%">
+                <h3>e-bhaban</h3>
+                <p>Home Department, Government of Odisha</p>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <form [formGroup]="firstLogin" (ngSubmit)="FirstLoginDoc(firstLogin.value)">
+        <ion-card class="my-card">
+            <ion-card-header class="my-cardheader">
+                <ion-card-title class="my-cardtitle">Upload Document</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content class="my-cardcontent">
+                <ion-label class="label">Identity Proof</ion-label>
+                <ion-select interface="popover" placeholder="Select Identity Proof " formControlName="selectDocType">
+                    <ion-select-option value="aadhar">Aadhar</ion-select-option>
+                    <ion-select-option value="pan">Pan Card</ion-select-option>
+                    <ion-select-option value="passport">Passport</ion-select-option>
+                    <ion-select-option value="drivingLicence">Driving Licence</ion-select-option>
+                    <ion-select-option value="passbook">Bank passbook with photo attached</ion-select-option>
+                    <ion-select-option value="voterId">Voter ID Card with photo</ion-select-option>
+                </ion-select>
+                <div class="text-error text-danger"
+                    *ngIf="(firstLogin.controls.selectDocType.touched || firstLogin.controls.selectDocType.dirty) && firstLogin.controls.selectDocType.invalid">
+                    <span class="text-danger" *ngIf="firstLogin.controls.selectDocType.errors?.required">*This field is mandatory</span>
+                </div>
+                <ion-label class="label">Upload Proof(jpg/pdf - 2mb)</ion-label>
+                <ion-input placeholder="Enter Office Address" type="file" clearInput="true" formControlName="uploadDoc"
+                    (change)="handleUpload($event)"></ion-input>
+                <div class="text-error text-danger"
+                    *ngIf="(firstLogin.controls.uploadDoc.touched || firstLogin.controls.uploadDoc.dirty) && firstLogin.controls.uploadDoc.invalid">
+                    <span class="text-danger" *ngIf="firstLogin.controls.uploadDoc.errors?.required">*This fieldis mandatory</span>
+                </div>
+                <ion-button type="submit" expand="block">Upload</ion-button>
+            </ion-card-content>
+        </ion-card>
+    </form>
+</div>

@@ -1,0 +1,146 @@
+ion-content {
+    --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+
+    ion-toolbar {
+        --background: darkgreen;
+        color: white;
+        letter-spacing: 2px;
+        font-size: 16px;
+
+
+        ion-icon {
+            font-size: xx-large;
+            color: white;
+            padding: 3px;
+            border-radius: 32px;
+        }
+
+    }
+
+    .content {
+        // padding: 2px;
+
+        ion-grid {
+            height: 36vh;
+            overflow: scroll;
+            --ion-grid-padding: 0px;
+            padding: 7px;
+            border: 1px solid green;
+            margin: 11px;
+            margin-top: 2px;
+            .lbl {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14.3364px;
+                line-height: 17px;
+                display: flex;
+                align-items: center;
+                color: #414042;
+                margin-top: 7px;
+                margin-bottom: 4px;
+              }
+              .submitBtn {
+                background-color: #0F8D4B;
+              }
+    
+            ion-col {
+              --ion-grid-column-padding: 0px;
+    
+              ion-input,
+              ion-textarea {
+                background: #FFFFFF;
+                border: 0.892779px solid #A2E6A7;
+                box-shadow: inset 1.78556px 1.78556px 2.67834px rgb(86 103 113 / 29%);
+                border-radius: 4.46389px;
+                --padding-top: 5px;
+                --padding-end: 9px;
+                --padding-bottom: 5px;
+                --padding-start: 9px;
+              }
+    
+              ion-select {
+                background: linear-gradient(180deg, #FFFFFF 0%, #E9EEEA 80.21%);
+                border: 0.892779px solid #A2E6A7;
+                border-radius: 4.46389px;
+                --padding-top: 5px;
+                --padding-end: 9px;
+                --padding-bottom: 5px;
+                --padding-start: 9px;
+              }
+            }
+          }
+    }
+
+    .btnCss {
+        height: 83.29px;
+        background-color: #F5FFFA;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+        .scroll-container {
+            // border: 2px solid silver;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+    }
+}
+
+::ng-deep .mycomponent-wider-popover {
+    --width: 95%;
+    --max-width: 400px;
+}
+
+ion-item {
+    --background: linear-gradient(180deg, #ebf5ea, );
+    height: 100%;
+
+    .textCss {
+        text-align: center;
+        font-size: larger;
+        // margin-top: 39vh;
+
+    }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-track:hover {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: transparent
+}
+
+.back-to-top-btn {
+    background: #000000;
+    position: fixed;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 65px;
+    z-index: 999;
+}

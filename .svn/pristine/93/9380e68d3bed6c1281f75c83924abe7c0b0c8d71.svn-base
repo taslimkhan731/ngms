@@ -1,0 +1,238 @@
+<!-- <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-menu-button auto-hide="false"></ion-menu-button>
+  </ion-buttons>
+  <ion-title class="logo-text">Receptionist Shift</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="logo-text">Receptionist Shift</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [scrollEvents]="true" (ionScroll)="getScrollPos($event)">
+  <div>
+    <div>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select City" [(ngModel)]="selctCity"
+          (ionChange)="getGuestHouseList($event)" [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}">
+          <ion-select-option [value]=item.cityId *ngFor="let item of getAllCityList">{{item.cityName}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="mt-1" style="border: 2px solid green;margin: 0px 9px 0 10px;border-radius: 6px;">
+        <ion-select interface="action-sheet" placeholder="Select Guest House" [(ngModel)]="selctedGH"
+          [interfaceOptions]="{'cssClass': 'mycomponent-wider-popover'}" (ionChange)="getGHId($event)">
+          <ion-select-option [value]=item.id *ngFor="let item of guestHouseList">{{item.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="cardHeight">
+      <div *ngIf="buttonName=='Add Shift'">
+        <form [formGroup]="addShiftForm" (ngSubmit)="submitAddShift(addShiftForm.value)">
+          <ion-card style="width: auto !important;">
+            <ion-label class="hehadinglbl">{{headingName}}</ion-label>
+            <ion-card-content>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Open Time:</ion-label>
+                  <ion-input type="datetime-local" placeholder="DD-MM-YYYY hh:mm" formControlName="openTime"
+                    [min]="minDate" [max]="maxDate">
+                  </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Close Time:</ion-label>
+                  <ion-input type="text" placeholder="DD-MM-YYYY hh:mm" class="readOnly" formControlName="closeTime"
+                    readonly="true">
+                  </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Refund:</ion-label>
+                  <ion-input type="number" formControlName="refundBal" (ionChange)="calculateTotalFund()"
+                    placeholder="Opening Balance Refund"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Regular:</ion-label>
+                  <ion-input type="number" formControlName="regularBal" (ionChange)="calculateTotalFund()"
+                    placeholder="Opening Balance Regular"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening balance Total:</ion-label>
+                  <ion-input type="number" class="readOnly" formControlName="totalBal" readonly="true"
+                    placeholder="Opening Balance Total"></ion-input>
+                </ion-col>
+                <ion-col>
+                  <!-- <ion-radio-group formControlName="checkShift"> -->
+                  <ion-radio-group [(ngModel)]="currentShift" [ngModelOptions]="{standalone: true}">
+                    <ion-radio [disabled]="currentShift!=='1'" value='1'></ion-radio>
+                    <ion-label> First Shift ({{currentDateTime}} 6AM - 2PM)</ion-label><br>
+                    <ion-radio [disabled]="currentShift!=='2'" value='2'></ion-radio>
+                    <ion-label> Second Shift ({{currentDateTime}} 2PM - 10PM)</ion-label><br>
+                    <ion-radio [disabled]="currentShift!=='3'" value='3'></ion-radio>
+                    <ion-label> Third Shift ({{currentDateTime}} 10PM to {{tomorrowDateTime}} 6AM)</ion-label><br>
+                  </ion-radio-group>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-justify-content-end" *ngIf="selectAdd==true">
+                <ion-button type="submit">Add Shift</ion-button>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </form>
+      </div>
+      <div *ngIf="buttonName=='Change Shift'">
+        <form [formGroup]="changeShiftForm" (ngSubmit)="submitUpdateShift(changeShiftForm.value)">
+          <ion-card style="width: auto !important;">
+            <ion-label class="hehadinglbl">Change Shift</ion-label>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Open Time:</ion-label>
+                  <ion-input type="datetime-local" placeholder="DD-MM-YYYY hh:mm" formControlName="openTime"
+                    [min]="currenTime"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Close Time:</ion-label>
+                  <ion-input type="text" class="readOnly" placeholder="DD-MM-YYYY hh:mm" formControlName="closeTime"
+                    readonly="true">
+                  </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Refund:</ion-label>
+                  <ion-input type="number" formControlName="refundBal" placeholder="Opening Balance Refund"
+                    (ionChange)="calculateTotalFundForUpdate()"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Regular:</ion-label>
+                  <ion-input type="number" formControlName="regularBal" placeholder="Opening Balance Regular"
+                    (ionChange)="calculateTotalFundForUpdate()"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Total Balance Refund:</ion-label>
+                  <ion-input type="text" class="readOnly" formControlName="totalBal" placeholder="Total Balance Refund">
+                  </ion-input>
+                </ion-col>
+                <ion-col>
+                  <ion-radio-group formControlName="checkShift">
+                    <ion-radio [disabled]="currentShift!='1'" value=1></ion-radio>
+                    <ion-label> First Shift ({{currentDateTime}} 6AM - 2PM)</ion-label><br>
+                    <ion-radio [disabled]="currentShift!='2'" value=2></ion-radio>
+                    <ion-label> Second Shift ({{currentDateTime}} 2PM - 10PM)</ion-label><br>
+                    <ion-radio [disabled]="currentShift!='3'" value=3></ion-radio>
+                    <ion-label> Third Shift ({{currentDateTime}} 10PM to {{tomorrowDateTime}}
+                      6AM)</ion-label><br>
+                  </ion-radio-group>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-justify-content-end">
+                <ion-button type="submit">Update Shift</ion-button>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </form>
+      </div>
+      <div *ngIf="buttonName=='Close Shift'">
+        <form [formGroup]="closeShiftForm" (ngSubmit)="submitCloseShift(closeShiftForm.value)">
+          <ion-card style="width: auto !important;">
+            <ion-label class="hehadinglbl">Close Shift</ion-label>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Open Time:</ion-label>
+                  <ion-input type="text" placeholder="DD-MM-YYYY hh:mm" class="readOnly" formControlName="openTime"
+                    readonly="true"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Close Time:</ion-label>
+                  <!-- <ion-input type="datetime-local" formControlName="closeTime"></ion-input> -->
+                  <ion-input type="datetime-local" placeholder="DD-MM-YYYY hh:mm" formControlName="closeTime"
+                    [min]="minDate" [max]="maxDate">
+                  </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Refund:</ion-label>
+                  <ion-input type="number" class="readOnly" formControlName="refundBal" (ionChange)="calculateClose1()">
+                  </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening Balance Regular:</ion-label>
+                  <ion-input type="number" formControlName="regularBal" (ionChange)="calculateClose1()"></ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="lbl required">Opening balance Total:</ion-label>
+                  <ion-input type="number" class="readOnly" formControlName="totalBal"></ion-input>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-justify-content-end">
+                <ion-button type="submit">Close Shift</ion-button>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </form>
+      </div>
+      <div *ngIf="buttonName=='Report'">
+        <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+          <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+        <div class="cardHeight" *ngIf="reportData?.length">
+          <ion-card *ngFor="let data of reportData " class="mt-1">
+            <ion-card-content>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6">
+                  <ion-label class="label-key">Shift Id</ion-label><br>
+                  <ion-label class="label-value">{{data.shiftId}}</ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-key">Created By</ion-label><br>
+                  <ion-label class="label-value">{{data.userId}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6">
+                  <ion-label class="label-key">City Name</ion-label><br>
+                  <ion-label class="label-value">{{data.cityId}}</ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-key">Guest House Name</ion-label><br>
+                  <ion-label class="label-value">{{data.blockId}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row style="padding-left: 6px;">
+                <ion-col size="6">
+                  <ion-label class="label-key">Shift Open time</ion-label><br>
+                  <ion-label class="label-value">{{data.createdTime}}</ion-label>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-key">Shift Closed Time</ion-label><br>
+                  <ion-label class="label-value">{{data.closeTime}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+          <div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+            <ion-icon name="chevron-up-outline"></ion-icon>
+          </div>
+          <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" [threshold]="250">
+            <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+        <ng-container *ngIf="! reportData?.length">
+          <div class="img-wrapper">
+            <img class="noDataAvail" src="../../../../../../../assets/afterlogin/no-data-img.png" alt="">
+            <p>No Data Available</p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div class="btnCss text-center">
+  <div class="scroll-container" style="overflow: auto">
+    <ion-button class="" *ngFor="let btn of splitBtnClass" class="actionBtn"
+      [class.selected]="buttonName == btn.btnName" (click)="getButtonName(btn)">
+      {{btn.btnName}}</ion-button>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title>Payment Details</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+<ion-content>
+  <ion-card>
+    <div id="PrintInvoice" class="container mt-2">
+
+      <table style="width: 100%; margin:auto">
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee;"> Booking Id: </td>
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;  ">
+            {{confDetails?.data?.reqId}}</td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee;"> Name:</td>
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
+            {{confDetails?.data?.name}}</td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top; border-bottom: 1px solid #eee;"> Address:</td>
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee; ">
+            {{confDetails?.data?.address}}</td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top; border-bottom: 1px solid #eee;"> Mobile No: </td>
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee; ">
+            {{confDetails?.data?.mobileNo}}</td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee; "> Capacity:</td>
+          <td style="padding: 5px;vertical-align: top;text-align: right; border-bottom: 1px solid #eee;">
+            {{confDetails?.data?.capacity}}</td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee; ">Amount:</td>
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee; ">
+            <b>{{confDetails?.data?.amount}}</b>
+          </td>
+        </tr>
+        <tr class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee; ">Advance Amount:</td>
+          <td style="padding: 5px;vertical-align: top;text-align: right; border-bottom: 1px solid #eee;">
+            <b>{{confDetails?.data?.advanceAmount}}</b>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </ion-card>
+  <ion-row style="padding-top: 0%; margin-left:1%; margin-right: 2%;">
+    <!-- <ion-col size="6">
+      <ion-button type="submit" (click)="goBack()" class="submitBtn" color="green">Back</ion-button>
+    </ion-col> -->
+    <ion-col size="12">
+      <ion-button *ngIf="!clicked" type="submit" class="submitBtn" color="green" (click)="openBrowser()"> PAY</ion-button>
+    </ion-col>
+  </ion-row>
+
+
+
+  <!-- <iframe [src]="getSafeUrl()" frameborder="0" width="100%" height="500"></iframe> -->
+  <!-- <form id="nonseamless" method="post" name="redirect" [action]="formAction">
+    <input type="hidden" id="encRequest" name="encRequest" [value]="encRequest">
+    <input type="hidden" name="access_code" id="access_code" [value]="accessCode">
+    <ion-button (click)="submitForm()">Submit</ion-button>
+  </form> -->
+  <!-- <ion-content class="ion-padding">
+  <ion-button expand="block" (click)="openBrowser()">Open</ion-button>
+</ion-content> -->
+
+
+
+
+
+
+
+</ion-content>

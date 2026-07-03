@@ -1,0 +1,109 @@
+<!-- <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title style="text-transform: capitalize;">Moderator List</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar style="background-color: darkgreen;color: white;letter-spacing: 2px;font-size: 10px !important">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title style="text-transform: capitalize;">Moderator List</ion-title>
+  </ion-toolbar> 
+</ion-header>
+<ion-content  [scrollEvents]="true" (ionScroll)="getScrollPos($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="content">
+    <div class="cardHeight mt-1" *ngIf="applicationEntry?.length">
+      <ion-card *ngFor="let data of applicationEntry">
+        <!-- <ion-card-header>
+          <ion-card-title>{{data.ghName}},{{data.cityName}}</ion-card-title>
+        </ion-card-header> -->
+        <ion-card-content style="border-top:1px solid darkgreen">
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Booking Id</ion-label><br>
+              <ion-label class="label-value">{{data.bookingId}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">Booking Date</ion-label><br>
+              <ion-label class="label-value">{{data.bookingDt}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Name</ion-label><br>
+              <ion-label class="label-value">{{data.name}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">Category</ion-label><br>
+              <ion-label class="label-value">{{data.catgId}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">From Date</ion-label><br>
+              <ion-label class="label-value">{{data.fromDate}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">To Date</ion-label><br>
+              <ion-label class="label-value">{{data.toDate}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Purpose</ion-label><br>
+              <ion-label class="label-value">{{data.purpose}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label class="label-key">Mobile No.</ion-label><br>
+              <ion-label class="label-value">{{data.mobile}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row style="padding-left: 6px;">
+            <ion-col size="6">
+              <ion-label class="label-key">Room Type</ion-label><br>
+              <ion-label class="label-value">{{data.typeOfRoom}}</ion-label>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button
+                [ngStyle]="{'color':'#0078FF','--background':'#E1EDFF','--background-activated':'#E1EDFF','font-size':'83%','font-weight':'600', 'width': '-webkit-fill-available'}"
+                (click)="getbutton('MOD',data)">
+                Moderation
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <!-- <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-button
+                    [ngStyle]="{'color':'#0078FF','--background':'#E1EDFF','font-size':'83%','font-weight':'600', 'width': '-webkit-fill-available'}"
+                    (click)="getbutton('MOD',data)">
+                    Moderation
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div> -->
+        </ion-card-content>
+      </ion-card>
+      <div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+        <ion-icon name="chevron-up-outline"></ion-icon>
+      </div>
+      <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" [threshold]="250">
+        <ion-infinite-scroll-content  loadingSpinner="bubbles"
+        loadingText="Loading more data..."></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+    <div *ngIf="! applicationEntry?.length" lines="none" >
+      <div class="img-wrapper">
+        <img class="noDataAvail" src="../../../../../../../assets/afterlogin/no-data-img.png" alt="">
+        <p>No Data Available</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,144 @@
+ .dashboard-wrapper {
+	padding-left: 3rem;
+	padding-right: 3rem;
+	
+}
+
+.mini-card {
+	background-color: #b2ebf2;
+	height: 100%;
+	border-radius: .5rem;
+		margin-bottom: .75rem;
+}
+
+.mini-card-header {
+	text-align: center;
+    padding: 20px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.mini-card-divider {
+	height: 1px;
+	background-color: #fffe00;
+	margin: 0rem 0;
+}
+
+.rht-opt, .lft-opt {
+	width: 100%;
+	float: left;
+	padding: .25rem 0;
+	text-align: center;
+}
+
+.lft-opt {
+	border-left: 1px solid yellow;
+}
+
+.opt-name {
+	font-size: 1.5rem;
+    font-weight: 500;
+    margin: -0.8rem 0;
+    padding: 24px 10px;
+}
+
+.card {
+	border: 1px solid #fbbfb3;
+	border-radius: .25rem;
+	background-color: transparent;
+}
+
+.card .card-header {
+	padding: .5rem 1.5rem;
+	background-color: #bb755a;
+	color: #fff;
+	border-bottom: 0 solid;
+	border-color: #fbbfb3;
+	box-shadow: 0 2px 5px 1px #ceb3ad;
+	-webkit-box-shadow: 0 2px 5px 1px #ceb3ad;
+	-moz-box-shadow: 0 2px 5px 1px #ceb3ad;
+	-ms-box-shadow: 0 2px 5px 1px #ceb3ad;
+	-o-box-shadow: 0 2px 5px 1px #ceb3ad;
+}
+
+.card .card-header .card-title {
+	margin: 0;
+	font-size: 16px;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+
+.marquee {
+	height: 300px;
+	overflow: hidden;
+	position: relative;
+}
+
+.heading {
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	letter-spacing: 1px;
+	word-spacing: 5px;
+	color: #e08a52;
+	text-transform: uppercase;
+}
+
+.marquee .defaultMass {
+	text-align: center;
+	font-size: 24px;
+	margin-top: 160px;
+}
+
+.colmd {
+	padding-bottom: 10px;
+}
+
+.arrow-container {
+	background: #FFFFFF;
+	border: 0.5px solid #C4C4C4;
+	border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+}
+
+.arrow-container:focus {
+    outline: 1px solid #e1b032;
+    border: 1px solid #e1b032!important;
+}
+
+.bhawan-card {
+	background: linear-gradient(180.34deg, #FFFFFF 2.27%, #FFFFFF 180.74%);
+	box-shadow: 3px 0px 4px rgba(0, 0, 0, 0.15), inset 0px -2px 0px #8EE3B7;
+	border-radius: 12px;
+	border: none !important;
+	color: #0FA958;
+	width: auto;
+}
+
+.bhawan-card .card-body {
+	padding: 10px;
+}
+
+.bhawan-card .card-icon {
+	background: #0FA958;
+	border-radius: 9.35732px;
+	padding: 9px;
+}
+
+.bhawan-card .card-number {
+	font-weight: 500;
+	font-size: 18px;
+}
+.bhawan-card .card-number-bold {
+	font-weight: 700;
+	font-size: 20px;
+}
+
+.bhawan-card .card-divider {
+	border: 0.1px solid #D2ECD8;
+	margin: 5px 0px;
+}

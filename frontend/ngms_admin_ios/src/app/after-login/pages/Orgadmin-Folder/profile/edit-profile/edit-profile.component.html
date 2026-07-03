@@ -1,0 +1,147 @@
+<!-- <ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title class="logo-text">Edit Profile Details</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title class="logo-text">Edit Profile Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="profileUpdateForm" (ngSubmit)="editProfileForm(profileUpdateForm.value)">
+        <ion-grid>
+          <ion-row>
+            <!-- <ion-col size="12">
+              <ion-label class="lbl">User ID</ion-label>
+              <ion-input type="text" formControlName="login" readonly></ion-input>
+            </ion-col> -->
+
+            <ion-col size="12">
+              <ion-label class="lbl required">Name</ion-label>
+              <ion-input type="text" formControlName="displayName"></ion-input>
+            </ion-col>
+            <div class="text-error text-danger"
+              *ngIf="((profileUpdateForm.controls.displayName.touched || profileUpdateForm.controls.displayName.dirty) && profileUpdateForm.controls.displayName.invalid) || isSubmitBtnClicked == true">
+              <span class="text-danger" *ngIf="profileUpdateForm.controls.displayName.errors?.required">*This field is
+                mandatory</span>
+              <div *ngIf="profileUpdateForm.controls.displayName.errors?.invalidName">Please Enter a valid name</div>
+            </div>
+            <ion-col size="12">
+              <ion-label class="lbl required">Mobile No.</ion-label>
+              <ion-input type="text" maxlength="10" inputmode="decimal" formControlName="mobileNo" readonly></ion-input>
+            </ion-col>
+            <div class="text-error text-danger"
+              *ngIf="((profileUpdateForm.controls.mobileNo.touched || profileUpdateForm.controls.mobileNo.dirty) && profileUpdateForm.controls.mobileNo.invalid) || isSubmitBtnClicked == true">
+              <span class="text-danger" *ngIf="profileUpdateForm.controls.mobileNo.errors?.required">*This field is
+                mandatory</span>
+              <div *ngIf="profileUpdateForm.controls.mobileNo.errors?.invalidMobileNumber">Please Enter 10 digit Mobile
+                Number.</div>
+            </div>
+            <!-- <input type="date" [max]="currentDate" formControlName="dob"
+              (change)="changeDateFormat($any($event.target).value)" #dateInput style="position:absolute;top:200%"> -->
+            <ion-col size="12">
+              <ion-label class="lbl required">Date Of Birth</ion-label>
+              <!-- <ion-row class="ion-align-items-center cs-input">
+                <ion-col size="10" style="padding:0px !important" (click)="openDatepicker('dateInput')">
+                  <ion-input type="text" placeholder="Select date Of Birth" [value]="profileUpdateForm.get('dob').value"
+                    readonly></ion-input>
+                </ion-col>
+                <ion-col size="2" style="padding: 0px !important;">
+                  <button type="button" class="datetime-button" (click)="openDatepicker('dateInput')">
+                    <ion-icon style="font-size: 21px !important;" name="calendar" slot="end"></ion-icon>
+                  </button>
+                </ion-col>
+              </ion-row> -->
+              <ion-row class="ion-align-items-center cs-input">
+                <ion-col size="10" style="padding:0px !important">
+                  <ion-input type="text" placeholder="Select date Of Birth"
+                    [value]="profileUpdateForm.get('dob').value" readonly></ion-input>
+                </ion-col>
+                <ion-col size="2" style="padding: 0px !important;">
+                  <button type="button" class="datetime-button"><ion-icon style="font-size: 21px !important;color: #000000;"
+                      name="calendar" slot="end"></ion-icon>
+                    <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                  </button>
+                </ion-col>
+              </ion-row>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime id="datetime" [max]="currentDate" presentation="date" locale="default"
+                    [showDefaultButtons]="true" (ionChange)="changeDateFormat($any($event.target).value)"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-col>
+            <div class="text-error text-danger"
+              *ngIf="((profileUpdateForm.controls.dob.touched || profileUpdateForm.controls.dob.dirty) && profileUpdateForm.controls.dob.invalid) || isSubmitBtnClicked == true">
+              <span class="text-danger" *ngIf="profileUpdateForm.controls.dob.errors?.required">*This field is
+                mandatory</span>
+            </div>
+            <ion-col size="12">
+              <ion-label class="lbl">Email Id</ion-label>
+              <ion-input type="text" formControlName="emailId"></ion-input>
+            </ion-col>
+            <div class="text-error text-danger"
+              *ngIf="((profileUpdateForm.controls.emailId.touched || profileUpdateForm.controls.emailId.dirty) && profileUpdateForm.controls.emailId.invalid) || isSubmitBtnClicked == true">
+              <span class="text-danger" *ngIf="profileUpdateForm.controls.emailId.errors?.required">*This field is
+                mandatory</span>
+              <div *ngIf="profileUpdateForm.controls.emailId.errors?.invalidEmail">Please Enter a valid Email Id</div>
+            </div>
+            <ion-col size="12">
+              <ion-label class="lbl required">Address</ion-label>
+              <ion-input type="text" formControlName="residenceAddr"></ion-input>
+            </ion-col>
+            <div class="text-error text-danger"
+              *ngIf="((profileUpdateForm.controls.residenceAddr.touched || profileUpdateForm.controls.residenceAddr.dirty) && profileUpdateForm.controls.residenceAddr.invalid) || isSubmitBtnClicked == true">
+              <span class="text-danger" *ngIf="profileUpdateForm.controls.residenceAddr.errors?.required">*This field is
+                mandatory</span>
+            </div>
+            <ion-col size="12">
+              <ion-label class="lbl">Gender</ion-label>
+              <ion-select interface="action-sheet" formControlName="gender" (ionChange)="getGender($event)">
+                <ion-select-option value="M">Male</ion-select-option>
+                <ion-select-option value="F">Female</ion-select-option>
+                <ion-select-option value="O">Others</ion-select-option>
+              </ion-select>
+            </ion-col>
+
+            <ion-col size="12">
+              <ion-label class="lbl required">Select Any Identity Proof</ion-label>
+              <ion-select justify="space-between" interface="action-sheet" formControlName="identityProof"
+                (ionChange)="getProof($event)">
+                <ion-select-option *ngFor="let item of identiproofArray" [value]="item.id">{{item.name}}
+                </ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Profile Document Upload</ion-label>
+              <ion-row class="ion-align-items-center cs-input">
+                <ion-col size="8">
+                  <ion-input type="text" placeholder="No File Chosen" style="padding-top: 0px;" [value]="documentName"
+                    readonly></ion-input>
+                </ion-col>
+                <ion-col size="4">
+                  <button class="file-upload-button"> Choose File
+                    <input type="file" #fileInput (change)="OnselectNewFile($event)" />
+                  </button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+        <ion-button type="submit" fill="clear" expand="block" class="mt-3">Update</ion-button>
+      </form>
+    </ion-card-content>
+
+  </ion-card>
+</ion-content>

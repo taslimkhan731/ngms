@@ -1,0 +1,193 @@
+ion-toolbar {
+    ion-icon {
+        font-size: 30px !important;
+    }
+}
+
+ion-content {
+    --background: linear-gradient(180deg, #ebf5ea, #c1e9d3);
+
+    .containerr {
+        // padding: 1% 1%;
+
+        ion-card {
+            background: #ffffff;
+            border: 0.957234px solid #f0f0f0;
+            border-radius: 6px;
+
+            ion-card-header {
+                padding-top: 8px;
+                padding-bottom: 2px;
+                margin-bottom: 10px;
+
+                ion-label {
+                    font-family: 'Exo 2';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 100%;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    color: #0F8D4B;
+
+                    ion-icon {
+                        margin-right: 10px;
+                        color: #0F8D4B;
+                        font-weight: 600;
+                        font-size: 20px;
+                    }
+                }
+            }
+
+            ion-card-content {
+
+                ion-grid {
+                    --ion-grid-padding: 0px;
+
+                    ion-col {
+                        --ion-grid-column-padding: 0px;
+
+                        input {
+                            background: #FFFFFF;
+                            border: 0.892779px solid #A2E6A7;
+                            box-shadow: inset 1.78556px 1.78556px 2.67834px rgb(86 103 113 / 29%);
+                            border-radius: 4.46389px;
+                            padding-top: 5px;
+                            padding-right: 9px;
+                            padding-bottom: 5px;
+                            padding-left: 9px;
+                            width: 100% !important;
+                        }
+
+                        ion-input,ion-textarea {
+                            background: #FFFFFF;
+                            border: 0.892779px solid #A2E6A7;
+                            box-shadow: inset 1.78556px 1.78556px 2.67834px rgb(86 103 113 / 29%);
+                            border-radius: 4.46389px;
+                            --padding-top: 5px;
+                            --padding-end: 9px;
+                            --padding-bottom: 5px;
+                            --padding-start: 9px;
+                        }
+
+                        ion-select {
+                            background: linear-gradient(180deg, #FFFFFF 0%, #E9EEEA 80.21%);
+                            border: 0.892779px solid #A2E6A7;
+                            border-radius: 4.46389px;
+                            --padding-top: 5px;
+                            --padding-end: 9px;
+                            --padding-bottom: 5px;
+                            --padding-start: 9px;
+                        }
+                    }
+                }
+
+                .label-value {
+                    // font-family: "Exo 2";
+                    font-weight: 600 !important;
+                    color: black;
+                }
+
+                .custom-btn {
+                    --background: linear-gradient(180deg, #E7F7E2 0%, #E7F7E2 100%) --background-activated: linear-gradient(180deg, #E7F7E2 0%, #E7F7E2 100%) // --background-activated: #E7F7E2;
+                        color: #4B9D10 !important;
+                    border: 0.5px solid #4B9D10;
+                    border-radius: 10px;
+                }
+
+                .custom-btn-active {
+                    --background: linear-gradient(180deg, #549F08 0%, #0F8D4B 100%) !important;
+                    --background-activated: linear-gradient(180deg, #549F08 0%, #0F8D4B 100%) !important;
+                    // border: 0.5px solid rgba(0, 120, 255, 0.3);
+                    // box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+                    color: #ffffff !important;
+                    // border: 0.5px solid #4B9D10 !important;
+                    border-radius: 10px !important;
+                }
+
+                .hotel-icon {
+                    background: #B2B3B2;
+                    border: 1px solid #B2B3B2;
+                    border-radius: 2.67882px;
+                    color: #ffffff;
+                    // padding: 3px 7px;
+                    width: auto;
+                    height: 30px;
+                    margin: 1px;
+                }
+
+                .forBed .hotel-icon {
+                    width: auto !important;
+                    margin: 0 2px;
+                }
+
+                .booked {
+                    background: #ff9265 !important;
+                    color: #ffffff;
+                    border: 1px solid #ff9265 !important;
+                }
+
+                .hotel-active {
+                    background: #319629 !important;
+                    color: #ffffff;
+                    border: 1px solid #319629 !important;
+                }
+
+                table {
+                    .thead th {
+                        border: none !important;
+                        border-left: 1px solid white !important;
+                        background: #7EC9A1 ! important;
+                        color: white;
+                        padding: 0.3rem !important;
+
+                    }
+
+                    .thead th:first-child {
+                        border-top-left-radius: 5px;
+                    }
+
+                    thead th:last-child {
+                        border-top-right-radius: 5px;
+                    }
+
+                    .tbody {
+                        border: 1px solid #bebebe;
+
+                        td {
+                            // padding: 10px;
+                            border-right: 0.5px solid #97E3BB;
+                            vertical-align: middle !important;
+                            padding: 0.3rem !important;
+
+                            input:focus {
+                                outline: none;
+                            }
+                        }
+                    }
+                }
+
+                .header {
+                    font-family: 'Exo 2';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 100%;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    color: #0F8D4B;
+                    margin-top: 18px;
+                    margin-bottom: 10px;
+                }
+
+            }
+
+        }
+    }
+}
+
+ion-input[type="date"].ios:not(.has-value) input::before {
+    content: attr(placeholder);
+}

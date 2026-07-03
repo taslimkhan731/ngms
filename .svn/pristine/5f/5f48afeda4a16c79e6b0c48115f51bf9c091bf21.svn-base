@@ -1,0 +1,37 @@
+##################################properties for windows####################
+
+#for 93server
+media.rootfolder=E:
+media.base.path=E:\\ngms\\media
+sup.doc.folder=booking_supp_doc
+
+
+####### Base rootfolder  For Local####
+#media.rootfolder=F:
+####### MEDIA FILE LOCATIONS ####
+#media.base.path=F:\\ngms\\media
+
+#sup.doc.folder=booking_supp_doc
+
+
+####### Base rootfolder for server 91 ####
+#media.rootfolder=/
+
+####### MEDIA FILE LOCATIONS ####
+#media.base.path=/home/ngms/media
+
+#sup.doc.folder=booking_supp_doc
+##################################properties for linux####################
+
+####### Base rootfolder ####
+#media.rootfolder=/
+#
+#media.base.path=/home/jayant/ngms/media
+#
+#sup.doc.folder=booking_supp_doc
+
+#nic server
+
+#media.rootfolder=/
+#media.base.path=/apache-tomcat-8.5.43/webapps/ngms-upload/upload
+#sup.doc.folder=booking_supp_doc

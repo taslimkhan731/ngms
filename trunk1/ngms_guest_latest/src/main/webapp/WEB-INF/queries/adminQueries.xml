@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- Query Are Witten For****************************** Setting/Createuser 
+		Module******************************************* -->
+	<entry key="getUserListSQL">
+	<![CDATA[
+		select user_id, first_name, last_name, email_id, contact_no, user_type, first_login, is_admin, is_active, created_by, created_date, menu_visible from adminr.user where is_active=true   
+	]]>
+	</entry>
+	<entry key="saveUserDetailsSQL">
+	<![CDATA[
+	insert into adminr.user(user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, is_active, created_by, created_date, menu_visible, is_otp_login,doc_type, doc_path,upload_doc) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+	]]>
+	</entry>
+	<entry key="saveorisaoneDetailsSQL">
+	<![CDATA[
+	INSERT INTO adminr.orisaone_data("SERVICEID", "REQUESTID", "SUCCESSURL", "CANCELURL") VALUES (?, ?, ?, ?);
+	]]>
+	</entry>
+	<entry key="saveauditlogin">
+	<![CDATA[
+	INSERT INTO adminr.m_audit_login(user_id, ip_add, action, status) VALUES (?, ?, ?, ? );
+
+	]]>
+	</entry>
+	<entry key="saveGuestDetailsSQL">
+	<![CDATA[
+	insert into adminr.user(user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, is_active, created_by, created_date, menu_visible, is_otp_login, doc_type, doc_path,upload_doc) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)
+	]]>
+	</entry>
+	<entry key="updateUserDetailsSQL">
+	<![CDATA[
+	update adminr.user set first_name=?, last_name=?, email_id=?, contact_no=?, is_otp_login=? where user_id=?
+	]]>
+	</entry>
+	
+	<entry key="updateUserDetailSQL">
+	<![CDATA[
+	update adminr.user set doc_type=?, doc_path=?,upload_doc=? where user_id=?
+	]]>
+	</entry>
+	
+	<entry key="updateGuestDetailsSQL">
+	<![CDATA[
+	update adminr.user set first_name=?, last_name=?, email_id=?, contact_no=?, is_otp_login=?,password=? where user_id=?
+	]]>
+	</entry>
+	<entry key="updateUserDetailsOtpSQL">
+	<![CDATA[
+	update adminr.user set password=?  where user_id=?
+	]]>
+	</entry>
+	<entry key="deleteUserSQL">
+	<![CDATA[
+	update adminr.user set is_active=? WHERE user_id=?
+	]]>
+	</entry>
+	<entry key="saveUserGroupDetailsSQL">
+	<![CDATA[
+	insert into adminr.user_group(group_id, user_id) values(?, ?)
+	]]>
+	</entry>
+	<!-- Added by Lusi for security authentication on Dt 26-Oct-2017 -->
+	<entry key="getUserByUserId">
+	<![CDATA[
+	 select * from  adminr.user where user_id = ?
+	]]>
+	</entry>
+
+	<entry key="getUserByProfile">
+	<![CDATA[
+		select a.user_id,a.first_name,a.email_id,a.contact_no,a.doc_type,a.doc_path,b.department,b.office_address,b.residence_address,b.gender,b.dob from  adminr.user a join adminr.mater_user_details b on a.user_id=b.user_id where a.user_id = ?
+	]]>
+	</entry>
+
+	<entry key="getPasswordByuserIdSQL">
+	<![CDATA[
+	 select password from  adminr.user where user_id = ?
+	]]>
+	</entry>
+
+	<entry key="changePasswordSQL">
+	<![CDATA[
+	 update adminr.user set password = ? where user_id = ?
+	]]>
+	</entry>
+
+
+
+	<entry key="getUserIdLocationIdSQL">
+	<![CDATA[
+		SELECT b.group_id, c.group_name FROM adminr.user a, adminr.user_group b, adminr.group c 
+		where 
+		a.user_id = ? 
+		and a.user_id = b.user_id
+		and b.group_id = c.group_id limit 1;
+	]]>
+	</entry>
+
+	<entry key="getFirstNameLastNameSQL">
+	<![CDATA[
+		SELECT * FROM adminr.user where user_id = ?
+	]]>
+	</entry>
+
+
+	<!-- End of Query For****************************** Setting/Createuser Module******************************************* -->
+
+	<entry key="getGroupListSQL">
+	<![CDATA[
+		select g.group_id,g.group_name,g.description,g.is_active, count(ug.group_id) as no_of_users from adminr.group g left join adminr.user_group ug on g.group_id = ug.group_id where is_active=true group by g.group_id    
+	]]>
+	</entry>
+
+	<entry key="getGroupListByIdSQL">
+	<![CDATA[
+		select g.group_id,g.group_name,g.description,g.is_active, count(ug.group_id) as no_of_users from adminr.group g left join adminr.user_group ug on g.group_id = ug.group_id where g.group_id=3 and is_active=true group by g.group_id    
+	]]>
+	</entry>
+
+	<entry key="saveGroupSQL">
+	<![CDATA[
+	insert into adminr.group(group_name, description, is_active) values(?, ?, ?)
+	]]>
+	</entry>
+	<entry key="updateGroupSQL">
+	<![CDATA[
+	update adminr.group set group_name=?, description=? where group_id=?
+	]]>
+	</entry>
+	<entry key="deleteGroupSQL">
+	<![CDATA[
+		update adminr.group set is_active = ? where group_id = ?
+	]]>
+	</entry>
+	<entry key="getMappedUserListSQL">
+	<![CDATA[
+	select user_id, first_name, last_name, email_id, contact_no, password, user_type, first_login, is_admin, is_active, created_by, to_char(created_date,'dd-mm-yyyy') created_date, menu_visible from adminr.user where is_active=true and user_id in(select user_id from adminr.user_group where group_id=?)
+	]]>
+	</entry>
+	<entry key="mapUsersToGroupSQL">
+	<![CDATA[
+	insert into adminr.user_group(group_id, user_id) values(?, ?)
+	]]>
+	</entry>
+	<entry key="deleteMappedUserSQL">
+	<![CDATA[
+	delete from adminr.user_group where user_id=?
+	]]>
+	</entry>
+
+	<entry key="getResourceListSQL">
+	<![CDATA[
+	select resource_id, resource_name, resource_type, description, is_active from adminr.resource where is_active=true	    
+	]]>
+	</entry>
+	<entry key="saveResourceSQL">
+	<![CDATA[
+	insert into adminr.resource(resource_id,resource_name, resource_type, description, is_active) values((select max(COALESCE(resource_id,0))+1 from adminr.resource),?, ?, ?, ?) 
+	]]>
+	</entry>
+	<entry key="updateResourceSQL">
+	<![CDATA[
+	update adminr.resource set  resource_name=?, resource_type=?, description=? where resource_id=?
+	]]>
+	</entry>
+	<entry key="deleteResourceSQL">
+	<![CDATA[
+	update adminr.resource set is_active=? WHERE resource_id=?
+	]]>
+	</entry>
+	<entry key="getMappedResourcesSQL">
+	<![CDATA[
+	select resource_id, resource_name, resource_type, description, is_active from adminr.resource where is_active=true and resource_id in(select resource_id from adminr.role_resource where role_id=?)	    
+	]]>
+	</entry>
+	<entry key="deleteMappedResourceSQL">
+	<![CDATA[
+	delete from adminr.role_resource where role_id=? and resource_id=?	    
+	]]>
+	</entry>
+	<entry key="mapResourcesToRoleSQL">
+	<![CDATA[
+	insert into adminr.role_resource(role_id, resource_id) values(?, ?)	    
+	]]>
+	</entry>
+
+	<entry key="getRoleListSQL">
+	<![CDATA[
+	select role_id, role_name, description, is_active from adminr.role where is_active=true order by role_id asc
+	]]>
+	</entry>
+	<entry key="saveRoleSQL">
+	<![CDATA[
+	insert into adminr.role(role_name, description, is_active) values(?, ?, ?)
+	]]>
+	</entry>
+	<entry key="updateRoleSQL">
+	<![CDATA[
+	update adminr.role set role_name=?, description=? where role_id=?
+	]]>
+	</entry>
+	<entry key="deleteRoleSQL">
+	<![CDATA[
+	update adminr.role set is_active=? WHERE role_id=?;
+	]]>
+	</entry>
+
+	<entry key="getMappedRolesToGroupSQL">
+	<![CDATA[
+	select role_id, role_name, description, is_active from adminr.role where is_active=true and role_id in(select role_id from adminr.group_role where group_id=?)	    
+	]]>
+	</entry>
+
+	<entry key="deleteMappedRoleSQL">
+	<![CDATA[
+	delete from adminr.group_role where group_id=? and role_id=?	    
+	]]>
+	</entry>
+	<entry key="mapRoleToGroupSQL">
+	<![CDATA[
+	insert into adminr.group_role(group_id, role_id) values(?, ?)	    
+	]]>
+	</entry>
+
+	<entry key="getMappedParametersToGroupSQL">
+	<![CDATA[
+	select user_id,first_name,email_id,contact_no from adminr.user where user_id in(select user_id from adminr.user_group where group_id = ?)
+	]]>
+	</entry>
+
+	<entry key="getUserInfoSql">
+	<![CDATA[
+	 select * from  adminr.user where is_active = true and user_id = ? and password = ?
+	]]>
+	</entry>
+
+	<entry key="getGroupIdListByUserIdSql">
+	<![CDATA[
+		select group_id from adminr.group where group_id=(select group_id from adminr.user_group where user_id = ?) and is_active = true
+	]]>
+	</entry>
+
+	<entry key="getListResourceNameSql">
+	<![CDATA[
+		select resource_name from adminr.resource where resource_id in (select resource_id from adminr.role_resource where role_id in(select distinct role_id from adminr.group_role where group_id in ?) and is_active =true) and is_active = true
+	]]>
+	</entry>
+
+	<entry key="getMappedRolesToUserSQL">
+	<![CDATA[
+	select gr.role_id from adminr.group_role gr where group_id = (select g.group_id from adminr.group g,adminr.user_group ug where ug.user_id = ? and ug.group_id = g.group_id and g.is_active = true)	    
+	]]>
+	</entry>
+	<entry key="getUniqueResourcesForRolesSQL">
+	<![CDATA[
+	SELECT rs.resource_id, rs.resource_name, rs.resource_type, rs.description, rs.is_active 
+	FROM adminr.role_resource rlrs,adminr.resource rs where rlrs.resource_id = rs.resource_id and rs.is_active = true and rlrs.role_id in (?)	order by rs.resource_id asc    
+	]]>
+	</entry>
+	<entry key="getDataControlSQL">
+	<![CDATA[
+		select param_name,param_val from adminr.group_param where group_id = (select group_id from adminr.user_group where user_id = ?) order by param_name
+	]]>
+	</entry>
+
+	<entry key="getUserTypeQuery">
+	<![CDATA[
+		select user_type from adminr.user where user_id = ?	]]>
+	</entry>
+
+
+	<entry key="getOrgNameSQL">
+	<![CDATA[
+	select user_type from adminr."user" where user_id = ?
+	]]>
+	</entry>
+
+	<entry key="getAllCity">
+	<![CDATA[
+	     select gh_id,gh_name from gh_details order by gh_name asc
+	]]>
+	</entry>
+
+	<entry key="getAllBlockDetails">
+	<![CDATA[
+	     select block_id,block_name from room_block
+	]]>
+	</entry>
+
+	<entry key="mappingUseridToLocation">
+	<![CDATA[
+	   insert into adminr.user_location(id,user_id,location_id,status,created_by,created_on) values(?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+
+	<entry key="getAllGHByCity">
+	<![CDATA[
+	     select block_id,block_name from room_block where gh_id = ?
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUser">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id = ? and a.status=true
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUserAndLoc">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id = ? and a.location_id=? and a.status=true
+	]]>
+	</entry>
+	<entry key="deleteLoc">
+	<![CDATA[
+	     update adminr.user_location set status = false where id = ?
+	]]>
+	</entry>
+	<entry key="getAllState">
+	<![CDATA[
+	     select state_code,state_name from statelist order by state_name asc
+	]]>
+	</entry>
+	<entry key="getAllMappedLocByUserFilter">
+	<![CDATA[
+	     select a.id,a.location_id,a.user_id,c.block_id,c.block_name,b.gh_id,b.gh_name from adminr.user_location a 
+			join public.room_block c on a.location_id = c.block_id 
+			join public.gh_details b on c.gh_id = b.gh_id where a.user_id=? and a.location_id = ? and b.gh_id=? and a.status=true
+	]]>
+	</entry>
+	<entry key="saveMasterGuestDetailsSQL">
+		<![CDATA[
+			INSERT INTO adminr.mater_user_details(user_id, department, office_address, residence_address, gender, dob) VALUES (?, ?, ?, ?, ?, ?)
+		]]>
+	</entry>
+	<entry key="updateMasterGuestDetailsSQL">
+		<![CDATA[
+			update adminr.mater_user_details set department = ?, office_address = ?, residence_address = ?, gender = ?,dob=? where user_id = ?
+		]]>
+	</entry>
+
+	<!-- *************************** -->
+	<entry key="getallApplicantDetailsSQL">
+		<![CDATA[
+        select * from (
+                select row_number() over (partition by req_date::date,a.req_id order by b.guest_id),b.guest_id,
+                a.req_id,b.name,b.gender,a.from_date,a.to_date,a.req_date
+                 FROM gad_request a JOIN guest_details b ON a.req_id = b.req_id
+                where a.status='REQ'and (a.mode_of_req='GAD' or a.mode_of_req='PUB') and  a.req_id NOT IN (select req_id from mod_req_room) and a.from_date > current_date - 5 ORDER BY req_date DESC
+               ) f1 where f1.row_number = 1;
+		]]>
+	</entry>
+	<entry key="getallApplicantDetailsbyCityandgHouseSQL">
+        <![CDATA[
+      select * from (
+                select row_number() over (partition by req_date::date,a.req_id order by b.guest_id),b.guest_id,
+                a.req_id,b.name,b.gender,a.from_date,a.to_date,a.req_date
+                 FROM gad_request a JOIN guest_details b ON a.req_id = b.req_id
+                  where a.status='REQ'and (a.mode_of_req='GAD' or a.mode_of_req='PUB')and  
+                  a.req_id NOT IN (select req_id from mod_req_room) and a.from_date > current_date - 5
+                   and a.gh_id=? and block_id=? ORDER BY req_date DESC
+               ) f1 where f1.row_number = 1;
+        ]]>
+	</entry>
+	<entry key="getallmoderationDetailsSQL">
+		<![CDATA[
+         select DISTINCT ON (a.req_id)  c.req_id,c.from_date,c.to_date,c.mode_of_req ,a.guest_id,a.name,a.age,a.gender,a.designation,a.department,c.address, b.status,c.req_date from mod_req as b join guest_details 
+         as a on a.req_id=b.req_id join gad_request as c on c.req_id=b.req_id where b.status='MOD' and (c.mode_of_req='GAD' or c.mode_of_req='PUB') and date(c.to_date)>=date(now())  order by a.req_id ;
+		]]>
+	</entry>
+      <entry key="getallmoderationDetailsSQLCityAndGhouse">
+		<![CDATA[
+         select DISTINCT ON (a.req_id)  c.req_id,c.from_date,c.to_date,c.mode_of_req ,a.guest_id,a.name,a.age,a.gender,a.designation,a.department,c.address, b.status,c.req_date from mod_req as b join guest_details 
+         as a on a.req_id=b.req_id join gad_request as c on c.req_id=b.req_id where b.status='MOD' and (c.mode_of_req='GAD' or c.mode_of_req='PUB') and date(c.to_date)>=date(now()) and b.gh_id=? and c.block_id=? order by a.req_id ;
+		]]>
+	</entry>
+	<!-- *************************************** -->
+
+	<entry key="getModeratorDetailsByReqidSQL">
+<![CDATA[
+select * from (
+SELECT ROW_NUMBER() OVER (PARTITION BY r.req_date::date, r.req_id order by g.guest_id) AS i,
+r.req_id, r.gh_id,r.block_id,g.guest_id, g.name, g.age, r.purpose, p.item_title as purp_name, r.nor_req, r.nob_g_req, r.nob_l_req, r.file_path, s.doc_path, r.status, r.mode_of_req, r.is_veh_req, r.desg, c.desg_category,r.from_date,r.to_date,
+v.arrival_time, v.arrival_date, v.arrival_place, v.mode_of_travel, v.ftno,r.is_veh_req1,
+v1.arrival_time as depr_time, v1.arrival_date as depr_date, v1.arrival_place as depr_plc, v1.mode_of_travel as depr_mode_of_travel, v1.ftno as depr_ftno
+from public.gad_request r LEFT JOIN public.guest_details g on r.req_id = g.req_id 
+LEFT JOIN adminr.user s on r.mobile_no = s.user_id
+LEFT JOIN public.vehicle_req v on v.req_id = r.req_id
+LEFT JOIN public.vehicle_req1 v1 on v1.req_id = r.req_id
+LEFT JOIN public.visitor_category c on r.desg = c.vc_id
+LEFT JOIN public.m_purpose_items p on p.item_id = r.purpose
+WHERE r.req_id = ? ORDER BY r.req_id DESC
+) f1 where f1.i = 1;
+]]>
+	</entry>
+
+	<entry key="getRoomCategorrySQL">
+	<![CDATA[
+		select DISTINCT qb.quota_type, q.quota_desc from m_quota_block qb INNER JOIN public.quota q ON qb.quota_type = q.quota_type order by quota_desc ASC
+	]]>
+	</entry>
+	
+
+
+	<entry key="getRoomStatusSQL">
+	<![CDATA[
+		select distinct on(a.block_id::Integer) a.block_id,a.block_name,b.gh_id,b.quota_type,b.nu_of_rooms,b.max_beds,b.dormitory_gents,b.dormitory_ladies from (select * from room_block)a join (select * from m_quota_block where quota_type=?)b on a.block_id=b.block_id and a.gh_id=?
+	]]>
+	</entry>
+	<entry key="getmoderationSQL">
+	<![CDATA[
+		insert into mod_req values(?,?,?,?,?,?,?,now(),?,?)
+	]]>
+	</entry>
+	<entry key="getmoderationRoomSQL">
+	<![CDATA[
+		insert into mod_req_room values(?,?,?,?,?,?,?,now())
+	]]>
+	</entry>
+	<entry key="getupdatestatusinGadRequest">
+	<![CDATA[
+		update gad_request set status=?,lastupdated =now() where req_id=?
+	]]>
+	</entry>
+	<entry key="UpdatemoderationSQL">
+	<![CDATA[
+		update mod_req set vc_id=?,quota_type=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="deletemoderationRoomSQL">
+	<![CDATA[
+		delete from mod_req_room where req_id=? and mod_id=? and gh_id=?
+	]]>
+	</entry>
+	<entry key="updateconveancyinGadRequest">
+	<![CDATA[
+		update gad_request set is_veh_req=?,is_veh_req1=?,lastupdated=now() where gh_id=? and req_id=?
+	]]>
+	</entry>
+	<entry key="updateconveancyinmodreq">
+	<![CDATA[
+		update mod_req set is_veh_req=?,is_veh_req1=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="updateblockidingadRequest">
+	<![CDATA[
+	update gad_request set block_id=?,lastupdated =now() where req_id=?
+	]]>
+	</entry>
+	<entry key="editmoderationClickquery">
+	<![CDATA[
+		    select * from (
+			SELECT ROW_NUMBER() OVER (PARTITION BY r.req_date::date, r.req_id order by g.guest_id) AS i,
+			r.req_id, mod_req.*,r.gh_id,r.block_id,g.guest_id, g.name, g.age,r.roomtype, r.purpose, p.item_title as purp_name, r.nor_req, r.nob_g_req,
+			r.nob_l_req, r.file_path, s.doc_path, r.status, r.mode_of_req, r.is_veh_req, r.desg, c.desg_category,r.from_date,r.to_date,
+			v.arrival_time, v.arrival_date, v.arrival_place, v.mode_of_travel, v.ftno,r.is_veh_req1,gh_details.gh_name,
+			v1.arrival_time as depr_time, v1.arrival_date as depr_date, v1.arrival_place as depr_plc, v1.mode_of_travel as depr_mode_of_travel, v1.ftno as depr_ftno
+			from public.gad_request r LEFT JOIN public.guest_details g on r.req_id = g.req_id 
+			LEFT JOIN adminr.user s on r.mobile_no = s.user_id
+			LEFT JOIN public.vehicle_req v on v.req_id = r.req_id
+			LEFT JOIN public.vehicle_req1 v1 on v1.req_id = r.req_id
+			LEFT JOIN public.visitor_category c on r.desg = c.vc_id
+			LEFT JOIN public.m_purpose_items p on p.item_id = r.purpose
+			LEFT JOIN mod_req on mod_req.req_id=r.req_id
+			LEFT JOIN gh_details on gh_details.gh_id=r.gh_id
+			WHERE r.req_id IN (select req_id from mod_req_room)and r.req_id =? ORDER BY r.req_id DESC
+			) f1 where f1.i = 1;
+	]]>
+	</entry>
+	<entry key="ProcessallList">
+	<![CDATA[
+		select Distinct(block_id),req_id,status,vc_id,req_date,quota_type,type,from_date,to_date  from v_current_mod where  status!='CAN' and from_date::date >= now()::date order by vc_id,req_date 
+	]]>
+	</entry>
+	<entry key="ProcessallListwithGHouseAndCity">
+	<![CDATA[
+		select Distinct(block_id),req_id,status,vc_id,req_date,quota_type,type,from_date,to_date  from v_current_mod where gh_id=? and block_id=? and status!='CAN' and from_date::date >= now()::date order by vc_id,req_date
+	]]>
+	</entry>
+	<entry key="saveProcesstable">
+	<![CDATA[
+		Insert into process_table values(?,?,now(),?,?,now(),?,?,?,?)
+	]]>
+	</entry>
+	<entry key="getCurrentModTable">
+	<![CDATA[
+		select * from ((select * from ((select * from v_current_mod where status!='CAN' and from_date::date>=now()::date) union (select * from v_waiting_mod where status!='CAN' and from_date::date>=now()::date)) as a where gh_id=? and block_id=?)aa join (select priority,vc_id from visitor_category)bb on aa.vc_id=bb.vc_id)xx order by priority,req_date
+	]]>
+	</entry>
+	<entry key="saveinReservationMainTable">
+	<![CDATA[
+		insert into reservation_main_table values(?,to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),to_timestamp(?,'yyyy-MM-dd HH24:MI:ss'),?,?,?,?,?,?,?,?,now());
+	]]>
+	</entry>
+	<entry key="updateStatusModReq">
+	<![CDATA[
+		update mod_req set status=?,process_id=?,lastupdate=now() where req_id=?
+	]]>
+	</entry>
+	<entry key="canRequestForGH">
+	<![CDATA[
+		update gad_request set status=? where userid=? and req_id=?
+	]]>
+	</entry>
+	<entry key="DraftallList">
+	<![CDATA[
+		
+	SELECT * FROM process_table  Where status='TCNF';
+      ]]>
+	</entry>
+	
+	
+	<entry key="DraftallListwithGHouseAndCity">
+	<![CDATA[
+		
+	SELECT *  FROM process_table  Where status='TCNF' and  gh_id=? and block_id=?;
+      ]]>
+	</entry>
+	<entry key="confirmDraftallList">
+	<![CDATA[
+		
+	SELECT * FROM process_table  Where status='CNF';
+      ]]>
+	</entry>
+	
+	
+	<entry key="confirmDraftallListwithGHouseAndCity">
+	<![CDATA[
+		
+	SELECT *  FROM process_table  Where status='CNF' and  gh_id=? and block_id=?;
+      ]]>
+	</entry>
+	
+	<entry key="detailsbyid">
+	<![CDATA[
+		
+	SELECT * FROM process_table where process_id=?;
+
+      ]]>
+	</entry>
+	<entry key="canProcessRequest">
+	<![CDATA[
+		update process_table set status=? where process_id=?
+
+	]]>
+	</entry>
+
+	<entry key="canProcessRequestmod_req">
+	   <![CDATA[
+		update mod_req set status=?,lastupdate=now() where process_id=?
+
+	]]>
+
+    </entry>
+	<entry key="DraftallList">
+	<![CDATA[
+		
+	SELECT * FROM process_table  Where status='TCNF';
+      ]]>
+	</entry>
+
+	
+	<entry key="draftviewQuery">
+	<![CDATA[
+select * from (((select DISTINCT on (guest_details.req_id) guest_details.*,gad_request.from_date,gad_request.to_date,gad_request.purpose,
+gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.family,gad_request.gh_id,gad_request.address as 
+main_address from guest_details join gad_request on gad_request.req_id = guest_details.req_id 
+where guest_details.req_id in (select a.req_id from reservation_waitinglist a where a.par_process_id=? and status!='CAN')or
+ guest_details.req_id in(select b.req_id from reservation_main_table b where b.process_id=? and status!='CAN')) a join (select req_id as mreqid,vc_id from mod_req) b on a.req_id=b.mreqid) c join (select vc_id,priority from visitor_category) d 
+on c.vc_id=d.vc_id   ) x join (select DISTINCT on (req_id) req_id,block_id,'W' as waitres from reservation_waitinglist where par_process_id=?
+and status!='CAN' and req_id not in(select req_id from reservation_main_table where process_id=? and status!='CAN') union select DISTINCT 
+on (req_id) req_id,block_id,'R' as waitres from reservation_main_table where process_id=? and status!='CAN')y on 
+x.req_id=y.req_id order by waitres,block_id;
+
+	]]>
+	</entry>
+	<entry key="updateProcessTable">
+	<![CDATA[	
+	  Update process_table set officeorderno=?,status=?,last_modified=now() where process_id=?
+      ]]>
+	</entry>
+	<entry key="updatemodreqStatusTable">
+	<![CDATA[	
+	  update mod_req set status=?,lastupdate=now() where process_id=?
+      ]]>
+	</entry>
+	<entry key="updatereservationtablestaus">
+	<![CDATA[	
+	 update reservation_main_table set status=?,last_modified=now() where process_id=?
+      ]]>
+	</entry>
+		
+
+</properties>
+

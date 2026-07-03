@@ -1,0 +1,26 @@
+default.user.password=password
+mail.registration.subject= Login Credentials
+mail.claim.subject= Claim Status
+registration.default.usergroup=2
+
+###Recaptcha
+admin.recaptcha.url=https://www.google.com/recaptcha/api/siteverify
+admin.recaptcha.secret=6LcMIzYUAAAAAKls_1T29DMgvLYiWvuHmdPZ6yXH94gth
+
+###OTP
+otp.window.length=180
+jwt.token.validity.in.minutes=60
+captcha.login-captcha-time =300000
+captcha.secret.salt=S%3erddsr&3890(Kls&34@
+
+jwt.token.access.validity=360000
+jwt.token.refresh.validity=7200
+jwt.authorities.key=roles
+jwt.secret=surendra@1234
+
+
+#File Paths
+#Shift Timings
+time.shift.one=6
+time.shift.two=14
+time.shift.three=22

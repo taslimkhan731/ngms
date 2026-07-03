@@ -1,0 +1,25 @@
+@charset "ISO-8859-1";
+
+.opacity_custom {
+	width: 200px;
+	height: 200px;
+	display: block;
+	position: relative;
+	min-height: 500px;
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.opacity_custom::after {
+	content: "";
+	background: url(./img/dashboard/sky2.jpg);
+	opacity: 0.5;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	position: absolute;
+	z-index: -1;
+}

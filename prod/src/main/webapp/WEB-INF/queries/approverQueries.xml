@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- Query Are Witten For****************************** Guest Application 
+		And Approver******************************************* -->
+	<entry key="getBookingListSQL">
+	<![CDATA[
+		select a.req_id,a.from_date,a.to_date,a.req_date,a.status,a.purpose,a.nor_req,a.nob_g_req,a.nod_g_req,a.is_veh_req,a.is_veh_req1,d.quota_desc,b.gh_name,c.block_name,c.block_id,c.block_id,e.item_title, a.can_status,f.feedback_id from gad_request a join room_block c
+		on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join quota d on a.category_type = d.quota_type join m_purpose_items e on e.item_id = a.purpose left join feedback_system f on a.req_id = f.req_id where userid=?
+	]]>
+	</entry>
+	<entry key="canRequestForGH">
+	<![CDATA[
+		update gad_request set status=?,req_date=now(), cancelled_by = ? where userid=? and req_id=?
+	]]>
+	</entry>
+	<entry key="getBookingListByIdSQL">
+	<![CDATA[
+		select a.during_stay_conveancy,a.req_id,gd.name,d.category,a.nod_g_req,a.nor_req,e.desg_category as desg,a.mobile_no,a.nob_g_req,a.req_date,a.address,a.from_date,a.to_date,a.status,f.item_title as purpose,a.is_veh_req,a.is_veh_req1,d.quota_desc,b.gh_name,c.block_name from gad_request a join room_block c 
+		on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join quota d on a.category_type = d.quota_type
+		join visitor_category e on a.desg = e.vc_id
+		join m_purpose_items f on a.purpose = f.item_id 
+		join guest_details gd on a.req_id =gd.req_id
+		where userid=? and a.req_id=?
+	]]>
+	</entry>
+	<entry key="getBookingListForExtensionSQL">
+	<![CDATA[
+		select a.req_id,a.from_date,a.to_date,a.status,a.purpose,a.is_veh_req,a.is_veh_req1,d.quota_desc,b.gh_name,c.block_name,c.block_id from gad_request a join room_block c 
+		on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join quota d on a.category_type = d.quota_type where userid=? and status='CIN' and 
+		(date(now())  between date(from_date) and date(to_date)) 
+	]]>
+	</entry>
+	<entry key="getBookingListForCancelSQL">
+	<![CDATA[
+		select count(*) from (select a.req_id,a.from_date,a.to_date,a.status,a.purpose,a.is_veh_req,a.is_veh_req1,
+        d.quota_desc,b.gh_name,c.block_name,c.block_id from gad_request a join room_block c 
+        on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join
+        quota d on a.category_type = d.quota_type where userid=? and status='ALO' and
+        date(now()) <= a.from_date::date - interval'1 day')as cancelList
+		        
+	]]>
+	</entry>
+	<entry key="getBookingListForAdminCancelSQL">
+	<![CDATA[
+		SELECT DISTINCT ON (c.req_id,b.from_date) b.req_id, b.req_date, c.name, b.from_date, b.to_date, c.designation,
+		b.mobile_no, b.email_id, b.status, c.guest_id, c.age, c.gender, c.department, b.address, b.can_status
+		FROM gad_request AS b
+				 JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS
+			row_number FROM guest_details) AS a WHERE a.row_number = 1) AS c ON b.req_id = c.req_id
+		WHERE b.roomtype NOT IN ('CON', 'C') AND ((b.status = 'PRO' AND COALESCE(b.can_status, '') != 'PCAN')
+			OR (b.status = 'CIN' AND (b.to_date::date - b.from_date::date) != 1 AND COALESCE(b.can_status, '') != 'PCAN'))
+		AND NOW()::DATE <= b.to_date::DATE
+	]]>	
+	</entry>
+	
+	<entry key="getBookingListForModeratorCancelSQL">
+	<![CDATA[
+		SELECT DISTINCT ON (a.req_id,b.from_date) b.req_id,b.req_date,a.name,b.from_date,b.to_date,
+		a.designation,b.mobile_no,
+		b.email_id, b.status, a.guest_id,a.age,a.gender,a.department,b.address, b.can_status, 
+		b.no_of_days,
+		(case when (n.req_id is not null OR c.req_id is not null) then 1 else 0 end) as partial_c
+		from gad_request as b
+		join (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS 
+		row_number FROM guest_details) AS c WHERE c.row_number = 1) AS a on b.req_id=a.req_id
+		left join partial_cancel_request c on b.req_id = c.req_id
+		left join noc_table n on b.req_id = n.req_id
+	]]>
+	</entry>
+	
+	<entry key="getCancelListForApproverSQL">
+	<![CDATA[
+		SELECT a.req_id,a.req_date,COALESCE(c.from_date, COALESCE(n.from_date, a.from_date)) AS from_date,COALESCE(c.to_date, a.to_date) AS to_date,
+		d.name,a.mobile_no,a.email_id,a.status,a.can_status,
+		(CASE WHEN (n.req_id IS NOT null OR c.req_id IS NOT null) THEN 1 ELSE 0 END) AS partial_c
+		FROM gad_request AS a
+		LEFT JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS
+		row_number FROM guest_details) AS b WHERE b.row_number = 1) AS d ON a.req_id = d.req_id
+		LEFT JOIN partial_cancel_request c on d.req_id = c.req_id
+		LEFT JOIN noc_table n on n.req_id = a.req_id
+	]]>
+	</entry>
+
+	<entry key="getBookingListForPartialCancelSQL">
+	<![CDATA[
+		select count(*) from (select a.req_id,a.from_date,a.to_date,a.status,a.purpose,a.is_veh_req,a.is_veh_req1,
+        d.quota_desc,b.gh_name,c.block_name,c.block_id from gad_request a join room_block c 
+        on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join
+        quota d on a.category_type = d.quota_type where userid=? and status='CIN' and req_id=? and
+        date(now()) < a.to_date::date and date(now()) >= a.from_date::date)as PartialCancelList
+	]]>
+	</entry>
+	<entry key="getAllDesgListSQL">
+		<![CDATA[
+			SELECT * FROM public.visitor_category where category=? ORDER BY priority ASC
+		]]>
+	</entry>
+	<entry key="getAllDesgListByIdSQL">
+		<![CDATA[
+			SELECT desg_category FROM public.visitor_category where vc_id=?
+		]]>
+	</entry>
+	<entry key="getAllCatgListSQL">
+		<![CDATA[
+			SELECT * FROM public.quota ORDER BY quota_type ASC
+		]]>
+	</entry>
+	<entry key="getAllPurpListSQL">
+		<![CDATA[
+			SELECT a.* FROM public.m_purpose_items a JOIN
+			public.category_purpose b ON a.item_id = b.purpose_id
+			WHERE b.category_id = ? ORDER BY item_id ASC
+		]]>
+	</entry>
+	<entry key="isBookedSameDate">
+		<![CDATA[
+			SELECT COUNT(*) FROM gad_request where userid=? and status!='CAN' and from_date::date=?::date
+			and to_date::date=?::date
+		]]>
+	</entry>
+	<entry key="isBookedSameDateForUpdate">
+		<![CDATA[
+			SELECT COUNT(*) FROM gad_request where userid=? and status!='CAN' and from_date::date=?::date
+			and to_date::date=?::date and req_id!=?
+		]]>
+	</entry>
+	<entry key="getBookingDetailsByIdSQL">
+		<![CDATA[
+			select * from gad_request where userid=? and req_id=?
+		]]>
+	</entry>
+	<entry key="getGuestDetailsByIdSQL">
+	<![CDATA[
+		select * from guest_details where req_id=?
+	]]>
+	</entry>
+	<entry key="saveBookingDetailsSQL">
+		<![CDATA[
+			insert into gad_request(req_id, gh_id, lastupdated, from_date, to_date, nor_req, nob_g_req, status,
+			is_veh_req, mode_of_req, purpose, ext, address, userid, req_date, nod_g_req, mobile_no, existing_req_id,
+			is_veh_req1, block_id, file_path, category_type, desg,roomtype,email_id,catg_file_path,during_stay_conveancy,
+			booking_for, no_of_days, no_of_adults, no_of_children, catgtype, created_by, updated_by)
+			values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?)
+		]]>
+	</entry>
+	<entry key="saveGuestDetailsSQL">
+		<![CDATA[
+			INSERT INTO public.guest_details(req_id, guest_id, name, age, gender, address, last_modified,designation,department,guest_mobile, guest_doc_type, guest_doc_path, existing_guest_id) VALUES (?, ?, ?, ?, ?, ?, now(), ?, ?, ?, ?, ?, ?)
+		]]>
+	</entry>
+	<entry key="adminsaveGuestDetailsSQL">
+		<![CDATA[
+			INSERT INTO public.guest_details(req_id, guest_id, name, age, gender, address, last_modified) VALUES (?, ?, ?, ?, ?, ?, now())
+		]]>
+	</entry>
+	<entry key="adminupdateGuestDetailsSQL">
+		<![CDATA[
+			UPDATE public.guest_details SET name=?, age=?, gender=?, address=?,last_modified=now()	WHERE req_id=? and guest_id=?;
+		]]>
+	</entry>
+	<entry key="changeStatusinExtension">
+		<![CDATA[
+			UPDATE public.gad_request SET status=?,lastupdated=now() WHERE req_id=?;
+		]]>
+	</entry>
+	<entry key="getBlockDetailsByBlockIdSQL">
+		<![CDATA[
+			SELECT * FROM public.room_block WHERE block_id = ?
+		]]>
+	</entry>
+	<entry key="saveArrivalDtlsSQl">
+		<![CDATA[
+			INSERT INTO public.vehicle_req(veh_id, req_id, mode_of_travel, arrival_time, arrival_place, no_seats_req, ftno, last_modified, arrival_date)
+			VALUES (?, ?, ?, ?, ?, ?, ?, now(),?);
+		]]>
+	</entry>
+	<entry key="saveDepartureDtlsSQl">
+		<![CDATA[
+			INSERT INTO public.vehicle_req1(veh_id, req_id, mode_of_travel, arrival_time, arrival_place, no_seats_req, ftno, last_modified, arrival_date)
+			VALUES (?, ?, ?, ?, ?, ?, ?, now(),?);
+		]]>
+	</entry>
+	<entry key="saveBookingDetailsSQl">
+		<![CDATA[
+			INSERT INTO public.gad_request(req_id, gh_id, lastupdated, from_date, to_date, nor_req, nob_g_req, nob_l_req, status, is_veh_req, mode_of_req, purpose, ext, address, userid, req_date, nod_g_req, nod_l_req, family, mobile_no, email_id, existing_req_id, is_veh_req1, block_id, file_path, category_type, desg, roomtype,catg_file_path,during_stay_conveancy,catgtype, no_of_days, no_of_adults, no_of_children, booking_for, created_by, updated_by, updated_on, created_on)
+			VALUES (?, ?, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?, ?, ?, ?, ?, ?, ?, NOW(), NOW());
+		]]>
+	</entry>
+	<entry key="getGuestDtlsByBookIdSQL">
+		<![CDATA[
+			SELECT a.req_id as reqid, a.guest_id, a.name, a.age, a.gender, a.address,a.designation,a.department,
+			 a.guest_mobile, a.guest_doc_type, a.guest_doc_path FROM public.guest_details a join public.gad_request b on
+			 a.req_id= b.req_id  WHERE a.req_id = ? ORDER BY SUBSTRING(a.guest_id, 3) ASC
+		]]>
+	</entry>
+	<entry key="getBookingDtlsByIdSQL">
+		<![CDATA[
+			SELECT t1.req_id, t1.gh_id,t1.roomtype, t1.lastupdated, t1.from_date, t1.to_date, t1.nor_req, t1.nob_g_req, t1.nob_l_req, t1.status,coalesce(t1.can_status,'CAN') as can_status, t1.is_veh_req, 
+			t1.mode_of_req, t1.purpose, t1.ext, t1.address, t1.userid, t1.req_date, t1.nod_g_req, t1.nod_l_req, t1.roomtype, t1.family, t1.mobile_no, 
+			t1.email_id, t1.existing_req_id, t1.is_veh_req1, t1.block_id, t1.file_path, t1.category_type, t1.desg,t1.catg_file_path,t1.during_stay_conveancy,t1.catgtype,
+			t1.no_of_days,t1.no_of_adults,t1.no_of_children,t1.booking_for,
+			t2.veh_id, t2.mode_of_travel, t2.arrival_time, t2.arrival_place, t2.ftno, t2.arrival_date, t3.veh_id as dv_id, 
+			t3.mode_of_travel as d_mode_travel, t3.arrival_time as depr_time, t3.arrival_place as depr_place, t3.ftno as d_fno, t3.arrival_date as depr_date,
+			t4.quota_desc, t4.category,t5.desg_category, t6.item_title, t7.gh_name, t8.block_name,coalesce(t1.ext,'') as ext
+			FROM public.gad_request as t1 
+			LEFT JOIN public.vehicle_req as t2 ON t1.req_id = t2.req_id
+			LEFT JOIN public.vehicle_req1 as t3 ON t1.req_id = t3.req_id
+			LEFT JOIN public.quota as t4 ON t1.category_type = t4.quota_type
+			LEFT JOIN public.visitor_category as t5 ON t1.desg = t5.vc_id
+			LEFT JOIN public.m_purpose_items as t6 ON t1.purpose = t6.item_id
+			INNER JOIN public.gh_details as t7 ON t1.gh_id = t7.gh_id
+			INNER JOIN public.room_block as t8 ON t1.block_id = t8.block_id
+			WHERE t1.req_id=?
+		]]>
+	</entry>
+	<entry key="updateBookingDetailsSQl">
+		<![CDATA[
+			UPDATE public.gad_request SET lastupdated=now(), from_date=?, to_date=?, nor_req=?, nob_g_req=?, status=?, is_veh_req=?, purpose=?, address=?, nod_g_req=?, mobile_no=?, 
+			email_id=?, is_veh_req1=?, file_path=?, category_type=?, desg=?, roomtype=?,catg_file_path=?,during_stay_conveancy=?, catgtype=?, no_of_days=?, no_of_adults=?, no_of_children=?, booking_for=?, updated_on=NOW() WHERE req_id=?;
+		]]>
+	</entry>
+	<entry key="adminupdateBookingDetailsSQl">
+		<![CDATA[
+			UPDATE public.gad_request SET gh_id=?,lastupdated=now(), from_date=?, to_date=?, nor_req=?, nob_g_req=?, status=?, is_veh_req=?, purpose=?, address=?, nod_g_req=?, mobile_no=?, 
+			email_id=?, is_veh_req1=?, block_id=?,file_path=?, category_type=?, desg=?, roomtype=? WHERE req_id=?;
+		]]>
+	</entry>
+	<entry key="updateArrivalDtlsSQl">
+		<![CDATA[
+			UPDATE public.vehicle_req SET mode_of_travel=?, arrival_time=?, arrival_place=?, ftno=?, last_modified=now(), arrival_date=? WHERE req_id=? and veh_id=?;
+		]]>
+	</entry>
+	<entry key="updateDepartureDtlsSQl">
+		<![CDATA[
+			UPDATE public.vehicle_req1 SET mode_of_travel=?, arrival_time=?, arrival_place=?, ftno=?, last_modified=now(), arrival_date=? WHERE req_id=? and veh_id=?;
+		]]>
+	</entry>
+	<entry key="updateGuestDetailsSQL">
+		<![CDATA[
+			UPDATE public.guest_details SET name=?, age=?, gender=?, address=?,designation=?, department=?, guest_mobile=?, guest_doc_type=?, guest_doc_path=?, last_modified=now() WHERE req_id=? and guest_id=?;
+		]]>
+	</entry>
+	<entry key="updateOrisaoneDetailsSQL">
+		<![CDATA[
+			UPDATE adminr.orisaone_data SET "BOOKING_ID"=? WHERE "REQUESTID"=?;
+		]]>
+	</entry>
+	<entry key="getConvenceDetails">
+		<![CDATA[
+			select a.req_id,a.req_date,a.status,a.nor_req,a.nob_g_req,a.nod_g_req,a.status,a.is_veh_req,a.is_veh_req1,b.gh_name,c.block_name,c.block_id,d.arrival_time as from_date,e.arrival_time as to_date, a.category_type as quota_desc, a.desg as item_title, a.can_status, f.feedback_id from gad_request a join room_block c
+			on a.block_id = c.block_id join gh_details b on a.gh_id = b.gh_id join vehicle_req d on a.req_id = d.req_id 
+			join vehicle_req1 e on a.req_id = e.req_id
+			left join feedback_system f on a.req_id = f.req_id where userid=?
+			and a.roomtype='C'
+		]]>
+	</entry>
+	<entry key="deleteGuestDetailsSQL">
+		<![CDATA[
+			delete from public.guest_details WHERE req_id=? and guest_id not in (
+		]]>
+	</entry>
+	<entry key="getConveynceMode">
+		<![CDATA[
+			select * from m_conveynce_mode where gh_id =? and conveynce_type=?
+		]]>
+	</entry>
+	<entry key="getPaymentReceiptMode">
+		<![CDATA[
+			select a.req_id, gr.from_date, gr.to_date, gr.gh_id, gr.block_id, gr.mobile_no as guest_mobile, q.category, a.bill_id,gs.name,c.rec_id,c.total_amount,c.date_rece,c.mode,c.full_partial,rb.block_name,tb.bill_id,
+			tb.billno, tb.date,gd.gh_name,pi.item_title, ta.room_no, ta.checkin_date, ta.checkout_date,gr.address,
+			rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail,gr.email_id,tb.advance,tb.total , COALESCE(gr.no_of_adults,0) + COALESCE(gr.no_of_children,0) as no_of_guest
+			,c.amount ,e.onlyname,(tb.total::numeric - tb.advance::numeric - c.amount::numeric) AS dues_amount from (SELECT DISTINCT req_id, bill_id FROM tr_billvsguest) a  
+			join tr_receiptvsbill d on a.bill_id = d.bill_id 
+			JOIN tr_bill_master tb ON d.bill_id = tb.bill_id AND tb.status = 'RECT'
+			join public.gad_request gr on a.req_id = gr.req_id
+			JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number FROM guest_details) AS gh_dt
+			WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+			join room_block rb on gr.block_id = rb.block_id
+			join gh_details gd on gr.gh_id = gd.gh_id 
+			join tr_receipt c on c.rec_id = d.rec_id
+			JOIN quota q ON q.quota_type = gr.category_type
+			JOIN public.m_purpose_items pi on gr.purpose = pi.item_id
+			JOIN (SELECT req_id, STRING_AGG(name, ', ') AS onlyname FROM guest_details GROUP BY req_id) AS e ON gr.req_id = e.req_id
+			JOIN (SELECT req_id, checkin_date, checkout_date, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+			FROM tr_allotment WHERE status = 'COUT'
+			GROUP BY req_id, checkin_date, checkout_date) ta ON gr.req_id = ta.req_id
+			where a.req_id = ? and c.status='RECT' order by rec_id limit 1
+		]]>
+	</entry>
+	<entry key="getAllLocation">
+		<![CDATA[
+			select a.block_id,a.block_name,b.gh_id,b.gh_name from room_block a join gh_details b on a.gh_id = b.gh_id order by block_id
+		]]>
+	</entry>
+	<entry key="getAllProcess">
+		<![CDATA[
+			select * from process_table where status='CNF' and gh_id=? and block_id=? and created_date >= now()::date order by created_date desc
+		]]>
+	</entry>
+	<entry key="getAllProcessById">
+		<![CDATA[
+			select a.go_sign,a.gh_id,a.block_id,a.created_date,b.gh_name,c.block_name from process_table a 
+			join gh_details b on a.gh_id = b.gh_id join room_block c on a.block_id = c.block_id where a.process_id = ?
+		]]>
+	</entry>
+	<entry key="getAllRequestByProcessId">
+		<![CDATA[
+		select DISTINCT on (guest_details.req_id) guest_details.*,tr_allotment.room_no,tr_allotment.room_rent,gad_request.from_date,gad_request.to_date,gad_request.purpose ,gad_request.is_veh_req,gad_request.is_veh_req1,gad_request.ext,gad_request.family,gad_request.gh_id,gad_request.block_id,gad_request.address as main_address from guest_details join gad_request on gad_request.req_id = guest_details.req_id join tr_allotment on tr_allotment.req_id=gad_request.req_id where guest_details.req_id in (select a.req_id from reservation_waitinglist a where a.par_process_id=? and status!='CAN')or guest_details.req_id in(select b.req_id from reservation_main_table b where b.process_id=? and status!='CAN') order by guest_details.req_id,guest_details.guest_id
+		]]>
+	</entry>
+
+	<!-- *************************** -->
+
+	<entry key="getAllGuestHouseListSQL">
+		<![CDATA[
+		SELECT block_id,block_name FROM public.room_block where gh_id=? ORDER BY block_id ASC
+		]]>
+	</entry>
+
+	<entry key="getAllCityListSQL">
+		<![CDATA[
+			SELECT gh_id,gh_name FROM public.gh_details ORDER BY gh_id ASC  
+		]]>
+	</entry>
+	<!-- ******************************************* -->
+	<entry key="getBookingDetailsOfFeedbackSQL">
+		<![CDATA[	
+		select* from (SELECT ROW_NUMBER() OVER (PARTITION BY  a.req_id order by b.guest_id) AS i,a.*,b.*,vc.desg_category from gad_request a join guest_details b
+		on a.req_id=b.req_id JOIN visitor_category AS vc ON a.desg=vc.vc_id
+		where a.req_id NOT IN(SELECT req_id from feedback_system) and a.req_id=? and a.mobile_no=? )f1 where f1.i=1      
+		]]>
+	</entry>
+	<entry key="getfeedbackListForUserAfterFeedback">
+		<![CDATA[	
+		SELECT a.*, c.block_name, b.gh_name, r.role_name
+		FROM feedback_system a
+		LEFT JOIN room_block c ON a.block_id = c.block_id
+		LEFT JOIN gh_details b ON a.gh_id = b.gh_id
+		LEFT JOIN adminr.role r ON r.role_id = a.replied_by where feedback_id=? and req_id=? 
+		]]>
+	</entry>
+	<entry key="getdetailsListForUserNotGivenFeedback">
+		<![CDATA[	
+		select* from (SELECT ROW_NUMBER() OVER (PARTITION BY  a.req_id order by e.guest_id) AS i, a.req_id,a.mobile_no,to_char(a.from_date,'dd-mm-yyyy')from_date,
+        to_char(a.to_date,'dd-mm-yyyy')to_date,to_char(a.req_date,'dd-mm-yyyy')req_date,a.status as booking_status,a.purpose,a.is_veh_req,a.is_veh_req1,b.*,
+        c.block_name,d.gh_name,f.quota_desc,e.*,vc.desg_category from gad_request a
+        left outer join feedback_system b on a.req_id=b.req_id
+		join room_block c on a.block_id = c.block_id 
+		join gh_details d on a.gh_id = d.gh_id join quota f on a.category_type = f.quota_type  join
+		guest_details e on a.req_id=e.req_id
+		JOIN visitor_category AS vc ON a.desg=vc.vc_id
+		where a.req_id=? and a.userid=? )f1 where f1.i=1
+		]]>
+	</entry>
+
+	<entry key="saveFeedbackDetails">
+		<![CDATA[	
+		INSERT INTO public.feedback_system(
+            feedback_id, req_id, mobile_no, gh_id, block_id, checkin_out, 
+            keep_room, quality_food, cleanliness_hygiene, conduct_of_staff, 
+            submitted_on, status, feedback_sms,overall)
+    VALUES (?, ?, ?, ?, ?, ?, 
+                 ?, ?, ?, ?, 
+            now(),?,?,?);     
+		]]>
+	</entry>
+	<entry key="checkinDetails">
+		<![CDATA[
+	 	    select distinct on(c.req_id,from_date) c.gh_id,c.category_type,c.req_date,c.req_id,c.block_id, c.from_date,c.to_date,coalesce(c.can_status,'') as can_status,c.name,c.guest_id,c.designation,c.department,c.address,c.status,d.process_id
+			from((select req_id as rid,req_date,from_date,can_status,category_type,to_date,gh_id,status,block_id from gad_request where status in ('PRO', 'PCIN') and gh_id=?
+			and ext in ('0','2') and block_id=?)a join (select * from guest_details)b on a.rid=b.req_id) c left join (select process_id,req_id from reservation_main_table where
+			status!='CAN' and gh_id=? and block_id=?)d on c.rid=d.req_id
+		]]>
+	</entry>
+	<entry key="roomDetails">
+		<![CDATA[
+	    select distinct(room_no,bed_no) as roombed, room_no,bed_no,type from tr_allotment where req_id=? and 
+		status!='CAN' and block_id=?
+		]]>
+	</entry>
+	<entry key="guestDetails">
+		<![CDATA[
+	   select *  from guest_details where req_id=?
+		]]>
+	</entry>
+	<entry key="guestCheckinStatus">
+		<![CDATA[
+	   select status from tr_checkin where req_id=? and guest_id=? and status!='CAN'
+		]]>
+	</entry>
+	<!-- Prasad approverQueries Starts -->
+	<entry key="getAllDetailsByProcessidSQL">
+		<![CDATA[
+			select a.*,rb.block_name,gd.gh_name
+			from process_table a
+			 join room_block rb on rb.block_id = a.block_id
+			 join gh_details gd on gd.gh_id = a.gh_id
+			 where a.process_id = ?
+	]]>
+	</entry>
+	<entry key="getAllCanDetailsByProcessidSQL">
+		<![CDATA[
+		SELECT a.req_id,a.process_id,b.name,
+		COALESCE(d.from_date, COALESCE(n.from_date, c.from_date)) as from_date,
+		COALESCE(d.to_date, c.to_date) AS to_date,
+		a.status,rb.block_name,gd.gh_name,a.mode_of_cancel, ta.room_no,c.address,
+		(CASE WHEN (n.req_id IS NOT null OR d.req_id IS NOT null) THEN 1 ELSE 0 END) AS partial_c
+		FROM cancel_reservation a
+		JOIN room_block rb ON rb.block_id = a.block_id
+		JOIN gh_details gd ON gd.gh_id = a.gh_id
+		JOIN (SELECT req_id, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL 
+		THEN CONCAT('-', bed_no) END )), ',')
+		AS room_no FROM tr_allotment WHERE can_status IN ('FCAN', 'PCAN') GROUP BY req_id) ta ON ta.req_id = a.req_id
+		INNER JOIN (select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation  <> '' 
+		THEN CONCAT(',', designation) ELSE '' END,
+		CASE WHEN department <> '' THEN CONCAT(',', department) ELSE '' END)),' & ' 
+		order by guest_id)as name from guest_details 
+		group by req_id) AS b ON a.req_id = b.req_id
+		join gad_request c on a.req_id = c.req_id
+		left join partial_cancel_request d on c.req_id=d.req_id
+		LEFT JOIN noc_table n on n.req_id = a.req_id
+		WHERE a.process_id = ?
+	]]>
+	</entry>
+	
+	<entry key="getGadRequestTableDataForExtensionSql">
+		<![CDATA[
+			select DISTINCT ON (a.req_id) b.req_id,b.gh_id,b.block_id,b.from_date,b.to_date ,a.guest_id,a.name,a.age,a.gender,a.designation,
+			a.department,a.address, b.status, b.mode_of_req,b.req_date,b.mobile_no   from guest_details as a  join gad_request as b 
+			on b.req_id=a.req_id
+		]]>
+	</entry>
+	
+	<entry key="getRoomModifyDtlsByBookIdSQL">
+		<![CDATA[
+			SELECT b.prev_order_no,b.subject,b.prev_order_date,
+			STRING_AGG( (SELECT CONCAT(a.prev_room_no, CASE WHEN prev_bed_no IS NOT NULL 
+			THEN CONCAT('-', prev_bed_no) END )), ',') AS prev_room_no,
+			STRING_AGG(a.prev_room_rent,',') AS prev_room_rent ,
+			STRING_AGG( (SELECT CONCAT(a.room_no, CASE WHEN bed_no IS NOT NULL 
+			THEN CONCAT('-', bed_no) else null END )), ',')  AS room_no,
+			STRING_AGG(a.room_rent,',') AS room_rent FROM 
+			(select distinct req_id,room_no,bed_no,mod_status,room_rent,prev_room_rent,prev_room_no,prev_bed_no,status from tr_allotment) a 
+			join tr_sms_alltment b on a.req_id = b.req_id WHERE a.status NOT IN ('CAN') AND
+			a.mod_status in('PMODF','MMODF') AND a.req_id = ?  GROUP BY b.prev_order_no,b.subject,b.prev_order_date
+		]]>
+	</entry>
+	
+	<entry key="getModifiedAllotmentReportSQL">
+		<![CDATA[
+			SELECT c.req_id,d.name,c.from_date,c.to_date,b.prev_order_no,b.subject,a.status,
+			STRING_AGG(DISTINCT (SELECT CONCAT(a.prev_room_no, CASE WHEN prev_bed_no IS NOT NULL THEN CONCAT('-', prev_bed_no) END )), ',') 
+			AS prev_room_no,SUM(a.prev_room_rent::NUMERIC) AS prev_room_rent ,
+			STRING_AGG(DISTINCT (SELECT CONCAT(a.room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') 
+			AS room_no,SUM(a.room_rent::NUMERIC) AS room_rent 
+			FROM tr_allotment a
+			join tr_sms_alltment b on a.req_id = b.req_id
+			join gad_request c on c.req_id = a.req_id
+			INNER JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) 
+			AS row_number FROM guest_details) AS gh_dt
+			WHERE gh_dt.row_number = 1) AS d ON c.req_id = d.req_id
+		]]>
+	</entry>
+	
+		<entry key="getModifiedAllotmentReportSQLCount">
+		<![CDATA[
+			SELECT COUNT(DISTINCT c.req_id) AS total_count
+			FROM tr_allotment a
+			JOIN tr_sms_alltment b ON a.req_id = b.req_id
+			JOIN gad_request c ON c.req_id = a.req_id
+			INNER JOIN (
+    		SELECT * FROM (
+        	SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number 
+        	FROM guest_details) AS gh_dt
+   			WHERE gh_dt.row_number = 1) AS d ON c.req_id = d.req_id
+		]]>
+	</entry>
+		
+	<entry key="getShiftReportSQL">
+		<![CDATA[
+			select a.*,b.block_name,c.gh_name from tr_shift_master a 
+			join room_block b on a.block_id = b.block_id
+			join gh_details c on a.gh_id = c.gh_id
+		]]>
+	</entry>
+	<entry key="getShiftReportCountSQL">
+		<![CDATA[
+			SELECT COUNT(*) 
+			FROM tr_shift_master a
+			JOIN room_block b ON a.block_id = b.block_id
+			JOIN gh_details c ON a.gh_id = c.gh_id
+		]]>
+	</entry>
+	
+	<entry key="getConferenceBookingDetailsByBookingIdSQL">
+		<![CDATA[
+			SELECT gr.req_id, gr.req_date, gr.gh_id, gr.block_id,rb.block_name,gd.gh_name, gr.status, gr.from_date, gr.to_date, gr.roomtype,
+			gr.mobile_no, tr.name, mch.conf_cat_desc as hall_category,tb.charge,tb.additionalcharge,tb.advance_amount, 
+			mcu.conf_use_desc as booking_type, qu.category, qu.quota_type,tr.address,tr.capacity
+			FROM gad_request gr
+			JOIN room_block rb on rb.block_id = gr.block_id
+			JOIN gh_details gd on gd.gh_id = gr.gh_id
+			JOIN tr_conf_request tr ON gr.req_id = tr.req_id
+			JOIN tr_conf_bill tb ON gr.req_id = tb.req_id
+			JOIN m_conf_hall_category mch ON tr.conf_cat_id = mch.conf_cat_id
+			JOIN m_conf_hall_use mcu ON tr.conf_use_id = mcu.conf_use_id
+			LEFT JOIN quota AS qu ON gr.category_type=qu.quota_type WHERE gr.req_id = ?
+		]]>
+	</entry>
+	<entry key="checkPendingNocSQL">
+		<![CDATA[
+			select count(*) from gad_request a join noc_table b on a.req_id=b.req_id 
+			where a.userid=? and b.status is null and noc_charge is not null
+		]]>
+	</entry>
+	
+	<!-- Prasad approverQueries Ends -->
+
+	<!-- Mohit approverQueries Starts -->
+	<entry key="getAllModifyDetailsByProcessId">
+		<![CDATA[
+			select a.req_id,a.process_id,b.name,c.from_date,c.to_date,a.status,ta.prev_order_no,ta.subject,c.address,ta.prev_order_date,
+			ta.prev_room_no,ta.prev_room_rent,ta.room_no,ta.room_rent
+			from modify_reservation a
+			INNER JOIN (
+			select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE '' END,
+			CASE WHEN department <> '' THEN CONCAT(',', department) ELSE '' END)),' & ' order by guest_id)as name from guest_details 
+			group by req_id)as b on a.req_id = b.req_id 
+			join gad_request c on a.req_id = c.req_id
+			JOIN (
+			SELECT c.req_id,b.prev_order_no,b.subject,b.prev_order_date,
+			STRING_AGG( (SELECT CONCAT(c.prev_room_no, CASE WHEN prev_bed_no IS NOT NULL 
+			THEN CONCAT('-', prev_bed_no) END )), ',') AS prev_room_no,
+			STRING_AGG(c.prev_room_rent,',') AS prev_room_rent ,
+			STRING_AGG( (SELECT CONCAT(c.room_no, CASE WHEN bed_no IS NOT NULL 
+			THEN CONCAT('-', bed_no) else null END )), ',')  AS room_no,
+			STRING_AGG(c.room_rent,',') AS room_rent FROM 
+			(select distinct req_id,room_no,bed_no,room_rent,prev_room_rent,prev_room_no,prev_bed_no,status from tr_allotment) c 
+			join tr_sms_alltment b on c.req_id = b.req_id WHERE c.status NOT IN ('CAN', 'ACAN') AND b.status='MODF' GROUP BY c.req_id,b.prev_order_no,b.subject,b.prev_order_date) AS ta ON ta.req_id = a.req_id
+			where a.process_id = ?
+	]]>
+	</entry>
+	<entry key="getAllModifiedDataForApprove">
+	<![CDATA[
+		SELECT DISTINCT ON (g.req_id) g.req_id, g.req_date, g.from_date,g.to_date,g.category_type, g.mobile_no, gs.name, g.status from gad_request g
+		JOIN tr_sms_alltment s ON g.req_id = s.req_id
+		JOIN tr_allotment a ON a.req_id = g.req_id
+		LEFT JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY SUBSTRING(guest_id,3)) AS row_number FROM guest_details) AS gh_dt
+				   WHERE gh_dt.row_number = 1) AS gs ON g.req_id = gs.req_id
+		WHERE a.mod_status = 'MMODF'
+	]]>
+	</entry>
+	<entry key="getAllotIdsForModify">
+	<![CDATA[
+		SELECT allot_id FROM tr_allotment WHERE mod_status = 'MMODF'
+	]]>
+	</entry>
+	<entry key="updateAllotmentStatusByAllotIds">
+	<![CDATA[
+		UPDATE tr_allotment SET status = ?, lastmodified = now()
+	]]>
+	</entry>
+	<entry key="updateTrCheckinAllotStatusByAllotIds">
+		<![CDATA[
+		UPDATE tr_checkin_allot SET status = ?, lastmodified = now()
+	]]>
+	</entry>
+	<entry key="findAllotmentByStatusFrDtToDtBookingId">
+		<![CDATA[
+		SELECT allot_id FROM tr_allotment WHERE status = ? AND from_date::date = ?::date AND to_date::date = ?::date AND req_id = ?
+	]]>
+	</entry>
+	<entry key="createPartialCancelRequest">
+	<![CDATA[
+		INSERT INTO partial_cancel_request VALUES (?, ?, ?, ?, ?, now())
+	]]>
+	</entry>
+	<entry key="updatePartialCancelRequestByBookingId">
+	<![CDATA[
+		UPDATE partial_cancel_request SET status = ?, last_modified = now() WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="updateCanStatusByReqId">
+	<![CDATA[
+		UPDATE gad_request SET can_status=?, lastupdated=now(), updated_by=?, updated_on=now(), cancelled_by=? WHERE req_id=?
+	]]>
+	</entry>
+	<entry key="updateCanStatusByReqIdSaveAsDraft">
+	<![CDATA[
+		UPDATE gad_request SET can_status=?, lastupdated=now(), updated_by=?, updated_on=now() WHERE req_id=?
+	]]>
+	</entry>
+	<entry key="getBillIdByBookingId">
+		<![CDATA[
+		SELECT bill.bill_id from (SELECT DISTINCT ON (req_id) req_id, bg.bill_id FROM tr_billvsguest bg
+		JOIN tr_bill_master tbm ON bg.bill_id = tbm.bill_id
+		WHERE status IN ('BILL', 'RECT') AND req_id = ?) AS bill;
+	]]>
+	</entry>
+	<entry key="getRoomAllotDtlsByBookIdSQL">
+		<![CDATA[
+		SELECT from_date, to_date, status, STRING_AGG(allot_id, ',') AS allot_id,
+		STRING_AGG((SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no,
+		STRING_AGG(room_rent,',') AS room_rent FROM 
+		(select distinct from_date,to_date,allot_id,can_status,req_id,room_no,bed_no,room_rent,status from tr_allotment) c 
+		 WHERE  req_id =? AND (status NOT IN ('CAN') OR (status='CAN' AND can_status is not null))
+		GROUP BY from_date, to_date, status order by from_date asc
+	]]>
+	</entry>
+	<entry key="getPCanFromAllotmentByReqId">
+		<![CDATA[
+		SELECT from_date, to_date, status, can_status,
+		STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no,
+		STRING_AGG(room_rent,',') AS room_rent FROM (select distinct from_date,to_date,allot_id,can_status,req_id,room_no,bed_no,room_rent,status from tr_allotment) c  WHERE can_status IN ('PCAN', 'FCAN')
+		AND req_id =? GROUP BY from_date, to_date, status, can_status
+	]]>
+	</entry>
+	<entry key="updateStatusAndCanStatusByReqId">
+		<![CDATA[
+		UPDATE gad_request SET status = ?, can_status=?, lastupdated=now(), updated_by=?, cancelled_by=?, updated_on=now() WHERE req_id=?
+	]]>
+	</entry>
+	<entry key="createNoc">
+		<![CDATA[
+		INSERT INTO noc_table (noc_id, req_id, from_date, to_date, created_date) VALUES (?, ?, ?, ?, now())
+	]]>
+	</entry>
+	<entry key="getNocByReqId">
+		<![CDATA[
+		SELECT * FROM noc_table WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="updateNocChargeByNocId">
+		<![CDATA[
+		UPDATE noc_table SET noc_charge = ?, approved_date = now() WHERE noc_id = ?
+	]]>
+	</entry>
+	<entry key="getFromDateToDateFromGadRequest">
+		<![CDATA[
+		SELECT from_date, to_date FROM gad_request WHERE req_id = ?
+	]]>
+	</entry>
+	<entry key="getRoomRentByFromDateToDate">
+		<![CDATA[
+		SELECT SUM(room_rent::NUMERIC) FROM tr_allotment WHERE from_date::date = ?::date AND to_date::date = ?::date AND req_id = ?
+		AND can_status = 'FCAN'
+	]]>
+	</entry>
+	<entry key="getPartialCancelByReqId">
+		<![CDATA[
+		SELECT * FROM partial_cancel_request WHERE req_id = ?
+	]]>
+	</entry>
+<!--	<entry key="getRoomAllotDtlsByBookIdFrDtToDt">-->
+<!--		<![CDATA[-->
+<!--		SELECT from_date, to_date,-->
+<!--			   STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no,-->
+<!--			   SUM(room_rent::NUMERIC) AS room_rent-->
+<!--		FROM tr_allotment WHERE status = 'CIN' AND from_date::date = ?::date AND to_date::date = ?::date AND req_id = ?-->
+<!--		GROUP BY from_date, to_date-->
+<!--	]]>-->
+<!--	</entry>-->
+	<entry key="getNocList">
+		<![CDATA[
+		SELECT gr.from_date,gr.to_date,gr.userid, gr.from_date, gr.to_date, gr.req_id, nt.noc_id, nt.noc_charge, gr.gh_id, gr.block_id,rb.block_name,gd.gh_name,
+		nt.status, nt.rec_id, nt.pay_amount, nt.date_of_pay, gs.name,rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail,gr.mobile_no,gr.email_id
+		,gr.address,pi.item_title,q.category,COALESCE(gr.no_of_adults,0) + COALESCE(gr.no_of_children,0) as no_of_guest,ta.room_no FROM noc_table nt
+		JOIN gad_request gr ON nt.req_id = gr.req_id
+		JOIN room_block rb on rb.block_id = gr.block_id 
+		JOIN gh_details gd on gd.gh_id = gr.gh_id
+		JOIN public.m_purpose_items pi on gr.purpose = pi.item_id
+		JOIN quota q ON q.quota_type = gr.category_type
+		JOIN (SELECT req_id ,STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+		from tr_allotment WHERE can_status = 'FCAN'
+ 		GROUP BY req_id) ta ON gr.req_id = ta.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id)
+		AS row_number FROM guest_details) AS gh_dt
+		WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		WHERE (gr.status = 'CAN' AND gr.can_status = '24CAN' OR gr.status IN ('PRO', 'BILL', 'RECT'))
+		AND nt.bill_id IS NULL
+	]]>
+	</entry>
+	
+	<entry key="getNocListCount">
+		<![CDATA[
+		SELECT COUNT(*) FROM noc_table nt
+		JOIN gad_request gr ON nt.req_id = gr.req_id
+		JOIN room_block rb ON rb.block_id = gr.block_id 
+		JOIN gh_details gd ON gd.gh_id = gr.gh_id
+		JOIN public.m_purpose_items pi ON gr.purpose = pi.item_id
+		JOIN quota q ON q.quota_type = gr.category_type
+		JOIN (
+    		SELECT req_id, STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END)), ',') AS room_no
+    		FROM tr_allotment 
+    		WHERE can_status = 'FCAN'
+    		GROUP BY req_id) ta ON gr.req_id = ta.req_id
+			JOIN ( SELECT * 
+    			FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS row_number 
+        		FROM guest_details
+    			) AS gh_dt WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+				WHERE (gr.status = 'CAN' AND gr.can_status = '24CAN' OR gr.status IN ('PRO', 'BILL', 'RECT'))
+				AND nt.bill_id IS NULL
+	]]>
+	</entry>
+	
+	<entry key="updateNocReceipt">
+		<![CDATA[
+		UPDATE noc_table SET status = ?, rec_id = ?, pay_amount = ?, date_of_pay = now() WHERE noc_id = ?
+	]]>
+	</entry>
+	<entry key="updateNocStatus">
+		<![CDATA[
+		UPDATE noc_table SET status = ? WHERE noc_id = ?
+	]]>
+	</entry>
+	<entry key="checkForNoc">
+		<![CDATA[
+		SELECT status FROM noc_table WHERE req_id = ? AND ((status IS NULL AND noc_charge IS NOT NULL) OR status = 'PAID')
+	]]>
+	</entry>
+	<entry key="getNocForGuest">
+		<![CDATA[
+		SELECT gr.from_date,gr.to_date,gr.userid, gr.from_date, gr.to_date, gr.req_id, nt.noc_id, nt.noc_charge, gr.gh_id, gr.block_id,gr.email_id,
+		rb.block_name, gd.gh_name, nt.status, nt.rec_id, nt.pay_amount, nt.date_of_pay, gs.name,gr.address,pi.item_title,q.category,COALESCE(gr.no_of_adults,0) + COALESCE(gr.no_of_children,0) as no_of_guest,ta.room_no 
+		,rb.address as gh_address,rb.contact_num,rb.mail_id as gh_mail FROM noc_table nt
+		JOIN gad_request gr ON nt.req_id = gr.req_id
+		JOIN room_block rb on rb.block_id = gr.block_id
+		JOIN gh_details gd on gd.gh_id = gr.gh_id
+		JOIN public.m_purpose_items pi on gr.purpose = pi.item_id
+		JOIN quota q ON q.quota_type = gr.category_type
+		JOIN (SELECT req_id ,STRING_AGG(DISTINCT (SELECT CONCAT(room_no, CASE WHEN bed_no IS NOT NULL THEN CONCAT('-', bed_no) END )), ',') AS room_no
+		from tr_allotment WHERE can_status = 'FCAN'
+ 		GROUP BY req_id) ta ON gr.req_id = ta.req_id
+				 JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id)
+			AS row_number FROM guest_details) AS gh_dt
+					   WHERE gh_dt.row_number = 1) AS gs ON gr.req_id = gs.req_id
+		WHERE gr.req_id = ? AND ((nt.status IS NULL AND noc_charge IS NOT NULL) OR nt.status = 'PAID')
+	]]>
+	</entry>
+	<entry key="getGHDetailsByGHId">
+		<![CDATA[
+		SELECT * FROM room_block WHERE block_id = ?
+	]]>
+	</entry>
+	<entry key="savePaymentInfo">
+		<![CDATA[
+		INSERT INTO pg_info (order_id, tracking_id, amount, trans_date, bank_ref_no, payment_mode,
+							 status_code, response_code, status_message, order_status, failure_message, reference, block_id)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	]]>
+	</entry>
+	<entry key="updateVerifyStatus">
+		<![CDATA[
+		UPDATE pg_info SET verify_payment = ?, verify_payment_date = now() WHERE order_id = ?
+	]]>
+	</entry>
+	<entry key="getAmountOfOnlinePayment">
+	<![CDATA[
+		SELECT pi.amount from pg_info pi
+		JOIN tr_bill_master tbm on pi.order_id = tbm.order_id
+		WHERE tbm.bill_id = ? AND pi.verify_payment = 'Y'
+	]]>
+	</entry>
+	<entry key="getRectOnlinePaymentDetails">
+		<![CDATA[
+		SELECT pi.* from pg_info pi
+		JOIN tr_bill_master tbm on pi.order_id = tbm.order_id
+		WHERE tbm.bill_id = ? AND pi.verify_payment = 'Y'
+	]]>
+	</entry>
+	<entry key="getNOCOnlinePaymentDetails">
+		<![CDATA[
+		SELECT pi.* from pg_info pi
+		JOIN noc_table nt on pi.order_id = nt.order_id
+		WHERE nt.noc_id = ? AND pi.verify_payment = 'Y'
+	]]>
+	</entry>
+	<entry key="getConfOnlinePaymentDetails">
+		<![CDATA[
+		SELECT pi.* from pg_info pi
+		JOIN tr_conf_bill tc on pi.order_id = tc.order_id
+		WHERE tc.conf_bill_id = ? AND pi.verify_payment = 'Y'
+	]]>
+	</entry>
+	<entry key="updateOrderIdInBill">
+		<![CDATA[
+		UPDATE tr_bill_master SET order_id = ? WHERE bill_id = ?
+	]]>
+	</entry>
+	<entry key="updateOrderIdInNOC">
+		<![CDATA[
+		UPDATE noc_table SET order_id = ? WHERE noc_id = ?
+	]]>
+	</entry>
+	<entry key="updateOrderIdInConfBill">
+		<![CDATA[
+		UPDATE tr_conf_bill SET order_id = ? WHERE conf_bill_id = ?
+	]]>
+	</entry>
+	<entry key="getNocDetailsForMessage">
+		<![CDATA[
+		SELECT nt.noc_charge, gd.name, gr.req_id, gr.from_date, gr.to_date, gr.userid, gr.email_id,
+			   rb.block_name, gh.gh_name FROM noc_table nt
+		JOIN gad_request gr ON nt.req_id = gr.req_id
+		JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY req_id ORDER BY guest_id) AS
+			row_number FROM guest_details) AS a WHERE a.row_number = 1) AS gd ON gd.req_id = gr.req_id
+		JOIN room_block rb ON gr.block_id = rb.block_id
+		JOIN gh_details gh ON gr.gh_id = gh.gh_id
+		WHERE noc_id = ?
+	]]>
+	</entry>
+	<!-- Mohit approverQueries Ends -->
+
+	<!-- Prerana approverQueries starts -->
+	<entry key="getdetailsListForUserGivenFeedback">
+		<![CDATA[	
+		select * from (SELECT ROW_NUMBER() OVER (PARTITION BY  a.req_id order by e.guest_id) AS i, a.req_id,a.mobile_no,to_char(a.from_date,'dd-mm-yyyy')from_date,
+        to_char(a.to_date,'dd-mm-yyyy')to_date,to_char(a.req_date,'dd-mm-yyyy')req_date,a.status as booking_status,a.purpose,
+		a.is_veh_req,a.is_veh_req1,b.status as feedback_status,b.feedback_id,b.req_id,b.mobile_no,b.gh_id,b.block_id,
+		b.checkin_out,b.keep_room,b.quality_food,b.cleanliness_hygiene,b.conduct_of_staff,b.submitted_on,b.feedback_sms,b.replied_sms,
+		b.replied_on,b.view,b.overall,
+        c.block_name,d.gh_name,f.quota_desc,e.*,vc.desg_category from gad_request a
+        left outer join feedback_system b on a.req_id=b.req_id
+		join room_block c on b.block_id = c.block_id 
+		join gh_details d on b.gh_id = d.gh_id join quota f on a.category_type = f.quota_type  join
+		guest_details e on b.req_id=e.req_id
+		JOIN visitor_category AS vc ON a.desg=vc.vc_id
+		where a.userid=? )f1 where f1.i=1
+		]]>
+	</entry>
+	
+	<entry key="getallFeedbackListInAdminSession">
+		<![CDATA[	
+		select  * from  (SELECT ROW_NUMBER() OVER (PARTITION BY  gad_request.req_id order by guest_details.guest_id) AS i,  guest_details.*,
+		gad_request.*,feedback_system.*,feedback_system.status as feedbackstatus from guest_details join gad_request on gad_request.req_id=guest_details.req_id 
+		join feedback_system on feedback_system.req_id = gad_request.req_id   			
+		]]>
+	</entry>
+	<entry key="setTrueForModal">
+		<![CDATA[	
+		UPDATE public.feedback_system SET view=true,status='Viewed' WHERE feedback_id=? and status='Opened'
+		]]>
+	</entry>
+	<entry key="saveFeedbackRepliedDetails">
+		<![CDATA[	
+		update feedback_system set replied_sms=?,replied_on=CURRENT_TIMESTAMP,status=?,view=false,replied_by=?,replied_by_user_id=? where req_id=? and feedback_id=?
+		]]>
+	</entry>
+
+	<entry key="feedbackCount">
+		<![CDATA[	
+		SELECT COUNT(*) as total,
+               SUM(CASE WHEN status = 'Viewed' and view= true THEN 1 ELSE 0 END) as viewed,
+               SUM(CASE WHEN status = 'Opened' THEN 1 ELSE 0 END) as opened,
+               SUM(CASE WHEN status = 'Closed' and view= false THEN 1 ELSE 0 END) as closed
+        FROM feedback_system
+		]]>
+	</entry>				
+	<entry key="feedbackReport">
+		<![CDATA[	
+		select gh_id,gh_name,block_id,block_name,total_no_of_feedbacks, checkout_excellent, round((checkout_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) checkout_excellent_percent, 
+			checkout_good , round((checkout_good::numeric/total_no_of_feedbacks::numeric)*100, 0) checkout_good_percent,
+			checkout_average , round((checkout_average::numeric/total_no_of_feedbacks::numeric)*100, 0) checkout_average_percent,
+			checkout_poor , round((checkout_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) checkout_poor_percent,
+			checkout_verypoor , round((checkout_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) checkout_verypoor_percent,
+			keep_room_excellent , round((keep_room_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) keep_room_excellent_percent,
+			keep_room_good , round((keep_room_good::numeric/total_no_of_feedbacks::numeric)*100, 0) keep_room_good_percent,
+			keep_room_average , round((keep_room_average::numeric/total_no_of_feedbacks::numeric)*100, 0) keep_room_average_percent,
+			keep_room_poor , round((keep_room_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) keep_room_poor_percent,
+			keep_room_verypoor , round((keep_room_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) keep_room_verypoor_percent,
+			quality_food_excellent , round((quality_food_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) quality_food_excellent_percent,
+			quality_food_good , round((quality_food_good::numeric/total_no_of_feedbacks::numeric)*100, 0) quality_food_good_percent,
+			quality_food_average , round((quality_food_average::numeric/total_no_of_feedbacks::numeric)*100, 0) quality_food_average_percent,
+			quality_food_poor , round((quality_food_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) quality_food_poor_percent,
+			quality_food_verypoor , round((quality_food_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) quality_food_verypoor_percent,
+			cleanliness_hygiene_excellent , round((cleanliness_hygiene_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) cleanliness_hygiene_excellent_percent,
+			cleanliness_hygiene_good , round((cleanliness_hygiene_good::numeric/total_no_of_feedbacks::numeric)*100, 0) cleanliness_hygiene_good_percent,
+			cleanliness_hygiene_average , round((cleanliness_hygiene_average::numeric/total_no_of_feedbacks::numeric)*100, 0) cleanliness_hygiene_average_percent,
+			cleanliness_hygiene_poor , round((cleanliness_hygiene_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) cleanliness_hygiene_poor_percent,
+			cleanliness_hygiene_verypoor , round((cleanliness_hygiene_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) cleanliness_hygiene_verypoor_percent,
+			conduct_of_staff_excellent , round((conduct_of_staff_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) conduct_of_staff_excellent_percent,
+			conduct_of_staff_good , round((conduct_of_staff_good::numeric/total_no_of_feedbacks::numeric)*100, 0) conduct_of_staff_good_percent,
+			conduct_of_staff_average , round((conduct_of_staff_average::numeric/total_no_of_feedbacks::numeric)*100, 0) conduct_of_staff_average_percent,
+			conduct_of_staff_poor , round((conduct_of_staff_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) conduct_of_staff_poor_percent,
+			conduct_of_staff_verypoor , round((conduct_of_staff_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) conduct_of_staff_verypoor_percent,
+			overall_excellent , round((overall_excellent::numeric/total_no_of_feedbacks::numeric)*100, 0) overall_excellent_percent,
+			overall_good , round((overall_good::numeric/total_no_of_feedbacks::numeric)*100, 0) overall_good_percent,
+			overall_average , round((overall_average::numeric/total_no_of_feedbacks::numeric)*100, 0) overall_average_percent,
+			overall_poor , round((overall_poor::numeric/total_no_of_feedbacks::numeric)*100, 0) overall_poor_percent,
+			overall_verypoor , round((overall_verypoor::numeric/total_no_of_feedbacks::numeric)*100, 0) overall_verypoor_percent
+			from (select c.gh_id,c.gh_name,d.block_id ,d.block_name, CASE count(a.feedback_id) WHEN 0 THEN 1 ELSE count(a.feedback_id) END total_no_of_feedbacks, 
+			count(case when a.checkin_out=5 then a.feedback_id end) checkout_excellent,
+			count(case when a.checkin_out=4 then a.feedback_id end) checkout_good,
+			count(case when a.checkin_out=3 then a.feedback_id end) checkout_average,
+			count(case when a.checkin_out=2 then a.feedback_id end) checkout_poor,
+			count(case when a.checkin_out=1 then a.feedback_id end) checkout_verypoor,
+			count(case when a.keep_room=5 then a.feedback_id end) keep_room_excellent,
+			count(case when a.keep_room=4 then a.feedback_id end) keep_room_good,
+			count(case when a.keep_room=3 then a.feedback_id end) keep_room_average,
+			count(case when a.keep_room=2 then a.feedback_id end) keep_room_poor,
+			count(case when a.keep_room=1 then a.feedback_id end) keep_room_verypoor,
+			count(case when a.quality_food=5 then a.feedback_id end) quality_food_excellent,
+			count(case when a.quality_food=4 then a.feedback_id end) quality_food_good,
+			count(case when a.quality_food=3 then a.feedback_id end) quality_food_average,
+			count(case when a.quality_food=2 then a.feedback_id end) quality_food_poor,
+			count(case when a.quality_food=1 then a.feedback_id end) quality_food_verypoor,
+			count(case when a.cleanliness_hygiene=5 then a.feedback_id end) cleanliness_hygiene_excellent,
+			count(case when a.cleanliness_hygiene=4 then a.feedback_id end) cleanliness_hygiene_good,
+			count(case when a.cleanliness_hygiene=3 then a.feedback_id end) cleanliness_hygiene_average,
+			count(case when a.cleanliness_hygiene=2 then a.feedback_id end) cleanliness_hygiene_poor,
+			count(case when a.cleanliness_hygiene=1 then a.feedback_id end) cleanliness_hygiene_verypoor,
+			count(case when a.conduct_of_staff=5 then a.feedback_id end) conduct_of_staff_excellent,
+			count(case when a.conduct_of_staff=4 then a.feedback_id end) conduct_of_staff_good,
+			count(case when a.conduct_of_staff=3 then a.feedback_id end) conduct_of_staff_average,
+			count(case when a.conduct_of_staff=2 then a.feedback_id end) conduct_of_staff_poor,
+			count(case when a.conduct_of_staff=1 then a.feedback_id end) conduct_of_staff_verypoor,
+			count(case when a.overall=5 then a.feedback_id end) overall_excellent,
+			count(case when a.overall=4 then a.feedback_id end) overall_good,
+			count(case when a.overall=3 then a.feedback_id end) overall_average,
+			count(case when a.overall=2 then a.feedback_id end) overall_poor,
+			count(case when a.overall=1 then a.feedback_id end) overall_verypoor	
+			From room_block d left join feedback_system a on d.block_id = a.block_id 
+		]]>
+	</entry>
+
+	<entry key="totalRowOfTotalFeedbackReport">
+		<![CDATA[	
+		select count(*) from (select req_id ,from_date,to_date,status from gad_request
+		]]>
+	</entry>
+	<entry key="totalFeedbackReport">
+		<![CDATA[	
+		select  c.gh_id,c.gh_name,d.block_id ,d.block_name,count(a.feedback_id)total_no_of_feedbacks,
+		count(case when a.checkin_out=5 then a.feedback_id end) checkout_excellent,
+		count(case when a.checkin_out=4 then a.feedback_id end) checkout_good,
+		count(case when a.checkin_out=3 then a.feedback_id end) checkout_average,
+		count(case when a.checkin_out=2 then a.feedback_id end) checkout_poor,
+		count(case when a.checkin_out=1 then a.feedback_id end) checkout_verypoor,
+		count(case when a.keep_room=5 then a.feedback_id end) keep_room_excellent,
+		count(case when a.keep_room=4 then a.feedback_id end) keep_room_good,
+		count(case when a.keep_room=3 then a.feedback_id end) keep_room_average,
+		count(case when a.keep_room=2 then a.feedback_id end) keep_room_poor,
+		count(case when a.keep_room=1 then a.feedback_id end) keep_room_verypoor,
+		count(case when a.quality_food=5 then a.feedback_id end) quality_food_excellent,
+		count(case when a.quality_food=4 then a.feedback_id end) quality_food_good,
+		count(case when a.quality_food=3 then a.feedback_id end) quality_food_average,
+		count(case when a.quality_food=2 then a.feedback_id end) quality_food_poor,
+		count(case when a.quality_food=1 then a.feedback_id end) quality_food_verypoor,
+		count(case when a.cleanliness_hygiene=5 then a.feedback_id end) cleanliness_hygiene_excellent,
+		count(case when a.cleanliness_hygiene=4 then a.feedback_id end) cleanliness_hygiene_good,
+		count(case when a.cleanliness_hygiene=3 then a.feedback_id end) cleanliness_hygiene_average,
+		count(case when a.cleanliness_hygiene=2 then a.feedback_id end) cleanliness_hygiene_poor,
+		count(case when a.cleanliness_hygiene=1 then a.feedback_id end) cleanliness_hygiene_verypoor,
+		count(case when a.conduct_of_staff=5 then a.feedback_id end) conduct_of_staff_excellent,
+		count(case when a.conduct_of_staff=4 then a.feedback_id end) conduct_of_staff_good,
+		count(case when a.conduct_of_staff=3 then a.feedback_id end) conduct_of_staff_average,
+		count(case when a.conduct_of_staff=2 then a.feedback_id end) conduct_of_staff_poor,
+		count(case when a.conduct_of_staff=1 then a.feedback_id end) conduct_of_staff_verypoor,
+		count(case when a.overall=5 then a.feedback_id end) overall_excellent,
+		count(case when a.overall=4 then a.feedback_id end) overall_good,
+		count(case when a.overall=3 then a.feedback_id end) overall_average,
+		count(case when a.overall=2 then a.feedback_id end) overall_poor,
+		count(case when a.overall=1 then a.feedback_id end) overall_verypoor 		
+		From room_block d left join feedback_system a on d.block_id = a.block_id 
+	 	
+		]]>
+	</entry>
+		<entry key="guestFeedbackReport">
+		<![CDATA[	
+		select  * from  (SELECT room_block.block_name,gh_details.gh_name,guest_details.req_id, ROW_NUMBER() OVER (PARTITION BY  gad_request.req_id order by 
+		guest_details.guest_id) AS i,  guest_details.*,
+		gad_request.*,feedback_system.*,feedback_system.status as feedbackstatus from guest_details join 
+		gad_request on gad_request.req_id=guest_details.req_id join feedback_system on feedback_system.req_id = gad_request.req_id 
+		join room_block on room_block.block_id = gad_request.block_id join gh_details on gh_details.gh_id = gad_request.gh_id
+		]]>
+	</entry>
+	<entry key="guestHouseName">
+		<![CDATA[	
+		select block_name from room_block where block_id=?
+		]]>
+	</entry>
+	<entry key="cityname">
+		<![CDATA[	
+		select gh_name from gh_details where gh_id=?
+		]]>
+	</entry>
+	<entry key="commentReportSQL">
+		<![CDATA[	
+		select c.gh_id,c.gh_name,d.block_id ,d.block_name From room_block d left join feedback_system a on d.block_id = a.block_id  
+		]]>
+	</entry>
+	<entry key="allotmentReportSQL">
+		<![CDATA[	
+		select a.gh_id,c.gh_name,a.block_id,a.block_name,count(case when mode_of_req='PUB' then req_id end) as total_application_online,
+		count(case when mode_of_req!='PUB' then req_id end) as total_application_offline,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='1') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_official,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='2') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_private,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='3') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_patient,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT') and (purpose='4') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end)  as total_allotment_student,
+		count(case when (status='PCIN' or status='BILL' or status='RECT' or status='CIN' or  status='COUT') and req_id IN(select req_id from tr_checkin where
+		(status='CIN' or status='COUT' or status='BILL')) and (purpose in ('1', '2', '3', '4')) then req_id end) as total_occupancy
+		from room_block a left join gad_request b on a.block_id = b.block_id
+		]]>
+	</entry>
+	<entry key="allotmentReportForTotalSQL">
+		<![CDATA[	
+		select count(case when mode_of_req='PUB' then req_id end) as total_application_online,
+		count(case when mode_of_req!='PUB' then req_id end) as total_application_offline,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='1') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_official,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='2') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_private,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT' or status='BILL' or status='RECT') and (purpose='3') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end) 
+		as total_allotment_patient,
+		count(case when (status='PRO' or status='CIN' or status='PCIN' or status='COUT') and (purpose='4') and req_id IN
+		(select req_id from tr_allotment where ( status='PRO' or status='CIN' or status='PCIN' or status='COUT')) then req_id end)  as total_allotment_student,
+		count(case when (status='PCIN' or status='BILL' or status='RECT' or status='CIN' or  status='COUT') and req_id IN(select req_id from tr_checkin where
+		(status='CIN' or status='COUT' or status='BILL')) and (purpose in ('1', '2', '3', '4')) then req_id end) as total_occupancy
+		from  gad_request b 
+		]]>
+	</entry>
+	<entry key="finalreportSQL">
+		<![CDATA[	
+		select a.nu_of_rooms as total_no_of_rooms,
+		a.gh_id,c.gh_name,a.block_id,a.block_name,
+		count(case when mode_of_req='PUB' then b.req_id end) as total_application_online,
+		count(case when mode_of_req!='PUB' then b.req_id end) as total_application_offline,
+
+		count(case when (b.status='PRO' or b.status='CIN' or b.status='PCIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and mode_of_req='PUB' and b.req_id IN
+		(select req_id from tr_allotment ta where ( ta.status='PRO' or ta.status='CIN' or ta.status='PCIN' or ta.status='COUT')) then b.req_id end) 
+		as total_allotment_online,
+
+		count(case when (b.status='PRO' or b.status='CIN' or b.status='PCIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and mode_of_req!='PUB' and b.req_id IN
+		(select req_id from tr_allotment ta where ( ta.status='PRO' or ta.status='CIN' or ta.status='PCIN' or ta.status='COUT')) then b.req_id end) 
+		as total_allotment_offline,		
+
+		count(case when (b.status='PCIN' or b.status='BILL' or b.status='RECT' or b.status='CIN' or  b.status='COUT') and b.req_id 
+		IN(select req_id from feedback_system )then b.req_id end) as feedback_received,
+
+		
+		count(case when (b.status='PCIN' or b.status='CIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and b.req_id IN(select req_id from tr_checkin tc where
+		(tc.status IN ('CIN','COUT','BILL')))then b.req_id end) as check_in,
+
+		count(case when (b.status='COUT' or b.status='BILL' or b.status='RECT') and b.req_id IN(select req_id from tr_checkin trr where
+		(trr.status IN ('COUT','BILL')))then b.req_id end) as check_out
+
+		from room_block a 
+		left join gad_request b on a.block_id = b.block_id
+		]]>
+	</entry>
+	<entry key="finalreportTotalSQL">
+		<![CDATA[	
+		select count(case when mode_of_req='PUB' then b.req_id end) as total_application_online,
+		count(case when mode_of_req!='PUB' then b.req_id end) as total_application_offline,
+		
+		count(case when (b.status='PRO' or b.status='CIN' or b.status='PCIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and mode_of_req='PUB' and b.req_id IN
+		(select req_id from tr_allotment ta where ( ta.status='PRO' or ta.status='CIN' or ta.status='PCIN' or ta.status='COUT')) then b.req_id end) 
+		as total_allotment_online,
+
+		count(case when (b.status='PRO' or b.status='CIN' or b.status='PCIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and mode_of_req!='PUB' and b.req_id IN
+		(select req_id from tr_allotment ta where ( ta.status='PRO' or ta.status='CIN' or ta.status='PCIN' or ta.status='COUT')) then b.req_id end) 
+		as total_allotment_offline,
+
+		count(case when (b.status='PCIN' or b.status='BILL' or b.status='RECT' or b.status='CIN' or  b.status='COUT') and b.req_id 
+		IN(select req_id from feedback_system )then b.req_id end) as feedback_received,
+
+		count(case when (b.status='PCIN' or b.status='CIN' or b.status='COUT' or b.status='BILL' or b.status='RECT') and b.req_id IN(select req_id from tr_checkin tc where
+		(tc.status IN ('CIN','COUT','BILL')))then b.req_id end) as check_in,
+
+		count(case when (b.status='COUT' or b.status='BILL' or b.status='RECT') and b.req_id IN(select req_id from tr_checkin trr where
+		(trr.status IN ('COUT','BILL')))then b.req_id end) as check_out
+		from gad_request b
+		
+		]]>
+	</entry>
+	<entry key="getAllConferenceDetailsByProcessId">
+		<![CDATA[	
+		SELECT gr.req_id, gr.req_date, gr.gh_id, gr.block_id, gr.status, gr.from_date, gr.to_date, gr.roomtype,
+		gr.mobile_no, tr.name,tr.address, mch.conf_cat_desc, mcu.conf_use_desc, qu.category, qu.quota_type,tr.capacity,tcb.charge
+		FROM gad_request gr JOIN public.reservation_main_table rmt ON gr.req_id = rmt.req_id
+		JOIN public.tr_conf_bill tcb ON tcb.req_id = gr.req_id
+		JOIN tr_conf_request tr ON gr.req_id = tr.req_id
+		JOIN tr_conf_bill tb ON gr.req_id = tb.req_id JOIN m_conf_hall_category mch ON tr.conf_cat_id = mch.conf_cat_id
+		JOIN m_conf_hall_use mcu ON tr.conf_use_id = mcu.conf_use_id
+		LEFT JOIN quota AS qu ON gr.category_type=qu.quota_type
+		WHERE tb.status = 'P' AND rmt.process_id = ?
+		]]>
+	</entry>
+	<entry key="actualRoomAvlSQL">
+		<![CDATA[	
+		select count(room_no) from room_details where status = true 
+		]]>
+	</entry>
+	<entry key="getPaymentMode">
+		<![CDATA[	
+		SELECT mode_of_payment,amount FROM public.receipt_payment_mode where rec_id=?
+		]]>
+	</entry>
+	<entry key="totalFeedbackReportForTotal">
+		<![CDATA[	
+		select count(a.feedback_id)total_no_of_feedbacks,
+		count(case when a.checkin_out=5 then a.feedback_id end) checkout_excellent,
+		count(case when a.checkin_out=4 then a.feedback_id end) checkout_good,
+		count(case when a.checkin_out=3 then a.feedback_id end) checkout_average,
+		count(case when a.checkin_out=2 then a.feedback_id end) checkout_poor,
+		count(case when a.checkin_out=1 then a.feedback_id end) checkout_verypoor,
+		count(case when a.keep_room=5 then a.feedback_id end) keep_room_excellent,
+		count(case when a.keep_room=4 then a.feedback_id end) keep_room_good,
+		count(case when a.keep_room=3 then a.feedback_id end) keep_room_average,
+		count(case when a.keep_room=2 then a.feedback_id end) keep_room_poor,
+		count(case when a.keep_room=1 then a.feedback_id end) keep_room_verypoor,
+		count(case when a.quality_food=5 then a.feedback_id end) quality_food_excellent,
+		count(case when a.quality_food=4 then a.feedback_id end) quality_food_good,
+		count(case when a.quality_food=3 then a.feedback_id end) quality_food_average,
+		count(case when a.quality_food=2 then a.feedback_id end) quality_food_poor,
+		count(case when a.quality_food=1 then a.feedback_id end) quality_food_verypoor,
+		count(case when a.cleanliness_hygiene=5 then a.feedback_id end) cleanliness_hygiene_excellent,
+		count(case when a.cleanliness_hygiene=4 then a.feedback_id end) cleanliness_hygiene_good,
+		count(case when a.cleanliness_hygiene=3 then a.feedback_id end) cleanliness_hygiene_average,
+		count(case when a.cleanliness_hygiene=2 then a.feedback_id end) cleanliness_hygiene_poor,
+		count(case when a.cleanliness_hygiene=1 then a.feedback_id end) cleanliness_hygiene_verypoor,
+		count(case when a.conduct_of_staff=5 then a.feedback_id end) conduct_of_staff_excellent,
+		count(case when a.conduct_of_staff=4 then a.feedback_id end) conduct_of_staff_good,
+		count(case when a.conduct_of_staff=3 then a.feedback_id end) conduct_of_staff_average,
+		count(case when a.conduct_of_staff=2 then a.feedback_id end) conduct_of_staff_poor,
+		count(case when a.conduct_of_staff=1 then a.feedback_id end) conduct_of_staff_verypoor,
+		count(case when a.overall=5 then a.feedback_id end) overall_excellent,
+		count(case when a.overall=4 then a.feedback_id end) overall_good,
+		count(case when a.overall=3 then a.feedback_id end) overall_average,
+		count(case when a.overall=2 then a.feedback_id end) overall_poor,
+		count(case when a.overall=1 then a.feedback_id end) overall_verypoor 		
+		From  feedback_system a 
+		]]>
+	</entry>
+	<entry key="totalRowOfTotalFeedbackReportForTotal">
+		<![CDATA[	
+		SELECT mode_of_payment,amount FROM public.receipt_payment_mode where rec_id=?
+		]]>
+	</entry>
+	<entry key="saveOfficeOrderDoc">
+		<![CDATA[	
+		INSERT INTO  public.office_order_upload(upload_id, block_id, gh_id, upload_date, upload_path, created_date, created_by) VALUES (?, ?, ?, ?, ?, now(),?)		
+		]]>
+	</entry>
+	<entry key="getOfficeOrderUploadSQL">
+		<![CDATA[	
+		select upload_id,upload_date,created_by,upload_path,rb.block_name,gd.gh_name FROM public.office_order_upload ou
+		join room_block rb on rb.block_id = ou.block_id		
+		join gh_details gd on gd.gh_id = ou.gh_id
+		]]>
+	</entry>
+	<entry key="getCityName">
+		<![CDATA[	
+		select gh_name FROM public.gh_details 
+		]]>
+	</entry>
+	<entry key="getGhName">
+		<![CDATA[	
+		select block_name FROM public.room_block
+		]]>
+	</entry>
+	<entry key="getModListForAllotment">
+		<![CDATA[	
+		SELECT gh.req_id, gh.req_date, gs.name,gh.status, gh.nor_req,gh.nod_g_req,	
+		gh.gh_id, ct.gh_name, gh.block_id,
+		bl.block_name,
+		gh.from_date ,gh.to_date
+		FROM gad_request AS gh
+		LEFT JOIN gh_details AS ct ON ct.gh_id= gh.gh_id
+		LEFT JOIN room_block AS bl ON bl.block_id= gh.block_id
+		INNER JOIN 	(select req_id,STRING_AGG((SELECT CONCAT(name,CASE WHEN designation <> '' THEN CONCAT(',', designation) ELSE '' END,CASE WHEN address <> '' THEN CONCAT(',', address) ELSE '' END)),' & ' order by guest_id)as name from guest_details group by req_id) 
+		AS gs ON gh.req_id = gs.req_id	
+		]]>
+	</entry>
+	<!-- Prerana approverQueries ends -->
+			
+	<!-- Deepti approverQueries starts -->
+	
+	<!-- Deepti approverQueries ends -->
+	
+	<!-- Amit approverQueries starts -->
+	
+	<!-- Amit approverQueries ends -->
+	<!-- sandip approverQueries starts -->
+	<!-- SELECT * from  (SELECT ROW_NUMBER() OVER (PARTITION BY  a.req_id order by gd.guest_id) AS i, gd.name, a.req_id,a.roomtype,a.can_status,a.mobile_no,
+		CASE WHEN a.from_date IS NULL THEN k.arrival_time ELSE a.from_date END AS from_date,
+		CASE WHEN a.to_date IS NULL THEN l.arrival_time ELSE a.to_date END AS to_date,
+		a.req_date,a.status,a.purpose,a.nor_req,a.nob_g_req,a.nod_g_req,a.is_veh_req,a.is_veh_req1,
+		d.quota_desc,b.gh_name,c.block_name,c.block_id,c.block_id,e.item_title, a.can_status,f.feedback_id,td.status as dues_status
+		FROM gad_request a
+    	JOIN room_block c ON a.block_id = c.block_id
+    	JOIN gh_details b ON a.gh_id = b.gh_id
+    	JOIN quota d ON a.category_type = d.quota_type
+    	JOIN m_purpose_items e ON e.item_id = a.purpose
+    	JOIN guest_details gd ON a.req_id = gd.req_id
+    	LEFT JOIN vehicle_req k ON a.req_id = k.req_id
+    	LEFT JOIN vehicle_req1 l ON a.req_id = l.req_id
+    	LEFT JOIN feedback_system f ON a.req_id = f.req_id
+   	 	LEFT JOIN tr_dues td ON td.rec_id IN (
+        SELECT trvb.rec_id
+        FROM tr_receiptvsbill trvb
+        JOIN tr_billvsguest tbvg ON tbvg.bill_id = trvb.bill_id
+        WHERE a.req_id = tbvg.req_id
+    	)
+		where userid=? and a.roomtype!='CON' 
+		and ((a.status not in('CAN')) or (a.status = 'CAN' and can_status is not null)) -->
+	<entry key="getRoomWithConveyance">
+		<![CDATA[	
+		WITH tr_dues_cte AS (SELECT DISTINCT ON (tbvg.req_id) tbvg.req_id, trd.rec_id, trd.status AS dues_status
+		FROM tr_receiptvsbill trvb
+		JOIN tr_billvsguest tbvg ON tbvg.bill_id = trvb.bill_id
+		JOIN tr_dues trd ON trd.rec_id = trvb.rec_id)
+		SELECT * FROM (SELECT ROW_NUMBER() OVER (PARTITION BY a.req_id ORDER BY gd.guest_id) AS i,
+		gd.name,a.req_id,a.roomtype,a.mobile_no,a.during_stay_conveancy,
+		COALESCE(a.from_date, k.arrival_time) AS from_date,COALESCE(a.to_date, l.arrival_time) AS to_date,
+		a.req_date,a.status,a.purpose,a.nor_req,a.nob_g_req,a.nod_g_req,a.is_veh_req,a.is_veh_req1,d.quota_desc,
+		b.gh_name,c.block_name,c.block_id,e.item_title,a.can_status,f.feedback_id,td.dues_status
+		FROM gad_request a
+		JOIN room_block c ON a.block_id = c.block_id
+		JOIN gh_details b ON a.gh_id = b.gh_id
+		JOIN quota d ON a.category_type = d.quota_type
+		JOIN m_purpose_items e ON e.item_id = a.purpose
+		JOIN guest_details gd ON a.req_id = gd.req_id
+		LEFT JOIN vehicle_req k ON a.req_id = k.req_id
+		LEFT JOIN vehicle_req1 l ON a.req_id = l.req_id
+		LEFT JOIN feedback_system f ON a.req_id = f.req_id
+		LEFT JOIN tr_dues_cte td ON a.req_id = td.req_id
+		WHERE userid = :userId AND a.roomtype != 'CON' 
+		AND (a.status NOT IN ('CAN') OR (a.status = 'CAN' AND a.can_status IS NOT NULL))
+		]]>
+	</entry>
+	<entry key="checkForPgForApplyOrNot">
+		<![CDATA[	
+			SELECT verify_payment FROM pg_info WHERE reference=? AND order_status='Success' AND verify_payment='P' ORDER BY order_id DESC LIMIT 1
+		]]>
+	</entry>
+	<!-- sandip approverQueries ends -->
+</properties>
+

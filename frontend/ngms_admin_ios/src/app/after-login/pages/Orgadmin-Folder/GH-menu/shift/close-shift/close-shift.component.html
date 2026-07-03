@@ -1,0 +1,52 @@
+<!-- <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+  </ion-buttons>
+  <ion-title class="logo-text">Close Shift</ion-title>
+</ion-toolbar> -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </ion-buttons>
+    <ion-title class="logo-text">Close Shift</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="cardHeight">
+    <form [formGroup]="closeShiftForm" (ngSubmit)="submitCloseShift(closeShiftForm.value)">
+      <ion-card>
+        <ion-label class="hehadinglbl">Close Shift</ion-label>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="lbl required">Open Time:</ion-label>
+              <ion-input type="text" class="readOnly" formControlName="openTime" readonly="true"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Close Time:</ion-label>
+              <!-- <ion-input type="datetime-local" formControlName="closeTime"></ion-input> -->
+              <ion-input type="datetime-local" formControlName="closeTime" [min]="minDate" [max]="maxDate"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Opening Balance Refund:</ion-label>
+              <ion-input type="number" class="readOnly" formControlName="refundBal" (ionChange)="calculateClose1()">
+              </ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Opening Balance Regular:</ion-label>
+              <ion-input type="number" inputmode="decimal" formControlName="regularBal" (ionChange)="calculateClose1()"></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label class="lbl required">Opening balance Total:</ion-label>
+              <ion-input type="number" inputmode="decimal" class="readOnly" formControlName="totalBal"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-end">
+            <ion-button type="submit">Close Shift</ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </form>
+  </div>
+</ion-content>
