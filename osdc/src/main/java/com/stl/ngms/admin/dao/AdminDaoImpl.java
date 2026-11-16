@@ -3338,13 +3338,12 @@ public class AdminDaoImpl implements AdminDao {
 				e.printStackTrace();
 			}
 
-			String subject = "Dear " + roomDetailsSms.getName() + ", Room number " + roomDetailsSms.getRoomNo()
-					+ " is allotted instead of Room number " + roomDetailsSms.getPrevOrderNo() + " in "
-					+ roomDetailsSms.getBlockName() + ", " + roomDetailsSms.getCityId() + " from "
-					+ roomDetailsSms.getFromDate() + " to " + roomDetailsSms.getToDate() + " against your Booking ID "
-					+ roomDetailsSms.getBookingId() + " - Odisha Home Dept";
+			String subject = "Dear Madam/Sir, Room number " + roomDetailsSms.getRoomNo()
+					+ " is allotted instead of earlier Room  from " + roomDetailsSms.getFromDate()
+					+ " to " + roomDetailsSms.getToDate() + " against your Booking ID "
+					+ roomDetailsSms.getBookingId() + ". For details please login to the portal. Home Dept., Govt. of Odisha";
 			System.out.println(subject);
-			String templateId = "1107168976021691330";
+			String templateId = "1077299280133475398";
 			try {
 				if (roomDetailsSms.getModifiedRoomRent() != null) {
 					if (!roomDetailsSms.getModifiedRoomRent().isEmpty()) {
@@ -3399,12 +3398,11 @@ public class AdminDaoImpl implements AdminDao {
 		for (NocWithFullCanceldDetail singleUser : Cancelusers) {
 			String subject = "";
 			if (!singleUser.getNocCharge().equals("0")) {
-				subject = "Dear " + singleUser.getName() + ", Room number " + singleUser.getRoomNo()
-						+ " has been cancelled in " + singleUser.getBlockName() + ", " + singleUser.getGhName() + " from "
+				subject = "Dear Madam/Sir},Reservation of room has been cancelled from " 
 						+ singleUser.getNocFromDt() + " to " + singleUser.getNocToDt() + " against your Booking ID "
-						+ singleUser.getReqId() + " and NOC from " + singleUser.getFromDate() + " to "
-						+ singleUser.getNocFromDt() + " amounting to Rs " + singleUser.getNocCharge()
-						+ " is to be deposited - Odisha Home Dept";
+						+ singleUser.getReqId() + " and NOC amounting to Rs "
+						+ singleUser.getNocCharge()
+						+ " is to be deposited. For details please login to the portal. Home Dept., Govt. of Odisha";
 
 //			try {
 //				if (singleUser.getEmail() != null) {
@@ -3416,7 +3414,7 @@ public class AdminDaoImpl implements AdminDao {
 //				logger.error("error occured in sms or email send..");
 //			}
 
-				String templateId = "1107168975996962785";
+				String templateId = "1077325560133495991";
 				try {
 					if (singleUser.getPhone() != null) {
 						if (!singleUser.getPhone().isEmpty()) {
@@ -4809,12 +4807,13 @@ public class AdminDaoImpl implements AdminDao {
 		}
 		
 		try {
-			String message = "Your Request Number " + requestPojo.getBookingId() +
-					" for guest house is cancelled for reason "+requestPojo.getModReason() +
-					", Odisha Home Dept";
+			String message = "Dear Madam/Sir, Resrvation of room has been cancelled  from "
+					+ requestPojo.getFromDate() + " to " + requestPojo.getToDate() + " against your Booking ID "
+					+ requestPojo.getBookingId() +
+					". For details please login to the portal. Home Dept., Govt. of Odisha ";
 			System.out.println(message);
 			if (mobileNo != null && !mobileNo.isEmpty()) {
-				String templateID = "1107160707775267623";
+				String templateID = "1077154640131828872";
 				smsSend.sendSMS(mobileNo, message, templateID);
 			}
 //			if (emailId != null && !emailId.isEmpty()) {
@@ -5387,9 +5386,10 @@ public class AdminDaoImpl implements AdminDao {
 				return g;
 		}, model.getBookingId());
 		
-		String subject = "Dear "+gdp.getGuestName()+", amount of Rs "+model.getTotal()+" has been successfully received towards your"
-				+ " pending arrear dues from "+gdp.getGuestDocPath()+" to "+gdp.getGuestDocType()+" in "+gdp.getGuestDepartment()+", "+gdp.getGuestDesignation()
-				+ " - Odisha Home Dept";
+		String subject = "Dear Madam/Sir, amount of Rs. "
+				+ model.getTotal() + " has been successfully received towards your pending arrear dues from "
+				+ gdp.getGuestDocPath() + " to "+ gdp.getGuestDocType()
+				+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 //		try {
 //			if (gdp.getGuestAddr() != null) {
 //				if (!gdp.getGuestAddr().isEmpty()) {
@@ -5400,7 +5400,7 @@ public class AdminDaoImpl implements AdminDao {
 //			logger.error("error occured in sms or email send..");
 //		}
 		System.out.println(subject);
-		String templateId = "1107168975953100826";
+		String templateId = "1077409330133392623";
 		try {
 			if (gdp.getGuestMobile() != null) {
 				if (!gdp.getGuestMobile().isEmpty()) {
@@ -7702,12 +7702,13 @@ public class AdminDaoImpl implements AdminDao {
 				brm.setBookingId(rs.getString("req_id"));
 				return brm;
 			});
-			String message = "Dear " + booking.getName() + ", amount of Rs " + booking.getAdvanceAmount() + " has" +
-					" been successfully received towards your NOC for the previous booking from " +
-					booking.getFromDate() + " to " + booking.getToDate() + " in " + booking.getGhName() + ", " +
-					booking.getCityName() + " - Odisha Home Dept";
+			String message = "Dear Madam/Sir, amount of Rs. "
+					+ booking.getAdvanceAmount()
+					+ " has been successfully received towards your NOC for the previous booking from "
+					+ booking.getFromDate() + " to " + booking.getToDate() + " having Booking ID" + booking.getBookingId()
+					+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 			if (booking.getMobile() != null && !booking.getMobile().isEmpty()) {
-				smsSend.sendSMS(booking.getMobile(), message, "1107168975494899044");
+				smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176");
 			}
 			if (booking.getEmail() != null && !booking.getEmail().isEmpty()) {
 				//mail.sendMimeMail(booking.getEmail(), "NOC Payment Successful", message);
@@ -12198,11 +12199,11 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			String templateId="";
 			if (receiptStatus.equals("A")) {
-				 templateId = "1107168975520027621";
-				String subject = "Dear " + data.getName() + ", amount of Rs " + data.getAdvanceAmount()
-						+ " has been successfully received towards your booking of " + data.getConfCatName() + " in "
-						+ data.getBlockId() + ", " + data.getCityId() + " on " + data.getFromDate() + " having"
-						+ " Booking ID " + data.getReqId() + " - Odisha Home Dept";
+				 templateId = "1077267440133358546";
+				String subject = "Dear Madam/Sir, amount of Rs. " + data.getAdvanceAmount()
+						+ " has been successfully received towards your booking on " + data.getConfCatName()
+						+ " having Booking ID "
+						+ data.getReqId() + ". For details please login to the portal. Home Dept., Govt. of Odisha";
 				System.out.println(subject);
 				if (data.getMobileNo() != null) {
 					if (!data.getMobileNo().isEmpty()) {

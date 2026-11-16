@@ -1111,12 +1111,11 @@ public class AdminServiceImpl implements AdminService {
 		GuestDetails gstDetails = adminDao.getGuestDetail(vehicleAllotmentModel.getReqId(), ghId);
 		String subject = "";
 		String status = "P";
-		String templateId = "1107164483789805404";
+		String templateId = "1077575750131704690";
 		// send sms to driver
 		subject = (gstDetails == null ? "" : gstDetails.getName()) + " will arrive at "
-				+ vehicleAllotmentModel.getPlace()+" on " + vehicleAllotmentModel.getReqTime() + " AM/PM. Contact Protocol Officer "
-				+ vehicleAllotmentModel.getProtocolName() + " Mob " + vehicleAllotmentModel.getProtocolNo()
-				+ ", Odisha Home Dept";
+				+ vehicleAllotmentModel.getPlace()
+				+ " on one variable AM/PM. For details please login to the portal. For details please login to the portal. Home Dept., Govt. of Odisha";
 		System.out.println(subject);
 
 		SmsAllotmentModel smsAllotmentModel=new SmsAllotmentModel();
@@ -1147,8 +1146,8 @@ public class AdminServiceImpl implements AdminService {
 		if (trip.equalsIgnoreCase("A")) {
 			ArrivalDepartureModel arrivalDepartureModel = adminDao.selectVehicleReq(vehicleAllotmentModel.getReqId());
 			if (arrivalDepartureModel.getModeOfTravel().equalsIgnoreCase("T")) {
-				templateId = "1107169088777721537";
-				ftno = " by Train No " + arrivalDepartureModel.getFtNo();
+				templateId = "1077301410134679869";
+				ftno = " by Train No one variable AM/PM. Vehicle allocated ";
 			} else {
 				templateId = "1107164483796329779";
 				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
@@ -1159,8 +1158,8 @@ public class AdminServiceImpl implements AdminService {
 
 			ArrivalDepartureModel arrivalDepartureModel = adminDao.selectVehicleReq1(vehicleAllotmentModel.getReqId());
 			if (arrivalDepartureModel.getModeOfTravel().equalsIgnoreCase("T")) {
-				templateId = "1107169088777721537";
-				ftno = " by Train No " + arrivalDepartureModel.getFtNo();
+				templateId = "1077301410134679869";
+				ftno = " by Train No one variable AM/PM. Vehicle allocated ";
 			} else {
 				templateId = "1107164483796329779";
 				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
@@ -1168,8 +1167,9 @@ public class AdminServiceImpl implements AdminService {
 		}
 			
 		subject = (gstDetails.getName() == null ? "" : gstDetails.getName()) + " will arrive at "
-				+ vehicleAllotmentModel.getPlace() + ftno + " on " + vehicleAllotmentModel.getReqTime()
-				+ " AM/PM. Vehicle allocated " + vehicleAllotmentModel.getVehicleDetails() +" and Driver "+vehicleAllotmentModel.getDriverName()+" Mob "+vehicleAllotmentModel.getDriverNo()+", Odisha Home Dept";
+				+ vehicleAllotmentModel.getPlace()
+				+ ftno + vehicleAllotmentModel.getVehicleDetails()
+				+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 		System.out.println(subject);
 		SmsAllotmentModel smsAllotmentModel=new SmsAllotmentModel();
 		smsAllotmentModel.setGhId(ghId);
@@ -1333,12 +1333,11 @@ public class AdminServiceImpl implements AdminService {
 		GuestDetails gstDetails = adminDao.getGuestDetail(vehicleAllotmentModel.getReqId(), ghId);
 		String subject = "";
 		String status = "P";
-		String templateId = "1107164483789805404";
+		String templateId = "1077575750131704690";
 		// send sms to driver
 		subject = (gstDetails == null ? "" : gstDetails.getName()) + " will arrive at "
-				+ vehicleAllotmentModel.getPlace()+" on " +vehicleAllotmentModel.getReqTime()+" AM/PM. Contact Protocol Officer "
-				+ vehicleAllotmentModel.getProtocolName() + " Mob " + vehicleAllotmentModel.getProtocolNo()
-				+ ", Odisha Home Dept";
+				+ vehicleAllotmentModel.getPlace()
+				+ " on one variable AM/PM. For details please login to the portal. For details please login to the portal. Home Dept., Govt. of Odisha";
 		System.out.println(subject);
 		SmsAllotmentModel smsAllotmentModel=new SmsAllotmentModel();
 		smsAllotmentModel.setGhId(ghId);

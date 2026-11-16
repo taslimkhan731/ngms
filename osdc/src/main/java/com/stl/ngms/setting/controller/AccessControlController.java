@@ -206,12 +206,11 @@ public class AccessControlController {
 							try {
 								if (user.getContactNo() != null) {
 									if (!user.getContactNo().isEmpty()) {
-										String templateID = "1107168976051872511";
+										String templateID = "1077505190132248250";
 
-										smsSend.sendSMS(user.getContactNo(), "Dear " + user.getFirstName()
-												+ ", Your account has been created successfully. Login with your User ID: "
+										smsSend.sendSMS(user.getContactNo(), "Dear Madam/Sir, Your account has been created successfully. Login with your User ID: "
 												+ user.getContactNo() + " and Password: " + password + " as Role "
-												+ grp.getGroupName() + " - Odisha Home Dept", templateID);
+												+ grp.getGroupName() + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID);
 									}
 								}
 							} catch (Exception e) {

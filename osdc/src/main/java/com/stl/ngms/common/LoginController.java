@@ -596,8 +596,8 @@ public class LoginController {
 //		}
 		if (!StringUtils.isEmpty(model.getUid())) {
 			try {
-				String templateID = "1107160707698779534";
-				smsSend.sendSMS(model.getUid(), "OTP For OBMS Registration " + otp + ", Odisha Home Dept", templateID);
+				String templateID = "1077572430132285401";
+				smsSend.sendSMS(model.getUid(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odishat", templateID);
 			} catch (Exception e) {
 				logger.error("Error occured in sms " + e.getMessage());
 			}
@@ -678,8 +678,8 @@ public class LoginController {
 //		}
 		try {
 			System.out.println("Inside Forgot Password Send SMS");
-			String templateID = "1107160707717945638";
-			smsSend.sendSMS(forgetPassword.getMobile(), "OTP For Forget Password " + otp + ", Odisha Home Dept",
+			String templateID = "1077106720132389062";
+			smsSend.sendSMS(forgetPassword.getMobile(), "OTP for Forget Password " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha",
 					templateID);
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());
@@ -914,8 +914,8 @@ public class LoginController {
 //			logger.error("error occured in sms or email send..");
 //		}
 		try {
-			String templateID = "1107160707698779534";
-			smsSend.sendSMS(regAttr.getMobile(), "OTP For OBMS Registration " + otp + ", Odisha Home Dept", templateID);
+			String templateID = "1077572430132285401";
+			smsSend.sendSMS(regAttr.getMobile(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odishat", templateID);
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());
 		}
@@ -2406,8 +2406,8 @@ public class LoginController {
 		logger.error("error occured in sms or email send..");
 
 		try {
-			String templateID = "1107160707698779534";
-			smsSend.sendSMS(regAttr.getMobile(), "OTP For OBMS Registration " + otp + ", Odisha Home Dept", templateID);
+			String templateID = "1077572430132285401";
+			smsSend.sendSMS(regAttr.getMobile(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID);
 		} catch (Exception e) {
 			authentication = false;
 			logger.error("Error occured in sms " + e.getMessage());
@@ -2624,8 +2624,8 @@ public class LoginController {
 			logger.error("error occured in sms or email send.." + e.getMessage());
 		}
 		try {
-			String templateID = "1107160707717945638";
-			smsSend.sendSMS(forgetPassword.getMobile(), "OTP For Forget Password " + otp + ", Odisha Home Dept",
+			String templateID = "1077106720132389062";
+			smsSend.sendSMS(forgetPassword.getMobile(), "OTP for Forget Password " + otp + ". For details please login to the portal. Home Dept., Govt. of Odishat",
 					templateID);
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());
@@ -2677,8 +2677,8 @@ public class LoginController {
 		logger.error("error occured in sms or email send..");
 
 		try {
-			String templateID = "1107160707698779534";
-			smsSend.sendSMS(regAttr.getMobile(), "OTP For OBMS Registration " + otp + ", Odisha Home Dept", templateID);
+			String templateID = "1077572430132285401";
+			smsSend.sendSMS(regAttr.getMobile(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID);
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());
 		}
@@ -2724,8 +2724,8 @@ public class LoginController {
 //			logger.error("error occured in sms or email send.." + e.getMessage());
 //		}
 		try {
-			String templateID = "1107160707717945638";
-			smsSend.sendSMS(forgetPassword.getMobile(), "OTP For Forget Password " + otp + ", Odisha Home Dept",
+			String templateID = "1077106720132389062";
+			smsSend.sendSMS(forgetPassword.getMobile(), "OTP for Forget Password " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha",
 					templateID);
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());

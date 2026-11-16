@@ -251,8 +251,13 @@ public class ResgisteredUserDaoImpl implements ResgisteredUserDao {
 		try {
 			if(data.getMob() != null) {
 				if(!data.getMob().isEmpty()) {
-					String templateID="1107161485663493236";
-					smsSend.sendSMS(data.getMob(), "Dear "+guestName+" You have successfully applied for " + msg + " and your Booking ID is " + reqId + ", Odisha Home Dept",templateID);
+					String templateID="1077054700132341208";
+					smsSend.sendSMS(
+							data.getMob(),
+							"Dear Madam/Sir, you have successfully applied for "
+							+ msg + " and your Booking ID is " + reqId + ". For details please login to the portal. Home Dept., Govt. of Odisha ",
+							templateID
+					);
 				}
 			}
 		} catch (Exception e) {

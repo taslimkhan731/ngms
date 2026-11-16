@@ -1134,14 +1134,14 @@ public class GuestDaoImpl implements GuestDao{
 				if(data.getNoOfRooms() != null) {
 					if(!data.getNoOfRooms().isEmpty()) {
 						if(!data.getNoOfRooms().equalsIgnoreCase("0")) {
-							msg = data.getBookingType() == null ? "0" : (data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfRooms() : "0") + " Rooms/Beds/Dormitory in " + blockList.get(0).get("bName") + "," + ghName;
+							msg = data.getBookingType() == null ? "0" : (data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfRooms() : "0") + " Rooms/Beds/Dormitory ";
 						}
 					}
 				}else {
-					msg = data.getBookingType() == null ? "0" : (data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfBeds() : "0") + " Rooms/Beds/Dormitory in " + blockList.get(0).get("bName") + "," + ghName;
+					msg = data.getBookingType() == null ? "0" : (data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfBeds() : "0") + " Rooms/Beds/Dormitory";
 				}
 			}else {
-				msg = data.getBookingType() == null ? "0" : (!data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfBedsDormitory() : "0") + " Rooms/Beds/Dormitory in " + blockList.get(0).get("bName") + "," + ghName;
+				msg = data.getBookingType() == null ? "0" : (!data.getBookingType().equalsIgnoreCase("room") ? data.getNoOfBedsDormitory() : "0") + " Rooms/Beds/Dormitory";
 			}
 		}				
 		if (data.getRoomType().equalsIgnoreCase("RC") || data.getRoomType().equalsIgnoreCase("C")) {
@@ -1208,8 +1208,12 @@ public class GuestDaoImpl implements GuestDao{
 			try {
 				if(data.getMob() != null) {
 					if(!data.getMob().isEmpty()) {
-						String templateID="1107161485663493236";
-						smsSend.sendSMS(data.getMob(), "Dear "+guestName+" You have successfully applied for " + msg + " and your Booking ID is " + reqId + ", Odisha Home Dept",templateID);
+						String templateID="1077054700132341208";
+						smsSend.sendSMS(
+								data.getMob(),
+								"Dear Madam/Sir, you have successfully applied for "
+								+ msg + " and your Booking ID is " + reqId + ". For details please login to the portal. Home Dept., Govt. of Odisha ",
+								templateID);
 					}
 				}
 			} catch (Exception e) {
@@ -2481,12 +2485,13 @@ public class GuestDaoImpl implements GuestDao{
 				  brm.setBookingId(rs.getString("req_id"));
 				  return brm;
 			  });
-			  String message = "Dear " + booking.getName() + ", amount of Rs " + booking.getAdvanceAmount() + " has" +
-					  " been successfully received towards your NOC for the previous booking from " +
-					  booking.getFromDate() + " to " + booking.getToDate() + " in " + booking.getGhName() + ", " +
-					  booking.getCityName() + " - Odisha Home Dept";
+			  String message = "Dear Madam/Sir, amount of Rs. "
+						+ booking.getAdvanceAmount()
+						+ " has been successfully received towards your NOC for the previous booking from "
+						+ booking.getFromDate() + " to " + booking.getToDate() + " having Booking ID" + booking.getBookingId()
+						+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 			  if (booking.getMobile() != null && !booking.getMobile().isEmpty()) {
-				  smsSend.sendSMS(booking.getMobile(), message, "1107168975494899044");
+				  smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176");
 			  }
 			  if (booking.getEmail() != null && !booking.getEmail().isEmpty()) {
 				  //mail.sendMimeMail(booking.getEmail(), "NOC Payment Successful", message);
@@ -2847,10 +2852,11 @@ public class GuestDaoImpl implements GuestDao{
 							return g;
 						}, reqId);
 				try {
-					String templateId = "1107168975520027621";
-					String subject = "Dear "+data.getName()+", amount of Rs "+data.getAdvanceAmount()+" has been successfully received towards your booking of "
-							+ data.getConfCatName()+" in "+data.getBlockId()+", "+data.getCityId()+" on "+data.getFromDate()+" having"
-							+ " Booking ID "+data.getReqId()+" - Odisha Home Dept";
+					String templateId = "1077267440133358546";
+					String subject = "Dear Madam/Sir, amount of Rs. " + data.getAdvanceAmount()
+							+ " has been successfully received towards your booking on " + data.getConfCatName()
+							+ " having Booking ID "
+							+ data.getReqId() + ". For details please login to the portal. Home Dept., Govt. of Odisha";
 					System.out.println(subject);
 					if (data.getMobileNo() != null) {
 						if (!data.getMobileNo().isEmpty()) {
