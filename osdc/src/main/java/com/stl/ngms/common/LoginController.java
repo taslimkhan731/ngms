@@ -1458,8 +1458,8 @@ public class LoginController {
 		}
 		try {
 
-			String templateID = "1107161251118912084";
-			smsSend.sendSMS(forgetPassword.getMobile(), "OTP For Portal Login " + otp + ", Odisha Home Dept",
+			String templateID = "1077090220133834097";
+			smsSend.sendSMS(forgetPassword.getMobile(), "OTP for Portal Login " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha",
 					templateID);
 		} catch (Exception e) {
 			logger.error("error occured in sms or email send..");

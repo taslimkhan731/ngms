@@ -1075,14 +1075,12 @@ public class AdminServiceImpl implements AdminService {
 		GuestDetails gstDetails = adminDao.getGuestDetail(vehicleAllotmentModel.getReqId(), ghId);
 		String subject = "";
 		String status = "P";
-		String templateId = "1107164457959196936";
+		String templateId = "1077017050132302350";
 		
 		subject = "Protocol Officer " + vehicleAllotmentModel.getProtocolName() + " Mob "
-				+ vehicleAllotmentModel.getProtocolNo() + " will receive you at " + vehicleAllotmentModel.getPlace()+" on "
-				+ vehicleAllotmentModel.getStartTime()
-				+ " AM/PM along with Vehicle No " + vehicleAllotmentModel.getVehicleNo() +
-				" and Driver "+vehicleAllotmentModel.getDriverName()+" Mob "+vehicleAllotmentModel.getDriverNo()+
-				", Odisha Home Dept";
+				+ vehicleAllotmentModel.getProtocolNo() + " will receive you  along with Vehicle and Driver Mob "
+				+ vehicleAllotmentModel.getDriverNo()
+				+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 		System.out.println(subject);
 		if (pmode != null) {
 			if (pmode.equalsIgnoreCase("CVALTG")) {
@@ -1295,13 +1293,11 @@ public class AdminServiceImpl implements AdminService {
 		GuestDetails gstDetails = adminDao.getGuestDetail(reqId, ghId);
 		String subject = "";
 		String status = "P";
-		String templateId = "1107164457959196936";
+		String templateId = "1077017050132302350";
 		subject = "Protocol Officer " + vehicleAllotmentModel.getProtocolName() + " Mob "
-				+ vehicleAllotmentModel.getProtocolNo() + " will receive you at " + vehicleAllotmentModel.getPlace()+" on "+
-				vehicleAllotmentModel.getStartTime()
-				+ " AM/PM along with Vehicle No " + vehicleAllotmentModel.getVehicleNo() +
-				" and Driver "+vehicleAllotmentModel.getDriverName()+" Mob "+vehicleAllotmentModel.getDriverNo()+
-				", Odisha Home Dept";
+				+ vehicleAllotmentModel.getProtocolNo() + " will receive you  along with Vehicle and Driver Mob "
+				+ vehicleAllotmentModel.getDriverNo()
+				+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 		if (pmode != null) {
 			if (pmode.equalsIgnoreCase("CVALTG")) {
 				subject = "Dear " + (gstDetails == null ? " Guest " : gstDetails.getName())
