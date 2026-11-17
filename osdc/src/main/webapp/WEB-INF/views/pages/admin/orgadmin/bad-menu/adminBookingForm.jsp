@@ -30,6 +30,10 @@
 	background-color: #efeeee !important;
 }
 
+.disableElement i {
+	color: #999 !important;
+}
+
 .custom-file-label {
 	border: none !important;
 	background: none !important;
@@ -156,13 +160,13 @@ a {
 					</button>
 				</div>
 				<div class="float-right ml-2">
-					<button id="splitReservation" class="custom-btn segment"
+					<button id="splitReservation" class="custom-btn"
 						type="button">
 						<i class="fa fa-scissors"></i> SPLIT
 					</button>
 				</div>
 				<div class="float-right">
-					<button id="createDE" class="custom-btn " type="button">
+					<button id="createDE" class="custom-btn" type="button">
 						<i class="fa fa-plus"></i> ADD
 					</button>
 				</div>

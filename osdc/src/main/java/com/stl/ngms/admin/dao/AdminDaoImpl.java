@@ -101,6 +101,7 @@ public class AdminDaoImpl implements AdminDao {
 			CommonComboBoxResponseModel res = new CommonComboBoxResponseModel();
 			res.setId(rs.getString("block_id"));
 			res.setName(rs.getString("block_name"));
+			res.setStatus(rs.getBoolean("status"));
 			return res;
 		}, userId, roleId, cityId);
 	}

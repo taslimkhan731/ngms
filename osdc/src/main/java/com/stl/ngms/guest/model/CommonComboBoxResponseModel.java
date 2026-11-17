@@ -4,6 +4,7 @@ public class CommonComboBoxResponseModel {
 	private String id;
 	private String name;
 	private String desc;
+	private boolean status;
 	public String getId() {
 		return id;
 	}
@@ -22,9 +23,16 @@ public class CommonComboBoxResponseModel {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
+	
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 	@Override
 	public String toString() {
-		return "CommonComboBoxResponseModel [id=" + id + ", name=" + name + ", desc=" + desc + "]";
+		return "CommonComboBoxResponseModel [id=" + id + ", name=" + name + ", desc=" + desc + ", status=" + status + "]";
 	}
 	
 	

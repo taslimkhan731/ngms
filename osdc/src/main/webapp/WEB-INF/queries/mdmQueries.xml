@@ -24,7 +24,7 @@
 	<entry key="getAllGHDetails">
 		<![CDATA[
 		     select a.block_id,a.block_name,a.gh_id,b.gh_name,a.nu_of_floors,a.nu_of_rooms,a.address,a.contact_num,a.address_details,a.support_document,a.mail_id from room_block a
-			 join gh_details b on a.gh_id = b.gh_id order by block_id asc
+			 join gh_details b on a.gh_id = b.gh_id where a.status = true order by block_id asc
 		]]>
 	</entry>
 	<entry key="deleteGH">

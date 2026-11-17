@@ -368,7 +368,7 @@
 	</entry>
 	<entry key="getAllMappedGHByUserRoleCity">
 		<![CDATA[
-	    select c.gh_id,c.gh_name,b.block_name,b.block_id from adminr.user_location a
+	    select c.gh_id,c.gh_name,b.block_name,b.block_id, b.status from adminr.user_location a
 		join public.room_block b on a.location_id = b.block_id
 		join public.gh_details c on c.gh_id = b.gh_id
 		join adminr.group d on a.user_type = d.group_name

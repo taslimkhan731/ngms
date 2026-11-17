@@ -1151,11 +1151,24 @@ var table = $("#dataEntryDataTable").DataTable({
 				$("#gHouse").html("");
 				$("#gHouse").append('<option value="">---Select---</option>');
 				data.forEach(option => {
-					$("#gHouse").append('<option value="' + option.id + '">' + option.name + '</option>');
+					$("#gHouse").append(
+					    '<option value="' + option.id + '"' +
+					    ' data-active="' + option.status + '"' +
+					    '>' + option.name + '</option>'
+					);
 				})
 				let size = Object.keys(data).length;
 				if (size == 1) {
 					$('#gHouse').val(data[0].id);
+					if (!data[0].status) {
+						$("#createDE").prop("disabled", true).addClass("disableElement");
+						/*$("#splitReservation").prop("disabled", true).addClass("disableElement");
+						$("#cancelReservation").prop("disabled", true).addClass("disableElement");*/
+					} else {
+						$("#createDE").prop("disabled", false).removeClass("disableElement");
+						/*$("#splitReservation").prop("disabled", false).removeClass("disableElement");
+						$("#cancelReservation").prop("disabled", false).removeClass("disableElement");*/
+					}
 				}
 				$('#gHouse').trigger('change');
 			}, error: function(jqXHR, status, error) {
@@ -1216,6 +1229,17 @@ var table = $("#dataEntryDataTable").DataTable({
 	*/
 
 	$("#gHouse").change(function() {
+		var opt = $(this).find("option:selected");
+		var active = opt.data("active");
+		if (active === false) {
+			$("#createDE").prop("disabled", true).addClass("disableElement");
+			/*$("#splitReservation").prop("disabled", true).addClass("disableElement");
+			$("#cancelReservation").prop("disabled", true).addClass("disableElement");*/
+		} else {
+			$("#createDE").prop("disabled", false).removeClass("disableElement");
+			/*$("#splitReservation").prop("disabled", false).removeClass("disableElement");
+			$("#cancelReservation").prop("disabled", false).removeClass("disableElement");*/
+		}
 		blockId = $(this).val();
 		table.ajax.reload()
 	});
