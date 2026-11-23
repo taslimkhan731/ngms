@@ -1148,7 +1148,7 @@ public class AdminServiceImpl implements AdminService {
 				ftno = " by Train No one variable AM/PM. Vehicle allocated ";
 			} else {
 				templateId = "1107164483796329779";
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			}
 		}
 
@@ -1160,7 +1160,7 @@ public class AdminServiceImpl implements AdminService {
 				ftno = " by Train No one variable AM/PM. Vehicle allocated ";
 			} else {
 				templateId = "1107164483796329779";
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			}
 		}
 			
@@ -1365,9 +1365,9 @@ public class AdminServiceImpl implements AdminService {
 		if (trip.equalsIgnoreCase("A")) {
 			ArrivalDepartureModel arrivalDepartureModel = adminDao.selectVehicleReq(vehicleAllotmentModel.getReqId());
 			if (arrivalDepartureModel.getModeOfTravel().equalsIgnoreCase("T")) {
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			} else {
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			}
 		}
 
@@ -1375,15 +1375,15 @@ public class AdminServiceImpl implements AdminService {
 
 			ArrivalDepartureModel arrivalDepartureModel = adminDao.selectVehicleReq1(vehicleAllotmentModel.getReqId());
 			if (arrivalDepartureModel.getModeOfTravel().equalsIgnoreCase("T")) {
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			} else {
-				ftno = " by Flight No " + arrivalDepartureModel.getFtNo();
+				ftno = " by Flight No one variable Vehicle allocated ";
 			}
 		}
-
 		subject = (gstDetails.getName() == null ? "" : gstDetails.getName()) + " will arrive at "
-				+ vehicleAllotmentModel.getPlace() + ftno + " on " + vehicleAllotmentModel.getReqTime()
-				+ " AM/PM. Vehicle allocated " + vehicleAllotmentModel.getVehicleDetails() +" and Driver "+vehicleAllotmentModel.getDriverName()+" Mob "+vehicleAllotmentModel.getDriverNo()+", Odisha Home Dept";
+				+ vehicleAllotmentModel.getPlace()
+				+ ftno + vehicleAllotmentModel.getVehicleDetails()
+				+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 		System.out.println(subject);
 		SmsAllotmentModel smsAllotmentModel = new SmsAllotmentModel();
 		smsAllotmentModel.setGhId(ghId);
