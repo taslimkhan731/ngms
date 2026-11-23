@@ -321,7 +321,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (!data.getMob().isEmpty()) {
 					String templateID = "1107160707714316860";
 					smsSend.sendSMS(data.getMob(), "Dear " + guestName + " You have successfully applied for " + msg
-							+ " and your booking id " + reqId + " ", templateID);
+							+ " and your booking id " + reqId + " ", templateID, "singleSMS");
 				}
 			}
 		} catch (Exception e) {
@@ -3306,7 +3306,7 @@ public class AdminDaoImpl implements AdminDao {
 					+ brm1.getGhName() + ", " + brm1.getCityName() + " for " + brm1.getFromDate() + " to " +
 					brm1.getToDate() + " against your Request No " + brm1.getBookingId() + " -Odisha Home Dept";
 			System.out.println("--------------------------------------------------"+message);
-			smsSend.sendSMS(brm1.getMobile(), message, templateId);
+			smsSend.sendSMS(brm1.getMobile(), message, templateId, "singleSMS");
 			if (brm1.getEmail() != null && !brm1.getEmail().isEmpty()) {
 				//mail.sendMimeMail(brm1.getEmail(), "Room Allotment", message);
 			}
@@ -3348,7 +3348,7 @@ public class AdminDaoImpl implements AdminDao {
 			try {
 				if (roomDetailsSms.getModifiedRoomRent() != null) {
 					if (!roomDetailsSms.getModifiedRoomRent().isEmpty()) {
-						smsSend.sendSMS(roomDetailsSms.getModifiedRoomRent(), subject, templateId);
+						smsSend.sendSMS(roomDetailsSms.getModifiedRoomRent(), subject, templateId, "singleSMS");
 					}
 				}
 			} catch (Exception e) {
@@ -3419,7 +3419,7 @@ public class AdminDaoImpl implements AdminDao {
 				try {
 					if (singleUser.getPhone() != null) {
 						if (!singleUser.getPhone().isEmpty()) {
-							smsSend.sendSMS(singleUser.getPhone(), subject, templateId);
+							smsSend.sendSMS(singleUser.getPhone(), subject, templateId, "singleSMS");
 						}
 					}
 				} catch (Exception e) {
@@ -3444,7 +3444,7 @@ public class AdminDaoImpl implements AdminDao {
 				try {
 					if (singleUser.getPhone() != null) {
 						if (!singleUser.getPhone().isEmpty()) {
-							smsSend.sendSMS(singleUser.getPhone(), subject, templateId);
+							smsSend.sendSMS(singleUser.getPhone(), subject, templateId, "singleSMS");
 						}
 					}
 				} catch (Exception e) {
@@ -3499,7 +3499,7 @@ public class AdminDaoImpl implements AdminDao {
 			try {
 				if (singleUser.getPhone() != null) {
 					if (!singleUser.getPhone().isEmpty()) {
-						smsSend.sendSMS(singleUser.getPhone(), subject, templateId);
+						smsSend.sendSMS(singleUser.getPhone(), subject, templateId, "singleSMS");
 					}
 				}
 			} catch (Exception e) {
@@ -4815,7 +4815,7 @@ public class AdminDaoImpl implements AdminDao {
 			System.out.println(message);
 			if (mobileNo != null && !mobileNo.isEmpty()) {
 				String templateID = "1077154640131828872";
-				smsSend.sendSMS(mobileNo, message, templateID);
+				smsSend.sendSMS(mobileNo, message, templateID, "singleSMS");
 			}
 //			if (emailId != null && !emailId.isEmpty()) {
 //				mail.sendMimeMail(emailId, "Request Cancelled", message);
@@ -5405,7 +5405,7 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			if (gdp.getGuestMobile() != null) {
 				if (!gdp.getGuestMobile().isEmpty()) {
-					smsSend.sendSMS(gdp.getGuestMobile(), subject, templateId);
+					smsSend.sendSMS(gdp.getGuestMobile(), subject, templateId, "singleSMS");
 				}
 			}
 		} catch (Exception e) {
@@ -7709,7 +7709,7 @@ public class AdminDaoImpl implements AdminDao {
 					+ booking.getFromDate() + " to " + booking.getToDate() + " having Booking ID" + booking.getBookingId()
 					+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 			if (booking.getMobile() != null && !booking.getMobile().isEmpty()) {
-				smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176");
+				smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176", "singleSMS");
 			}
 			if (booking.getEmail() != null && !booking.getEmail().isEmpty()) {
 				//mail.sendMimeMail(booking.getEmail(), "NOC Payment Successful", message);
@@ -11041,7 +11041,7 @@ public class AdminDaoImpl implements AdminDao {
 	}
 	@Async
 	public void vehicleSmsSend(String mobileNo,String subject,String templateId) {
-		smsSend.sendSMS(mobileNo,subject,templateId);
+		smsSend.sendSMS(mobileNo,subject,templateId, "singleSMS");
 	}
 	@Override
 	public ArrivalDepartureModel selectVehicleReq(String reqId) {
@@ -11181,7 +11181,7 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			if (mobileNo != null) {
 				if (!mobileNo.isEmpty()) {
-					smsSend.sendSMS(mobileNo, smsAllotmentModel.getSubject(), smsAllotmentModel.getTemplateId());
+					smsSend.sendSMS(mobileNo, smsAllotmentModel.getSubject(), smsAllotmentModel.getTemplateId(), "singleSMS");
 				}
 			}
 		} catch (Exception e) {
@@ -12208,7 +12208,7 @@ public class AdminDaoImpl implements AdminDao {
 				System.out.println(subject);
 				if (data.getMobileNo() != null) {
 					if (!data.getMobileNo().isEmpty()) {
-						smsSend.sendSMS(data.getMobileNo(), subject, templateId);
+						smsSend.sendSMS(data.getMobileNo(), subject, templateId, "singleSMS");
 					}
 				}
 			}
@@ -12364,7 +12364,7 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			if (mobileNo!= null) {
 				if (!mobileNo.isEmpty()) {
-					smsSend.sendSMS(mobileNo,subject, templateId);
+					smsSend.sendSMS(mobileNo,subject, templateId, "singleSMS");
 				}
 			}
 		} catch (Exception e) {
@@ -13225,7 +13225,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (!data.getMob().isEmpty()) {
 					String templateID = "1107160707714316860";
 					smsSend.sendSMS(data.getMob(), "Dear " + guestName + " You have successfully applied for " + msg
-							+ " and your booking id " + reqId + " ", templateID);
+							+ " and your booking id " + reqId + " ", templateID, "singleSMS");
 				}
 			}
 		} catch (Exception e) {

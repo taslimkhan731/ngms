@@ -210,7 +210,7 @@ public class AccessControlController {
 
 										smsSend.sendSMS(user.getContactNo(), "Dear Madam/Sir, Your account has been created successfully. Login with your User ID: "
 												+ user.getContactNo() + " and Password: " + password + " as Role "
-												+ grp.getGroupName() + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID);
+												+ grp.getGroupName() + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID, "singleSMS");
 									}
 								}
 							} catch (Exception e) {
@@ -336,7 +336,7 @@ public class AccessControlController {
 										smsSend.sendSMS(userModel.getContactNo(), "Dear" + userModel.getFirstName()
 												+ "Your user has been created Successfully,Please login through username "
 												+ userModel.getContactNo() + " and password " + password + " as "
-												+ userModel.getUserType() + ", Odisha Home Dept", templateID);
+												+ userModel.getUserType() + ", Odisha Home Dept", templateID, "singleSMS");
 									}
 								}
 							} catch (Exception e) {

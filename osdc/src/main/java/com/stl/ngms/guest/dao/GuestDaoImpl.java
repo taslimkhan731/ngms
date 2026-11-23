@@ -1213,7 +1213,7 @@ public class GuestDaoImpl implements GuestDao{
 								data.getMob(),
 								"Dear Madam/Sir, you have successfully applied for "
 								+ msg + " and your Booking ID is " + reqId + ". For details please login to the portal. Home Dept., Govt. of Odisha ",
-								templateID);
+								templateID, "singleSMS");
 					}
 				}
 			} catch (Exception e) {
@@ -2491,7 +2491,7 @@ public class GuestDaoImpl implements GuestDao{
 						+ booking.getFromDate() + " to " + booking.getToDate() + " having Booking ID" + booking.getBookingId()
 						+ ". For details please login to the portal. Home Dept., Govt. of Odisha";
 			  if (booking.getMobile() != null && !booking.getMobile().isEmpty()) {
-				  smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176");
+				  smsSend.sendSMS(booking.getMobile(), message, "1077246730133435176", "singleSMS");
 			  }
 			  if (booking.getEmail() != null && !booking.getEmail().isEmpty()) {
 				  //mail.sendMimeMail(booking.getEmail(), "NOC Payment Successful", message);
@@ -2860,7 +2860,7 @@ public class GuestDaoImpl implements GuestDao{
 					System.out.println(subject);
 					if (data.getMobileNo() != null) {
 						if (!data.getMobileNo().isEmpty()) {
-							smsSend.sendSMS(data.getMobileNo(), subject, templateId);
+							smsSend.sendSMS(data.getMobileNo(), subject, templateId, "singleSMS");
 						}
 					}
 					

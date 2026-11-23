@@ -62,8 +62,16 @@ public class SendSMS {
 		return messg;
 	}
 
+	/**
+	 * @deprecated Use {@link #sendSMS(String,String,String,String)} instead
+	 */
 	@Async
 	public void sendSMS(final String toMobNo, final String msgStr,final String templateID) {
+		sendSMS(toMobNo, msgStr, templateID, "singleSMS");
+	}
+
+	@Async
+	public void sendSMS(final String toMobNo, final String msgStr,final String templateID, String action) {
 		final String USER_AGENT = "Mozilla/5.0";
 		// http://bulksms.mysmsmantra.com:8080/WebSMS/SMSAPI.jsp?username=mantdemo&password=1951034277&sendername=SMDEMO&mobileno=9658602048&message=HiRanvir
 
@@ -88,14 +96,23 @@ public class SendSMS {
 			//					env.getProperty("admin.sms.pass"), env.getProperty("admin.sms.sender"), toMobNo, msg);
 			System.out.println("*****Inside Send SMS*****");
 			String strUrl = (new StringBuilder())
-			.append(env.getProperty("admin.sms.url").trim())
+//			.append(env.getProperty("admin.sms.url").trim())
 //			.append("http://api.esms.kerala.gov.in/fastclient/SMSclient.php?username=")
-			.append("?username=").append(env.getProperty("admin.sms.username").trim())
-			.append("&pin=").append(env.getProperty("admin.sms.pass").trim())
-			.append("&message=").append(mess).append("&mnumber=91")
-			.append(toMobNo.trim()).append("&signature=").append(env.getProperty("admin.sms.sender").trim())
-			.append("&dlt_entity_id=").append(env.getProperty("admin.sms.EntityID").trim())
-			.append("&dlt_template_id=").append(templateID.trim()).toString();
+//			.append("?username=").append(env.getProperty("admin.sms.username").trim())
+//			.append("&pin=").append(env.getProperty("admin.sms.pass").trim())
+//			.append("&message=").append(mess).append("&mnumber=91")
+//			.append(toMobNo.trim()).append("&signature=").append(env.getProperty("admin.sms.sender").trim())
+//			.append("&dlt_entity_id=").append(env.getProperty("admin.sms.EntityID").trim())
+//			.append("&dlt_template_id=").append(templateID.trim()).toString();
+			
+			
+			.append(env.getProperty("admin.sms.url").trim())
+			.append("?action=").append(action.trim())
+			.append("&source=").append(env.getProperty("admin.sms.source").trim())
+			.append("&department_id=").append(env.getProperty("admin.sms.department.id").trim())
+			.append("&template_id=").append(templateID.trim())
+			.append("&sms_content=").append(msgStr.trim())
+			.append("&phonenumber=").append(toMobNo.trim()).toString();
 			
 			logger.info((new StringBuilder()).append("URI:--")
 					.append(strUrl.toString()).toString());

@@ -3366,20 +3366,20 @@ public class MobileAppController {
 					// ins_feedback.replied_sms=msg;
 					if (templateID.equals("1107164967721333473")) {
 						templateID = "1107165000905613799";
-						smsSend.sendSMS(request.getMobile(), msg, templateID);
+						smsSend.sendSMS(request.getMobile(), msg, templateID, "singleSMS");
 					} else if (templateID.equals("1107164967740329102")) {
 						templateID = "1107165000919722835";
-						smsSend.sendSMS(request.getMobile(), msg, templateID);
+						smsSend.sendSMS(request.getMobile(), msg, templateID, "singleSMS");
 					} else {
 						templateID = "1107165009359372891";
-						smsSend.sendSMS(request.getMobile(), msg, templateID);
+						smsSend.sendSMS(request.getMobile(), msg, templateID, "singleSMS");
 					}
 
 				} else {
 					request.setRemarks(rplySms);
 					if (!templateID.equals("1107164967740329102")) {
 						msg = rplySms + " -Odisha Home Dept";
-						smsSend.sendSMS(request.getMobile(), msg, templateID);
+						smsSend.sendSMS(request.getMobile(), msg, templateID, "singleSMS");
 					}
 				}
 			} catch (Exception e) {

@@ -256,7 +256,7 @@ public class ResgisteredUserDaoImpl implements ResgisteredUserDao {
 							data.getMob(),
 							"Dear Madam/Sir, you have successfully applied for "
 							+ msg + " and your Booking ID is " + reqId + ". For details please login to the portal. Home Dept., Govt. of Odisha ",
-							templateID
+							templateID, "singleSMS"
 					);
 				}
 			}
