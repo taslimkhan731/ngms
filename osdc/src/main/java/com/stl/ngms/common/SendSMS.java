@@ -3,10 +3,12 @@ package com.stl.ngms.common;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -95,7 +97,7 @@ public class SendSMS {
 			//					env.getProperty("admin.sms.url"), env.getProperty("admin.sms.username"),
 			//					env.getProperty("admin.sms.pass"), env.getProperty("admin.sms.sender"), toMobNo, msg);
 			System.out.println("*****Inside Send SMS*****");
-			String strUrl = (new StringBuilder())
+			String baseUrl = env.getProperty("admin.sms.url").trim();
 //			.append(env.getProperty("admin.sms.url").trim())
 //			.append("http://api.esms.kerala.gov.in/fastclient/SMSclient.php?username=")
 //			.append("?username=").append(env.getProperty("admin.sms.username").trim())
@@ -106,32 +108,69 @@ public class SendSMS {
 //			.append("&dlt_template_id=").append(templateID.trim()).toString();
 			
 			
-			.append(env.getProperty("admin.sms.url").trim())
-			.append("?action=").append(action.trim())
-			.append("&source=").append(env.getProperty("admin.sms.source").trim())
-			.append("&department_id=").append(env.getProperty("admin.sms.department.id").trim())
-			.append("&template_id=").append(templateID.trim())
-			.append("&sms_content=").append(msgStr.trim())
-			.append("&phonenumber=").append(toMobNo.trim()).toString();
+//			.append(env.getProperty("admin.sms.url").trim())
+//			.append("?action=").append(action.trim())
+//			.append("&source=").append(env.getProperty("admin.sms.source").trim())
+//			.append("&department_id=").append(env.getProperty("admin.sms.department.id").trim())
+//			.append("&template_id=").append(templateID.trim())
+//			.append("&sms_content=").append(msgStr.trim())
+//			.append("&phonenumber=").append(toMobNo.trim()).toString();
 			
-			logger.info((new StringBuilder()).append("URI:--")
-					.append(strUrl.toString()).toString());
+			StringBuilder formData = new StringBuilder()
+			        .append("action=").append(URLEncoder.encode(action.trim(), "UTF-8"))
+			        .append("&source=").append(URLEncoder.encode(env.getProperty("admin.sms.source").trim(), "UTF-8"))
+			        .append("&department_id=").append(URLEncoder.encode(env.getProperty("admin.sms.department.id").trim(), "UTF-8"))
+			        .append("&template_id=").append(URLEncoder.encode(templateID.trim(), "UTF-8"))
+			        .append("&sms_content=").append(URLEncoder.encode(msgStr.trim(), "UTF-8"))
+			        .append("&phonenumber=").append(URLEncoder.encode(toMobNo.trim(), "UTF-8"));
+			
+			logger.info((new StringBuilder()).append("URL:--")
+					.append(baseUrl.toString()).toString());
+			
+			logger.info((new StringBuilder()).append("Form Data:--")
+					.append(formData.toString()).toString());
 			System.out.println("*****msg*****"+mess);
-			URL url;
+//			URL url;
 			try {
+//				SSLContext ssl_ctx = SSLContext.getInstance("TLS");
+//				TrustManager[] trust_mgr = get_trust_mgr();
+//				ssl_ctx.init(null, // key manager
+//						trust_mgr, // trust manager
+//						new SecureRandom()); // random number generator
+//				HttpsURLConnection.setDefaultSSLSocketFactory(ssl_ctx
+//						.getSocketFactory());
+//
+//				url = new URL(strUrl);
+//				HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+//				int response = con.getResponseCode();
+//				System.out.println("response = "+response);
+//				print_content(con);
+				
 				SSLContext ssl_ctx = SSLContext.getInstance("TLS");
-				TrustManager[] trust_mgr = get_trust_mgr();
-				ssl_ctx.init(null, // key manager
-						trust_mgr, // trust manager
-						new SecureRandom()); // random number generator
-				HttpsURLConnection.setDefaultSSLSocketFactory(ssl_ctx
-						.getSocketFactory());
+			    TrustManager[] trust_mgr = get_trust_mgr();
+			    ssl_ctx.init(null, trust_mgr, new SecureRandom());
 
-				url = new URL(strUrl);
-				HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-				int response = con.getResponseCode();
-				System.out.println("response = "+response);
-				print_content(con);
+			    URL url = new URL(baseUrl);
+			    HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+			    con.setSSLSocketFactory(ssl_ctx.getSocketFactory()); // per-connection, not global
+
+			    con.setRequestMethod("POST");
+			    con.setDoOutput(true);
+			    con.setConnectTimeout(10000);
+			    con.setReadTimeout(15000);
+			    con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+			    byte[] body = formData.toString().getBytes(StandardCharsets.UTF_8);
+			    con.setRequestProperty("Content-Length", String.valueOf(body.length));
+
+			    try (OutputStream os = con.getOutputStream()) {
+			        os.write(body);
+			        os.flush();
+			    }
+
+			    int response = con.getResponseCode();
+			    logger.info("response = " + response);
+			    print_content(con);
 
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
