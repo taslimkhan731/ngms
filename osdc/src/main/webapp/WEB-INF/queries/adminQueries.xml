@@ -618,14 +618,14 @@
 	<entry key="DraftallListwithGHouseAndCity">
 	<![CDATA[		
 	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
-	join room_block rb on rb.block_id = pt.block_id  Where status='TCNF' and  pt.gh_id=? and pt.block_id=? order by created_date desc	
+	join room_block rb on rb.block_id = pt.block_id  Where pt.status='TCNF' and  pt.gh_id=? and pt.block_id=? order by created_date desc	
       ]]>
 	</entry>
 	
 	<entry key="confirmDraftallList">
 	<![CDATA[		
 	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
-	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' order by created_date desc 
+	join room_block rb on rb.block_id = pt.block_id  Where pt.status='CNF' order by created_date desc 
       ]]>
 	</entry>
 	
@@ -642,7 +642,7 @@
 	<entry key="confirmDraftallListwithCity">
 	<![CDATA[		
 	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
-	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' and  pt.gh_id= :cityName order by created_date desc 
+	join room_block rb on rb.block_id = pt.block_id  Where pt.status='CNF' and  pt.gh_id= :cityName order by created_date desc 
       ]]>
 	</entry>
 	
@@ -660,7 +660,7 @@
 	<entry key="confirmDraftallListwithGHouseAndCity">
 	<![CDATA[	
 	SELECT pt.*,gd.gh_name,rb.block_name FROM process_table pt join gh_details gd on pt.gh_id = gd.gh_id 
-	join room_block rb on rb.block_id = pt.block_id  Where status='CNF' and  pt.gh_id= :cityName and pt.block_id= :guesthouseName order by created_date desc
+	join room_block rb on rb.block_id = pt.block_id  Where pt.status='CNF' and  pt.gh_id= :cityName and pt.block_id= :guesthouseName order by created_date desc
       ]]>
 	</entry>
 	
