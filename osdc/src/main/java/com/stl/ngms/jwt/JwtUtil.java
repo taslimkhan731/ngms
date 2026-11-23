@@ -13,6 +13,7 @@ import java.util.function.Function;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,7 @@ public class JwtUtil implements Serializable{
 
     public String tokenIssuer;
 
+    @Lazy
     @Autowired
      LoggedOutJwtTokenCache loggedOutJwtTokenCache;
 
