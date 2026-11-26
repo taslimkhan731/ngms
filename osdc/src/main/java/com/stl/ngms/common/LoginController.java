@@ -597,7 +597,7 @@ public class LoginController {
 		if (!StringUtils.isEmpty(model.getUid())) {
 			try {
 				String templateID = "1077572430132285401";
-				smsSend.sendSMS(model.getUid(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odishat", templateID, "sendOTPSMS");
+				smsSend.sendSMS(model.getUid(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID, "sendOTPSMS");
 			} catch (Exception e) {
 				logger.error("Error occured in sms " + e.getMessage());
 			}
@@ -915,7 +915,7 @@ public class LoginController {
 //		}
 		try {
 			String templateID = "1077572430132285401";
-			smsSend.sendSMS(regAttr.getMobile(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odishat", templateID, "sendOTPSMS");
+			smsSend.sendSMS(regAttr.getMobile(), "OTP for OBMS Registration " + otp + ". For details please login to the portal. Home Dept., Govt. of Odisha", templateID, "sendOTPSMS");
 		} catch (Exception e) {
 			logger.error("Error occured in sms " + e.getMessage());
 		}
